@@ -6,13 +6,14 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 })
 export class Camara {
 
+  // Tomar foto SOLO desde la cámara (para empleados y clientes, según consigna)
   async tomarFoto(): Promise<string | null> {
     try {
       const foto = await Camera.getPhoto({
         quality: 80,
         allowEditing: false,
         resultType: CameraResultType.DataUrl,
-        source: CameraSource.Camera
+        source: CameraSource.Camera // fuerza cámara, no permite galería
       });
       return foto.dataUrl ?? null;
     } catch (error) {
@@ -21,13 +22,14 @@ export class Camara {
     }
   }
 
+  // Elegir foto de cámara O galería (para platos y bebidas, según consigna)
   async elegirFoto(): Promise<string | null> {
     try {
       const foto = await Camera.getPhoto({
         quality: 80,
         allowEditing: false,
         resultType: CameraResultType.DataUrl,
-        source: CameraSource.Prompt
+        source: CameraSource.Prompt // le da a elegir cámara o galería
       });
       return foto.dataUrl ?? null;
     } catch (error) {
