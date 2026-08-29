@@ -26,7 +26,7 @@ Trabajo final integrador grupal
 
 ## Ícono
 
-![Ícono](docs/icono/icono.png)
+![Ícono](docs/iconos/icono.png)
 
 ## Pantallas
 
