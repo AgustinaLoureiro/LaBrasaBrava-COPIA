@@ -19,27 +19,8 @@ Trabajo final integrador grupal
 
 ## Estado de las tareas
 
-### Nadia Moran
-Tarea:
-Inicio:
-Fin:
 
-### Américo Acosta
-Tarea:
-Inicio:
-Fin:
 
-### Enrico Montes
-Tarea:
-Inicio:
-Fin:
-
-### Agustina Loureiro
-Tarea:
-Inicio:
-Fin:
-
----
 
 # Imágenes del proyecto
 
