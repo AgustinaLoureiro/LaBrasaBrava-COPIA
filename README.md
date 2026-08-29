@@ -10,13 +10,14 @@ Trabajo final integrador grupal
 
 ## Responsabilidades
 
-Nadia Morán -> Clientes, correos y notificaciones
-Américo Acosta -> Altas, Cartas y QRs
-Enrico Montes -> Núcleo y acceso
-Agustina Loureiro -> Pedidos y Comandas
+| Integrante | Módulo / Objetivo | Inicio | Finalización | Branch |
+|---|---|---|---|---|
+| Nadia Morán | Clientes, correos y notificaciones |  |  | feature/ |
+| Américo Acosta | Altas, Cartas y QRs |  |  | feature/ |
+| Enrico Montes | Núcleo y acceso |  |  | feature/ |
+| Agustina Loureiro | Pedidos y Comandas |  |  | feature/ |
 
-
-## ------- Estado de las tareas -------
+## Estado de las tareas
 
 ### Nadia Moran
 Tarea:
