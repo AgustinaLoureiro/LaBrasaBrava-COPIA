@@ -1,0 +1,7 @@
+{
+  "name": "LaBrasaBrava",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
