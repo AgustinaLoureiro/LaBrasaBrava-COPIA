@@ -1,0 +1,83 @@
+// =====================================================================
+// TFI 2026 — Restaurante · Paleta de la marca
+// =====================================================================
+// Reglas innegociables del enunciado que esta paleta cumple:
+//   · Sin fondos blancos ni "claritos".
+//   · Sin fondos negros ni "oscuritos".
+//   · Sin modo oscuro (se fuerza un único tema).
+//   · Contraste nítido entre textos y fondos.
+// Los colores son cálidos y saturados, de luminosidad media.
+// =====================================================================
+
+:root {
+  // --- Colores de marca -------------------------------------------
+  --marca-brasa:        #c9511f;  // naranja terracota, fondo principal
+  --marca-brasa-media:  #a83a18;  // paso intermedio del degradado
+  --marca-brasa-honda:  #8b2f1c;  // final del degradado (nunca más oscuro)
+  --marca-ambar:        #e9a227;  // acento, botones principales
+  --marca-ambar-claro:  #f5c45f;  // estados activos y foco
+  --marca-verde:        #3f7d4e;  // confirmaciones y estados correctos
+  --marca-verde-claro:  #5aa068;
+  --marca-vino:         #94243a;  // errores y rechazos
+  --marca-jade:         #2c6e63;  // tarjetas secundarias, contraste frío
+
+  // --- Texto ------------------------------------------------------
+  --texto-claro:        #fff4e2;  // crema, sobre fondos cálidos
+  --texto-tenue:        #f7dcc0;  // secundario sobre fondos cálidos
+  --texto-oscuro:       #43231a;  // marrón, sobre ámbar y crema
+
+  // --- Superficies ------------------------------------------------
+  --superficie:         #b4441e;  // tarjetas sobre el fondo
+  --superficie-alta:    #c25a2a;  // tarjetas destacadas
+  --borde:              #e9a227;  // borde ámbar de las tarjetas
+  --sombra:             0 0.6rem 1.6rem rgba(70, 22, 8, 0.45);
+
+  // --- Degradado de fondo (cubre toda la pantalla) ----------------
+  --fondo-app: linear-gradient(
+    160deg,
+    var(--marca-brasa) 0%,
+    var(--marca-brasa-media) 52%,
+    var(--marca-brasa-honda) 100%
+  );
+
+  // --- Medidas ----------------------------------------------------
+  --radio: 1.1rem;
+  --radio-chico: 0.7rem;
+
+  // --- Mapeo sobre las variables de Ionic -------------------------
+  --ion-background-color: #a83a18;
+  --ion-background-color-rgb: 168, 58, 24;
+  --ion-text-color: #fff4e2;
+  --ion-text-color-rgb: 255, 244, 226;
+  --ion-font-family: 'Montserrat', 'Segoe UI', system-ui, sans-serif;
+
+  --ion-color-primary: #e9a227;
+  --ion-color-primary-rgb: 233, 162, 39;
+  --ion-color-primary-contrast: #43231a;
+  --ion-color-primary-contrast-rgb: 67, 35, 26;
+  --ion-color-primary-shade: #cd8f22;
+  --ion-color-primary-tint: #ebab3d;
+
+  --ion-color-success: #3f7d4e;
+  --ion-color-success-rgb: 63, 125, 78;
+  --ion-color-success-contrast: #fff4e2;
+  --ion-color-success-contrast-rgb: 255, 244, 226;
+  --ion-color-success-shade: #376e45;
+  --ion-color-success-tint: #528a60;
+
+  --ion-color-danger: #94243a;
+  --ion-color-danger-rgb: 148, 36, 58;
+  --ion-color-danger-contrast: #fff4e2;
+  --ion-color-danger-contrast-rgb: 255, 244, 226;
+  --ion-color-danger-shade: #822033;
+  --ion-color-danger-tint: #9f3a4e;
+}
+
+// El enunciado prohíbe el modo oscuro: se ignora la preferencia del sistema
+// y se mantiene siempre la misma paleta.
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ion-background-color: #a83a18;
+    --ion-text-color: #fff4e2;
+  }
+}

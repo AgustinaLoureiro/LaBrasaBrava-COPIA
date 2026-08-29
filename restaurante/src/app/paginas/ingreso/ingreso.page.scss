@@ -1,0 +1,274 @@
+/* Pantalla de ingreso. Toda la superficie está ocupada: encabezado,
+   formulario, accesos rápidos y pie. */
+
+.ingreso {
+  min-height: 100%;
+  padding: calc(1rem + var(--ion-safe-area-top, 0px)) 1rem
+    calc(1rem + var(--ion-safe-area-bottom, 0px));
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 0.9rem;
+  align-content: start;
+}
+
+/* --- Cabecera -------------------------------------------------------- */
+.cabecera {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radio);
+  background: linear-gradient(115deg, rgba(255, 244, 226, 0.16), rgba(255, 244, 226, 0.06));
+  border: 0.12rem solid rgba(233, 162, 39, 0.55);
+}
+
+.titulos h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--texto-claro);
+}
+
+.titulos p {
+  margin: 0.15rem 0 0;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--marca-ambar-claro);
+}
+
+/* --- Formulario ------------------------------------------------------ */
+.formulario {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.campo {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.campo label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--texto-claro);
+}
+
+.entrada {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.7rem;
+  background: rgba(67, 35, 26, 0.35);
+  border: 0.14rem solid rgba(233, 162, 39, 0.6);
+  border-radius: var(--radio-chico);
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+
+.entrada:focus-within {
+  border-color: var(--marca-ambar-claro);
+  background: rgba(67, 35, 26, 0.5);
+}
+
+.campo-con-error .entrada {
+  border-color: #ffb3a0;
+  background: rgba(148, 36, 58, 0.4);
+}
+
+.entrada .icono {
+  font-size: 1.05rem;
+  opacity: 0.85;
+}
+
+.entrada input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.8rem 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--texto-claro);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.entrada input::placeholder {
+  color: rgba(255, 244, 226, 0.55);
+  font-weight: 500;
+}
+
+/* Evita que el navegador pinte el fondo claro del autocompletado. */
+.entrada input:-webkit-autofill,
+.entrada input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--texto-claro);
+  transition: background-color 100000s;
+}
+
+.ver-clave {
+  flex: 0 0 auto;
+  padding: 0.35rem 0.6rem;
+  border: none;
+  border-radius: var(--radio-chico);
+  background: var(--marca-ambar);
+  color: var(--texto-oscuro);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--radio-chico);
+  background: var(--marca-vino);
+  color: var(--texto-claro);
+  font-size: 0.83rem;
+  font-weight: 600;
+}
+
+.error::before {
+  content: '\26A0';
+  font-size: 0.95rem;
+}
+
+.boton-principal {
+  margin-top: 0.2rem;
+  padding: 0.95rem;
+  border: none;
+  border-radius: var(--radio-chico);
+  background: linear-gradient(180deg, var(--marca-ambar-claro), var(--marca-ambar));
+  color: var(--texto-oscuro);
+  font-family: inherit;
+  font-size: 1.08rem;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  box-shadow: 0 0.3rem 0 #b57c17;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.boton-principal:active {
+  transform: translateY(0.22rem);
+  box-shadow: 0 0.08rem 0 #b57c17;
+}
+
+/* --- Accesos rápidos -------------------------------------------------- */
+.accesos {
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+}
+
+.fichas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.ficha {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.8rem;
+  border: 0.14rem solid rgba(255, 244, 226, 0.28);
+  border-left: 0.4rem solid var(--color-perfil);
+  border-radius: var(--radio-chico);
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--color-perfil) 55%, transparent),
+    rgba(255, 244, 226, 0.09)
+  );
+  color: var(--texto-claro);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+
+.ficha:active {
+  transform: scale(0.985);
+  border-color: var(--marca-ambar);
+}
+
+.avatar {
+  flex: 0 0 auto;
+  width: 2.7rem;
+  height: 2.7rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  overflow: hidden;
+  background: rgba(255, 244, 226, 0.2);
+  border: 0.12rem solid var(--marca-ambar);
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-letra {
+  font-size: 0.92rem;
+  font-weight: 900;
+  color: var(--texto-claro);
+}
+
+.datos {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: grid;
+}
+
+.perfil {
+  font-size: 0.98rem;
+  font-weight: 800;
+}
+
+.persona {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--texto-tenue);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.flecha {
+  flex: 0 0 auto;
+  font-size: 1.05rem;
+  color: var(--marca-ambar-claro);
+}
+
+.sin-accesos p {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--texto-claro);
+}
+
+/* --- Pie -------------------------------------------------------------- */
+.pie {
+  align-self: end;
+  text-align: center;
+}
+
+.pie p {
+  margin: 0;
+  padding: 0.5rem;
+  border-radius: var(--radio-chico);
+  background: rgba(67, 35, 26, 0.3);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--texto-tenue);
+}

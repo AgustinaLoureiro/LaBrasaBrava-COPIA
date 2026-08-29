@@ -1,0 +1,117 @@
+<ion-content [fullscreen]="true">
+  <div class="ingreso">
+    <!-- Encabezado con el logo -->
+    <header class="cabecera">
+      <app-logo-marca [tamanio]="76" [nombre]="restaurante.nombre" />
+      <div class="titulos">
+        <h1>{{ restaurante.nombre }}</h1>
+        <p>{{ restaurante.lema }}</p>
+      </div>
+    </header>
+
+    <!-- Formulario -->
+    <form class="tarjeta formulario" [formGroup]="formulario" (ngSubmit)="ingresar()" novalidate>
+      <h2 class="titulo-seccion">Ingresá a tu cuenta</h2>
+      <p class="subtitulo-seccion">Usá el correo y la contraseña que te asignaron.</p>
+
+      <!-- Correo -->
+      <div class="campo" [class.campo-con-error]="debeMostrarError('correo')">
+        <label for="correo">Correo electrónico</label>
+        <div class="entrada">
+          <span class="icono" aria-hidden="true">&#9993;</span>
+          <input
+            id="correo"
+            type="email"
+            formControlName="correo"
+            placeholder="nombre@labrasabrava.com.ar"
+            autocomplete="email"
+            inputmode="email"
+            spellcheck="false"
+            [attr.aria-invalid]="debeMostrarError('correo')"
+            [attr.aria-describedby]="debeMostrarError('correo') ? 'error-correo' : null"
+          />
+        </div>
+        @if (debeMostrarError('correo')) {
+          <p class="error" id="error-correo" role="alert">{{ mensajeDeError('correo') }}</p>
+        }
+      </div>
+
+      <!-- Contraseña -->
+      <div class="campo" [class.campo-con-error]="debeMostrarError('clave')">
+        <label for="clave">Contraseña</label>
+        <div class="entrada">
+          <span class="icono" aria-hidden="true">&#128274;</span>
+          <input
+            id="clave"
+            [type]="claveVisible() ? 'text' : 'password'"
+            formControlName="clave"
+            placeholder="Al menos 6 caracteres"
+            autocomplete="current-password"
+            [attr.aria-invalid]="debeMostrarError('clave')"
+            [attr.aria-describedby]="debeMostrarError('clave') ? 'error-clave' : null"
+          />
+          <button
+            type="button"
+            class="ver-clave"
+            (click)="alternarClave()"
+            [attr.aria-label]="claveVisible() ? 'Ocultar la contraseña' : 'Mostrar la contraseña'"
+          >
+            {{ claveVisible() ? 'Ocultar' : 'Mostrar' }}
+          </button>
+        </div>
+        @if (debeMostrarError('clave')) {
+          <p class="error" id="error-clave" role="alert">{{ mensajeDeError('clave') }}</p>
+        }
+      </div>
+
+      <button type="submit" class="boton-principal">Ingresar</button>
+    </form>
+
+    <!-- Accesos rápidos: se leen de la base, no son botones fijos -->
+    <section class="accesos">
+      <div class="accesos-titulo">
+        <h2 class="titulo-seccion">Acceso rápido</h2>
+        <p class="subtitulo-seccion">Tocá una ficha para entrar con ese perfil.</p>
+      </div>
+
+      @if (accesos().length === 0) {
+        <div class="tarjeta sin-accesos">
+          <p>
+            Todavía no hay accesos rápidos cargados. Ejecutá
+            <strong>node supabase/seed.mjs</strong> para crear los usuarios de prueba.
+          </p>
+        </div>
+      } @else {
+        <ul class="fichas">
+          @for (acceso of accesos(); track acceso.usuario_id) {
+            <li>
+              <button
+                type="button"
+                class="ficha"
+                [style.--color-perfil]="COLOR_PERFIL[acceso.perfil]"
+                (click)="usarAccesoRapido(acceso)"
+              >
+                <span class="avatar">
+                  @if (acceso.foto_url) {
+                    <img [src]="acceso.foto_url" [alt]="'Foto de ' + acceso.nombres" />
+                  } @else {
+                    <span class="avatar-letra">{{ acceso.nombres.charAt(0) }}{{ acceso.apellidos.charAt(0) }}</span>
+                  }
+                </span>
+                <span class="datos">
+                  <span class="perfil">{{ NOMBRE_PERFIL[acceso.perfil] }}</span>
+                  <span class="persona">{{ acceso.apellidos }}, {{ acceso.nombres }}</span>
+                </span>
+                <span class="flecha" aria-hidden="true">&#10132;</span>
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+
+    <footer class="pie">
+      <p>{{ grupo.nombre }} · {{ grupo.materia }} {{ grupo.anio }}</p>
+    </footer>
+  </div>
+</ion-content>

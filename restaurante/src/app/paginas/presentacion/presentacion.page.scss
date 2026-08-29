@@ -1,0 +1,234 @@
+/* Pantalla de presentación animada.
+   Ocupa toda la superficie disponible, sin espacios neutros. */
+
+.presentacion {
+  min-height: 100%;
+  padding: 2rem 1.5rem calc(1.5rem + var(--ion-safe-area-bottom, 0px));
+  display: grid;
+  grid-template-rows: auto auto auto auto auto 1fr auto;
+  justify-items: center;
+  align-content: start;
+  gap: 0.55rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* --- Brasas flotantes de fondo -------------------------------------- */
+.brasas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.brasa {
+  position: absolute;
+  bottom: -3rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, #f5c45f 0%, #e9a227 55%, rgba(233, 162, 39, 0) 72%);
+  left: calc(var(--indice) * 11%);
+  animation: subir calc(6s + var(--indice) * 0.7s) linear infinite;
+  animation-delay: calc(var(--indice) * -0.8s);
+  opacity: 0.75;
+}
+
+@keyframes subir {
+  from {
+    transform: translateY(0) scale(0.7);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.8;
+  }
+  to {
+    transform: translateY(-115vh) scale(1.25);
+    opacity: 0;
+  }
+}
+
+/* --- Encabezado ------------------------------------------------------ */
+.encabezado .materia {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+  animation: aparecer 0.6s ease-out both;
+}
+
+/* --- Medallón con el ícono, centrado --------------------------------- */
+.medallon {
+  margin-top: 0.6rem;
+  padding: 0.75rem;
+  border-radius: 50%;
+  background: rgba(255, 244, 226, 0.09);
+  border: 0.2rem solid var(--marca-ambar);
+  box-shadow: 0 0 0 0.7rem rgba(233, 162, 39, 0.13), var(--sombra);
+  animation: entrarMedallon 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes entrarMedallon {
+  from {
+    transform: scale(0.35) rotate(-22deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+/* --- Nombre del restaurante ------------------------------------------ */
+.nombre-restaurante {
+  margin: 0.7rem 0 0;
+  font-size: 2.25rem;
+  font-weight: 900;
+  line-height: 1.05;
+  text-align: center;
+  color: var(--texto-claro);
+  text-shadow: 0 0.2rem 0.6rem rgba(70, 22, 8, 0.5);
+  animation: aparecer 0.7s ease-out 0.45s both;
+}
+
+.lema {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--marca-ambar-claro);
+  text-align: center;
+  animation: aparecer 0.7s ease-out 0.6s both;
+}
+
+.separador {
+  width: 62%;
+  height: 0.18rem;
+  border-radius: 1rem;
+  background: linear-gradient(90deg, transparent, var(--marca-ambar), transparent);
+  margin: 0.6rem 0 0.2rem;
+  animation: ensanchar 0.8s ease-out 0.75s both;
+}
+
+@keyframes ensanchar {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+/* --- Integrantes del grupo ------------------------------------------- */
+.grupo {
+  width: 100%;
+  max-width: 26rem;
+  display: grid;
+  gap: 0.6rem;
+  justify-items: center;
+}
+
+.nombre-grupo {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--marca-ambar-claro);
+  animation: aparecer 0.6s ease-out 0.85s both;
+}
+
+.integrantes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.integrante {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--radio-chico);
+  background: rgba(255, 244, 226, 0.12);
+  border-left: 0.28rem solid var(--marca-ambar);
+  animation: entrarIntegrante 0.55s ease-out both;
+  animation-delay: calc(1s + var(--orden) * 0.16s);
+}
+
+.iniciales {
+  flex: 0 0 auto;
+  width: 2.3rem;
+  height: 2.3rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--marca-ambar);
+  color: var(--texto-oscuro);
+  font-weight: 900;
+  font-size: 0.9rem;
+}
+
+.nombre {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--texto-claro);
+}
+
+@keyframes entrarIntegrante {
+  from {
+    transform: translateX(-1.4rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* --- Pie -------------------------------------------------------------- */
+.pie {
+  align-self: end;
+}
+
+.pie p {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--texto-tenue);
+  animation: parpadear 2s ease-in-out 1.9s infinite both;
+}
+
+@keyframes parpadear {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes aparecer {
+  from {
+    transform: translateY(0.9rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Respeta la preferencia del sistema de reducir el movimiento. */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

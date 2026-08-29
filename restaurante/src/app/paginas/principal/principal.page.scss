@@ -1,0 +1,207 @@
+/* Página principal. Toda la superficie ocupada, sin espacios neutros. */
+
+.principal {
+  min-height: 100%;
+  padding: calc(1rem + var(--ion-safe-area-top, 0px)) 1rem
+    calc(1rem + var(--ion-safe-area-bottom, 0px));
+  display: grid;
+  grid-template-rows: auto auto auto 1fr auto;
+  gap: 0.85rem;
+  align-content: start;
+}
+
+.cabecera {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--radio);
+  background: rgba(67, 35, 26, 0.32);
+  border: 0.12rem solid rgba(233, 162, 39, 0.5);
+}
+
+.cabecera h1 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--texto-claro);
+}
+
+.cabecera p {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--marca-ambar-claro);
+}
+
+/* --- Ficha del usuario ----------------------------------------------- */
+.ficha-usuario {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: var(--radio);
+  border: 0.16rem solid var(--marca-ambar);
+  border-left: 0.5rem solid var(--color-perfil);
+  background: linear-gradient(
+    110deg,
+    color-mix(in srgb, var(--color-perfil) 62%, transparent),
+    rgba(255, 244, 226, 0.1)
+  );
+  box-shadow: var(--sombra);
+}
+
+.ficha-usuario .avatar {
+  flex: 0 0 auto;
+  width: 4.2rem;
+  height: 4.2rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  overflow: hidden;
+  background: rgba(255, 244, 226, 0.22);
+  border: 0.18rem solid var(--marca-ambar);
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--texto-claro);
+}
+
+.ficha-usuario .avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.saludo {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--texto-tenue);
+}
+
+.nombre {
+  margin: 0.1rem 0 0.4rem;
+  font-size: 1.3rem;
+  font-weight: 900;
+  line-height: 1.15;
+  color: var(--texto-claro);
+}
+
+.etiqueta-perfil {
+  display: inline-block;
+  padding: 0.25rem 0.7rem;
+  border-radius: 1rem;
+  background: var(--marca-ambar);
+  color: var(--texto-oscuro);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* --- Detalle de la cuenta -------------------------------------------- */
+.detalle dl {
+  margin: 0.6rem 0 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.detalle dl > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.7rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 0.08rem solid rgba(255, 244, 226, 0.22);
+}
+
+.detalle dl > div:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.detalle dt {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--texto-tenue);
+}
+
+.detalle dd {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--texto-claro);
+  text-align: right;
+  word-break: break-word;
+}
+
+/* --- Módulos pendientes ----------------------------------------------- */
+.modulos {
+  padding: 1rem;
+  border-radius: var(--radio);
+  background: rgba(44, 110, 99, 0.55);
+  border: 0.14rem solid rgba(233, 162, 39, 0.55);
+}
+
+.modulos ul {
+  list-style: none;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.modulos li {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: var(--radio-chico);
+  background: rgba(255, 244, 226, 0.12);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--texto-claro);
+}
+
+.punto {
+  flex: 0 0 auto;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--marca-ambar);
+}
+
+.estado {
+  margin-left: auto;
+  padding: 0.15rem 0.5rem;
+  border-radius: 1rem;
+  background: rgba(67, 35, 26, 0.4);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--marca-ambar-claro);
+  white-space: nowrap;
+}
+
+/* --- Cierre de sesión -------------------------------------------------- */
+.pie {
+  align-self: end;
+}
+
+.boton-salir {
+  width: 100%;
+  padding: 0.95rem;
+  border: 0.16rem solid #ffb3a0;
+  border-radius: var(--radio-chico);
+  background: var(--marca-vino);
+  color: var(--texto-claro);
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.boton-salir:active {
+  transform: scale(0.985);
+}

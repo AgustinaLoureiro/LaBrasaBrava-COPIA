@@ -1,0 +1,83 @@
+/* =====================================================================
+   TFI 2026 — Restaurante · Estilos globales
+   ===================================================================== */
+
+@import '@ionic/angular/css/core.css';
+@import '@ionic/angular/css/normalize.css';
+@import '@ionic/angular/css/structure.css';
+@import '@ionic/angular/css/typography.css';
+@import '@ionic/angular/css/display.css';
+
+@import '@ionic/angular/css/padding.css';
+@import '@ionic/angular/css/flex-utils.css';
+
+/* Tipografía de la marca. Se descarga junto con la aplicación para que
+   funcione también sin conexión. */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap');
+
+/* Ningún fondo neutro: el degradado cálido cubre toda la superficie. */
+ion-content {
+  --background: var(--fondo-app);
+  --color: var(--texto-claro);
+}
+
+ion-header ion-toolbar {
+  --background: var(--marca-brasa-honda);
+  --color: var(--texto-claro);
+  --border-color: var(--marca-ambar);
+}
+
+/* --- Tarjeta base reutilizable ------------------------------------- */
+.tarjeta {
+  background: var(--superficie);
+  border: 0.15rem solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: 1.1rem;
+}
+
+/* --- Títulos -------------------------------------------------------- */
+.titulo-seccion {
+  font-weight: 900;
+  font-size: 1.35rem;
+  letter-spacing: 0.02em;
+  color: var(--texto-claro);
+  margin: 0 0 0.2rem;
+}
+
+.subtitulo-seccion {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--texto-tenue);
+  margin: 0;
+}
+
+/* --- Mensajes emergentes propios (nunca se usa alert del navegador) -- */
+.mensaje-correcto {
+  --background: var(--marca-verde);
+  --color: var(--texto-claro);
+}
+
+.mensaje-error {
+  --background: var(--marca-vino);
+  --color: var(--texto-claro);
+}
+
+.mensaje-aviso {
+  --background: var(--marca-ambar);
+  --color: var(--texto-oscuro);
+}
+
+ion-toast::part(message) {
+  font-weight: 600;
+}
+
+ion-toast::part(header) {
+  font-weight: 900;
+}
+
+/* --- Accesibilidad de foco ------------------------------------------ */
+:focus-visible {
+  outline: 0.2rem solid var(--marca-ambar-claro);
+  outline-offset: 0.15rem;
+}
