@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Solicitar mesa</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="formulario" (ngSubmit)="solicitarMesa()">
+
+    <ion-item>
+      <ion-label position="floating">Nombre</ion-label>
+      <ion-input formControlName="nombre"></ion-input>
+    </ion-item>
+
+    <div class="ion-padding-top">
+      <ion-button expand="block" fill="outline" type="button" (click)="sacarFoto()">
+        Sacar foto
+      </ion-button>
+
+      @if (fotoPrevia) {
+        <ion-img [src]="fotoPrevia" style="max-width: 200px; margin: 10px auto;"></ion-img>
+      }
+    </div>
+
+    <ion-button expand="block" type="submit" [disabled]="enviando">
+      {{ enviando ? 'Enviando...' : 'Solicitar mesa' }}
+    </ion-button>
+
+    @if (mensaje) {
+      <p class="ion-text-center">{{ mensaje }}</p>
+    }
+
+  </form>
+</ion-content>
