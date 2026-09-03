@@ -1,0 +1,68 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Agregar empleado</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="formulario" (ngSubmit)="guardar()">
+
+    <ion-item>
+      <ion-label position="floating">Nombres</ion-label>
+      <ion-input formControlName="nombres"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Apellidos</ion-label>
+      <ion-input formControlName="apellidos"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">DNI</ion-label>
+      <ion-input formControlName="dni" type="number"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">CUIL (formato 20-12345678-9)</ion-label>
+      <ion-input formControlName="cuil"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Email</ion-label>
+      <ion-input formControlName="email" type="email"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Contraseña</ion-label>
+      <ion-input formControlName="password" type="password"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Perfil</ion-label>
+      <ion-select formControlName="perfil">
+        @for (p of perfiles; track p) {
+          <ion-select-option [value]="p">{{ p }}</ion-select-option>
+        }
+      </ion-select>
+    </ion-item>
+
+    <div class="ion-padding-top">
+      <ion-button expand="block" fill="outline" type="button" (click)="sacarFoto()">
+        Sacar foto
+      </ion-button>
+
+      @if (fotoPrevia) {
+        <ion-img [src]="fotoPrevia" style="max-width: 200px; margin: 10px auto;"></ion-img>
+      }
+    </div>
+
+    <ion-button expand="block" type="submit" [disabled]="guardando">
+      {{ guardando ? 'Guardando...' : 'Guardar empleado' }}
+    </ion-button>
+
+    @if (mensaje) {
+      <p class="ion-text-center">{{ mensaje }}</p>
+    }
+
+  </form>
+</ion-content>
