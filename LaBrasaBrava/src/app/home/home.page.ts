@@ -1,7 +1,7 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { RouterLink, Router } from '@angular/router';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton } from '@ionic/angular';
-import { Supabase } from '../services/supabase';
+import { Sesion } from '../services/sesion';
 
 @Component({
   selector: 'app-home',
@@ -9,16 +9,12 @@ import { Supabase } from '../services/supabase';
   styleUrls: ['home.page.scss'],
   imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonButton, RouterLink],
 })
-export class HomePage implements OnInit {
-  private supabase = inject(Supabase);
+export class HomePage {
+  sesion = inject(Sesion);
+  private router = inject(Router);
 
-  async ngOnInit() {
-    const { data, error } = await this.supabase.client.auth.getSession();
-
-    if (error) {
-      console.error('Error al conectar con Supabase:', error.message);
-    } else {
-      console.log('Conexión con Supabase establecida. Sesión actual:', data.session);
-    }
+  salir() {
+    this.sesion.cerrarSesion();
+    this.router.navigateByUrl('/login');
   }
 }
