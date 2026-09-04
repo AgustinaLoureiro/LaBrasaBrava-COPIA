@@ -12,7 +12,12 @@ import { LogoMarcaComponent } from '../../compartido/logo-marca/logo-marca.compo
 import { SesionService } from '../../nucleo/servicios/sesion.service';
 import { MensajesService } from '../../nucleo/servicios/mensajes.service';
 import { CargandoService } from '../../nucleo/servicios/cargando.service';
-import { AccesoRapido, COLOR_PERFIL, NOMBRE_PERFIL } from '../../nucleo/modelos/usuario';
+import {
+  AccesoRapido,
+  COLOR_PERFIL,
+  NOMBRE_PERFIL,
+  TEXTO_SOBRE_PERFIL,
+} from '../../nucleo/modelos/usuario';
 import { GRUPO, RESTAURANTE } from '../../nucleo/marca';
 import { faltaConfigurarSupabase } from '../../nucleo/configuracion';
 
@@ -43,6 +48,7 @@ export class IngresoPage implements OnInit {
   protected readonly grupo = GRUPO;
   protected readonly NOMBRE_PERFIL = NOMBRE_PERFIL;
   protected readonly COLOR_PERFIL = COLOR_PERFIL;
+  protected readonly TEXTO_SOBRE_PERFIL = TEXTO_SOBRE_PERFIL;
 
   protected readonly accesos = signal<AccesoRapido[]>([]);
   protected readonly claveVisible = signal(false);

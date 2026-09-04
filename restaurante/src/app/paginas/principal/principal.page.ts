@@ -7,7 +7,12 @@ import { SesionService } from '../../nucleo/servicios/sesion.service';
 import { MensajesService } from '../../nucleo/servicios/mensajes.service';
 import { CargandoService } from '../../nucleo/servicios/cargando.service';
 import { SonidosService } from '../../nucleo/servicios/sonidos.service';
-import { COLOR_PERFIL, ICONO_PERFIL, NOMBRE_PERFIL } from '../../nucleo/modelos/usuario';
+import {
+  COLOR_PERFIL,
+  NOMBRE_PERFIL,
+  TEXTO_SOBRE_PERFIL,
+} from '../../nucleo/modelos/usuario';
+import { PALETA } from '../../nucleo/diseno';
 import { RESTAURANTE } from '../../nucleo/marca';
 
 /**
@@ -41,12 +46,12 @@ export class PrincipalPage {
 
   protected readonly colorPerfil = computed(() => {
     const actual = this.usuario();
-    return actual ? COLOR_PERFIL[actual.perfil] : '#e9a227';
+    return actual ? COLOR_PERFIL[actual.perfil] : PALETA.ladrillo;
   });
 
-  protected readonly iconoPerfil = computed(() => {
+  protected readonly textoSobrePerfil = computed(() => {
     const actual = this.usuario();
-    return actual ? ICONO_PERFIL[actual.perfil] : 'person';
+    return actual ? TEXTO_SOBRE_PERFIL[actual.perfil] : PALETA.cremaTrigo;
   });
 
   /** Módulos que va a ver este perfil. Se completan en las próximas entregas. */
@@ -70,11 +75,7 @@ export class PrincipalPage {
 
     void this.sonidos.cierreDeAplicacion();
 
-    const quedaronCredenciales = Object.keys(localStorage).some((clave) =>
-      clave.startsWith('sb-'),
-    );
-
-    if (quedaronCredenciales) {
+    if (this.sesion.quedaronCredenciales()) {
       await this.mensajes.error(
         'No se pudieron borrar las credenciales',
         'Quedaron datos de sesión guardados en el dispositivo.',
