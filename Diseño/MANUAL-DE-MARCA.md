@@ -39,6 +39,31 @@ la entregó el manual) y las tres variantes ya recortadas y con fondo transparen
 **Es el logo que usa la aplicación**: los mismos tres PNG están copiados en
 `restaurante/src/assets/marca/`. No se dibuja a mano ni se reemplaza por un vector propio.
 
+
+### Animación de carga
+
+`Animación de carga para Brasa Brava.zip` tiene la animación del logo para las pantallas de
+espera, exportada de Claude Design. Adentro vienen tres variantes, cada una como artboard
+(`.dc.html`) y como componente (`.jsx`):
+
+| Variante | Qué hace |
+|---|---|
+| **Loader** | La llama respira y titila con brasas subiendo, en un ciclo de 2,4 segundos que empalma solo. |
+| **Loader Pro** | Tres etapas: encendido con revelado de abajo hacia arriba, aparición del nombre y ciclo de brasas con anillo de progreso. |
+| **Loader 3 Colores** | Las tres variantes de color del logo, juntas. |
+
+Cada una acepta `orange`, `carbon` o `crema` como parámetro de color.
+
+**Todavía no está integrada a la aplicación**, que sigue usando el spinner propio de
+`compartido/spinner-logo`. Para integrarla hay que reescribirla en Angular: el `.jsx` depende
+del entorno de ejecución de Claude Design (`support.js`, `animations-v3.jsx`), que no viaja a
+Ionic.
+
+**Ojo con los fondos:** las variantes `orange` y `crema` vienen sobre fondo casi negro
+(`#1A1512`), que el enunciado y el manual prohíben. La variante `carbon` viene sobre
+`#F2E6D2`, que sí es compatible con el crema. Y el manual pide que el spinner sea el isotipo
+en crema sobre naranja brasa, así que al integrarla hay que ajustar el fondo.
+
 ---
 
 ## 2. Paleta de colores
