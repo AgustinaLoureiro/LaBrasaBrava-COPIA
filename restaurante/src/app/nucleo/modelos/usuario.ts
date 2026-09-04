@@ -1,3 +1,5 @@
+import { PALETA, SEMANTICOS } from '../diseno';
+
 /**
  * Modelos de usuario, alineados con la tabla public.usuarios de Supabase
  * y con los perfiles que define el enunciado.
@@ -43,16 +45,38 @@ export const NOMBRE_PERFIL: Record<Perfil, string> = {
   'cliente_anonimo': 'Cliente anónimo',
 };
 
-/** Color de la tarjeta de acceso rápido de cada perfil. */
+/**
+ * Color de la ficha de cada perfil.
+ *
+ * El manual de marca muestra una muestra de color por perfil pero no
+ * publica los códigos, así que cada uno está tomado de un color distinto
+ * de la paleta oficial (ver Diseño/MANUAL-DE-MARCA.md, sección 4).
+ */
 export const COLOR_PERFIL: Record<Perfil, string> = {
-  'dueño': '#94243a',
-  'supervisor': '#7a3d8f',
-  'metre': '#2c6e63',
-  'mozo': '#2f6f9e',
-  'cocinero': '#c9511f',
-  'cantinero': '#3f7d4e',
-  'cliente_registrado': '#e9a227',
-  'cliente_anonimo': '#8b6b4a',
+  'dueño': PALETA.ladrillo,
+  'supervisor': PALETA.brasaProfunda,
+  'metre': PALETA.olivaAhumada,
+  'mozo': SEMANTICOS.informacion,
+  'cocinero': PALETA.naranjaBrasa,
+  'cantinero': SEMANTICOS.exito,
+  'cliente_registrado': PALETA.ambarCeniza,
+  'cliente_anonimo': '#8a7458',
+};
+
+/**
+ * Color del texto que va encima del color del perfil.
+ * Sobre ámbar y sobre la crema oscurecida el manual pide carbón; sobre
+ * el resto de los colores, crema.
+ */
+export const TEXTO_SOBRE_PERFIL: Record<Perfil, string> = {
+  'dueño': PALETA.cremaTrigo,
+  'supervisor': PALETA.cremaTrigo,
+  'metre': PALETA.cremaTrigo,
+  'mozo': PALETA.cremaTrigo,
+  'cocinero': PALETA.cremaTrigo,
+  'cantinero': PALETA.cremaTrigo,
+  'cliente_registrado': PALETA.carbonParrilla,
+  'cliente_anonimo': PALETA.carbonParrilla,
 };
 
 /** Ícono de Ionicons que representa a cada perfil. */

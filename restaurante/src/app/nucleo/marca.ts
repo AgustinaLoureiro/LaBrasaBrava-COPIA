@@ -38,10 +38,10 @@ export interface Integrante {
 }
 
 export const INTEGRANTES: readonly Integrante[] = [
-  { apellidos: 'Montes', nombres: 'Enrique', iniciales: 'ME' },
-  { apellidos: 'Apellido dos', nombres: 'Nombre dos', iniciales: 'AN' },
-  { apellidos: 'Apellido tres', nombres: 'Nombre tres', iniciales: 'AN' },
-  { apellidos: 'Apellido cuatro', nombres: 'Nombre cuatro', iniciales: 'AN' },
+  { apellidos: 'Loureiro', nombres: 'Agustina', iniciales: 'LA' },
+  { apellidos: 'Montes', nombres: 'Enrico', iniciales: 'ME' },
+  { apellidos: 'Morán', nombres: 'Nadia', iniciales: 'MN' },
+  { apellidos: 'Acosta', nombres: 'Américo Nicolás', iniciales: 'AA' },
 ] as const;
 
 /** Nombre completo listo para mostrar, en formato "Apellidos, Nombres". */

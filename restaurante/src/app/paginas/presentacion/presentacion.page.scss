@@ -1,19 +1,24 @@
 /* Pantalla de presentación animada.
-   Ocupa toda la superficie disponible, sin espacios neutros. */
+   Ocupa toda la superficie disponible, sin espacios neutros.
+   Es la única pantalla que usa el estilo Display del manual (40 / 44 · 900). */
 
 .presentacion {
   min-height: 100%;
-  padding: 2rem 1.5rem calc(1.5rem + var(--ion-safe-area-bottom, 0px));
+  padding: var(--espacio-grande) var(--espacio-grande)
+    calc(var(--espacio-grande) + var(--ion-safe-area-bottom, 0px));
   display: grid;
   grid-template-rows: auto auto auto auto auto 1fr auto;
+  /* La columna nunca puede pasarse del ancho de la pantalla. */
+  grid-template-columns: minmax(0, 1fr);
   justify-items: center;
   align-content: start;
-  gap: 0.55rem;
+  gap: var(--espacio-chico);
   position: relative;
   overflow: hidden;
 }
 
-/* --- Brasas flotantes de fondo -------------------------------------- */
+/* --- Brasas flotantes de fondo ---------------------------------------- */
+
 .brasas {
   position: absolute;
   inset: 0;
@@ -26,11 +31,16 @@
   width: 0.7rem;
   height: 0.7rem;
   border-radius: 50%;
-  background: radial-gradient(circle, #f5c45f 0%, #e9a227 55%, rgba(233, 162, 39, 0) 72%);
+  background: radial-gradient(
+    circle,
+    var(--ambar-ceniza) 0%,
+    var(--naranja-brasa) 55%,
+    rgba(226, 98, 44, 0) 72%
+  );
   left: calc(var(--indice) * 11%);
   animation: subir calc(6s + var(--indice) * 0.7s) linear infinite;
   animation-delay: calc(var(--indice) * -0.8s);
-  opacity: 0.75;
+  opacity: 0.35;
 }
 
 @keyframes subir {
@@ -47,25 +57,29 @@
   }
 }
 
-/* --- Encabezado ------------------------------------------------------ */
+/* --- Encabezado -------------------------------------------------------- */
+
 .encabezado .materia {
   margin: 0;
-  font-size: 0.82rem;
+  font: var(--texto-ayuda);
+  font-family: var(--tipografia-titulos);
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--texto-tenue);
+  color: var(--texto-destacado);
+  text-align: center;
   animation: aparecer 0.6s ease-out both;
 }
 
-/* --- Medallón con el ícono, centrado --------------------------------- */
+/* --- Isotipo centrado --------------------------------------------------- */
+
 .medallon {
-  margin-top: 0.6rem;
-  padding: 0.75rem;
+  margin-top: var(--espacio-chico);
+  padding: var(--espacio);
   border-radius: 50%;
-  background: rgba(255, 244, 226, 0.09);
-  border: 0.2rem solid var(--marca-ambar);
-  box-shadow: 0 0 0 0.7rem rgba(233, 162, 39, 0.13), var(--sombra);
+  background: var(--superficie);
+  border: 0.2rem solid var(--terracota);
+  box-shadow: 0 0 0 0.7rem rgba(142, 52, 24, 0.12), var(--sombra-alta);
   animation: entrarMedallon 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
@@ -80,23 +94,24 @@
   }
 }
 
-/* --- Nombre del restaurante ------------------------------------------ */
+/* --- Nombre del restaurante --------------------------------------------- */
+
 .nombre-restaurante {
-  margin: 0.7rem 0 0;
-  font-size: 2.25rem;
-  font-weight: 900;
-  line-height: 1.05;
+  margin: var(--espacio-chico) 0 0;
+  font: var(--texto-display);
+  letter-spacing: var(--espaciado-mayusculas);
+  text-transform: uppercase;
   text-align: center;
-  color: var(--texto-claro);
-  text-shadow: 0 0.2rem 0.6rem rgba(70, 22, 8, 0.5);
+  color: var(--terracota);
+  text-shadow: none;
   animation: aparecer 0.7s ease-out 0.45s both;
 }
 
 .lema {
   margin: 0;
-  font-size: 1rem;
+  font: var(--texto-cuerpo);
   font-weight: 600;
-  color: var(--marca-ambar-claro);
+  color: var(--texto-destacado);
   text-align: center;
   animation: aparecer 0.7s ease-out 0.6s both;
 }
@@ -105,8 +120,8 @@
   width: 62%;
   height: 0.18rem;
   border-radius: 1rem;
-  background: linear-gradient(90deg, transparent, var(--marca-ambar), transparent);
-  margin: 0.6rem 0 0.2rem;
+  background: linear-gradient(90deg, transparent, var(--ambar-ceniza), transparent);
+  margin: var(--espacio-chico) 0 var(--espacio-minimo);
   animation: ensanchar 0.8s ease-out 0.75s both;
 }
 
@@ -121,22 +136,23 @@
   }
 }
 
-/* --- Integrantes del grupo ------------------------------------------- */
+/* --- Integrantes del grupo ---------------------------------------------- */
+
 .grupo {
   width: 100%;
   max-width: 26rem;
   display: grid;
-  gap: 0.6rem;
+  gap: var(--espacio-chico);
   justify-items: center;
 }
 
 .nombre-grupo {
   margin: 0;
-  font-size: 1.15rem;
-  font-weight: 800;
+  font: var(--texto-subtitulo);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--marca-ambar-claro);
+  color: var(--texto-destacado);
+  text-align: center;
   animation: aparecer 0.6s ease-out 0.85s both;
 }
 
@@ -146,38 +162,39 @@
   padding: 0;
   width: 100%;
   display: grid;
-  gap: 0.5rem;
+  gap: var(--espacio-chico);
 }
 
 .integrante {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.6rem 0.85rem;
+  gap: var(--espacio-chico);
+  padding: var(--espacio-chico);
   border-radius: var(--radio-chico);
-  background: rgba(255, 244, 226, 0.12);
-  border-left: 0.28rem solid var(--marca-ambar);
+  background: var(--superficie);
+  border-left: 0.28rem solid var(--terracota);
   animation: entrarIntegrante 0.55s ease-out both;
   animation-delay: calc(1s + var(--orden) * 0.16s);
 }
 
 .iniciales {
   flex: 0 0 auto;
-  width: 2.3rem;
-  height: 2.3rem;
+  width: 2.5rem;
+  height: 2.5rem;
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: var(--marca-ambar);
-  color: var(--texto-oscuro);
-  font-weight: 900;
-  font-size: 0.9rem;
+  background: var(--ambar-ceniza);
+  color: var(--carbon-parrilla);
+  font-family: var(--tipografia-titulos);
+  font-weight: 800;
+  font-size: 1rem;
 }
 
 .nombre {
-  font-size: 1rem;
+  font: var(--texto-cuerpo);
   font-weight: 600;
-  color: var(--texto-claro);
+  color: var(--texto-principal);
 }
 
 @keyframes entrarIntegrante {
@@ -191,23 +208,24 @@
   }
 }
 
-/* --- Pie -------------------------------------------------------------- */
+/* --- Pie ---------------------------------------------------------------- */
+
 .pie {
   align-self: end;
 }
 
 .pie p {
   margin: 0;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--texto-tenue);
+  font: var(--texto-ayuda);
+  color: var(--texto-secundario);
+  text-align: center;
   animation: parpadear 2s ease-in-out 1.9s infinite both;
 }
 
 @keyframes parpadear {
   0%,
   100% {
-    opacity: 0.45;
+    opacity: 0.5;
   }
   50% {
     opacity: 1;

@@ -1,17 +1,24 @@
 <ion-content [fullscreen]="true">
   @if (usuario(); as persona) {
     <div class="principal">
-      <!-- Encabezado con la identidad del restaurante -->
+      <!-- Encabezado con el imagotipo horizontal sobre la barra de navegación -->
       <header class="cabecera">
-        <app-logo-marca [tamanio]="54" [nombre]="restaurante.nombre" />
-        <div class="titulos">
-          <h1>{{ restaurante.nombre }}</h1>
-          <p>{{ restaurante.lema }}</p>
-        </div>
+        <app-logo-marca
+          composicion="horizontal"
+          variante="crema"
+          [tamanio]="44"
+          [animado]="false"
+          [nombre]="restaurante.nombre"
+        />
+        <p class="lema">{{ restaurante.lema }}</p>
       </header>
 
-      <!-- Ficha del usuario con sesión iniciada -->
-      <section class="ficha-usuario" [style.--color-perfil]="colorPerfil()">
+      <!-- Ficha del usuario con sesión iniciada, en el color de su perfil -->
+      <section
+        class="ficha-usuario"
+        [style.--color-perfil]="colorPerfil()"
+        [style.--texto-perfil]="textoSobrePerfil()"
+      >
         <div class="avatar">
           @if (persona.foto_url) {
             <img [src]="persona.foto_url" [alt]="'Foto de ' + persona.nombres" />
@@ -21,14 +28,14 @@
         </div>
         <div class="datos">
           <p class="saludo">Buen servicio,</p>
-          <h2 class="nombre">{{ persona.nombres }} {{ persona.apellidos }}</h2>
+          <h1 class="nombre">{{ persona.nombres }} {{ persona.apellidos }}</h1>
           <span class="etiqueta-perfil">{{ nombrePerfil() }}</span>
         </div>
       </section>
 
       <!-- Datos de la cuenta -->
       <section class="tarjeta detalle">
-        <h3 class="titulo-seccion">Tu cuenta</h3>
+        <h2 class="titulo-seccion">Tu cuenta</h2>
         <dl>
           <div><dt>Correo electrónico</dt><dd>{{ persona.correo }}</dd></div>
           @if (persona.dni) {
@@ -43,7 +50,7 @@
 
       <!-- Módulos que se van a construir en las próximas entregas -->
       <section class="modulos">
-        <h3 class="titulo-seccion">Próximos módulos</h3>
+        <h2 class="titulo-seccion">Próximos módulos</h2>
         <ul>
           @for (modulo of modulosPendientes; track modulo) {
             <li>
@@ -57,7 +64,7 @@
 
       <!-- Cierre de sesión -->
       <footer class="pie">
-        <button type="button" class="boton-salir" (click)="cerrarSesion()">
+        <button type="button" class="boton-contorno" (click)="cerrarSesion()">
           Cerrar sesión
         </button>
       </footer>
