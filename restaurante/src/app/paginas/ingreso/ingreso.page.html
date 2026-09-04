@@ -112,6 +112,18 @@
                 <span class="datos">
                   <span class="perfil">{{ NOMBRE_PERFIL[acceso.perfil] }}</span>
                   <span class="persona">{{ acceso.apellidos }}, {{ acceso.nombres }}</span>
+                  <!-- Los clientes que todavía no fueron aprobados, o que
+                       fueron rechazados, avisan su estado antes de que se
+                       toque la ficha (puntos 6, 7 y 8 del enunciado). -->
+                  @if (acceso.estado_aprobacion !== 'aprobado') {
+                    <span
+                      [class]="
+                        'etiqueta estado ' + ETIQUETA_ESTADO_APROBACION[acceso.estado_aprobacion]
+                      "
+                    >
+                      {{ NOMBRE_ESTADO_APROBACION[acceso.estado_aprobacion] }}
+                    </span>
+                  }
                 </span>
                 <span class="flecha" aria-hidden="true">&#10132;</span>
               </button>

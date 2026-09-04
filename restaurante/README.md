@@ -28,10 +28,10 @@ experiencia completa para el cliente.
 
 | Apellidos y nombres | Módulos (objetivos) a desarrollar | Inicio | Finalización | Branch |
 |---|---|---|---|---|
-| _(completar)_ | Base del proyecto, identidad visual, pantallas de presentación, ingreso y cierre de sesión | 28-08-2026 | _(en curso)_ | `main` |
-| _(completar)_ | Altas y validaciones: empleados (punto 1), platos (2), bebidas (3), mesas (4) | | | |
-| _(completar)_ | Clientes: registro (5), aprobación (6), rechazo (7), aceptación (8), correos automáticos | | | |
-| _(completar)_ | Salón: lista de espera (9), asignación de mesa (10), menú y consulta al mozo (11) | | | |
+| Montes, Enrico | Base del proyecto, identidad visual, animación de carga, pantallas de presentación, ingreso y cierre de sesión | 28-08-2026 | _(en curso)_ | `montes-branch` |
+| Acosta, Américo Nicolás | Altas y validaciones: empleados (punto 1), platos (2), bebidas (3), mesas (4) | 03-09-2026 | _(en curso)_ | `acosta` |
+| Morán, Nadia | Clientes: registro (5), aprobación (6), rechazo (7), aceptación (8), correos automáticos | 03-09-2026 | _(en curso)_ | `Moran` |
+| Loureiro, Agustina | Salón: lista de espera (9), asignación de mesa (10), menú y consulta al mozo (11) | 03-09-2026 | _(en curso)_ | `rama-loureiro` |
 
 ### Propuesta de reparto para todo el cuatrimestre
 
@@ -56,20 +56,29 @@ vibre, que toda espera muestre el spinner con el logo y que todos los campos est
 > íconos, pantallas de presentación, formularios, listados, etc.
 
 ### Identidad
+
 | Imagen | Descripción |
 |---|---|
+| ![Logo a color](src/assets/marca/logo-bb.png) | Isotipo a color, la variación principal del manual |
+| ![Logo en crema](src/assets/marca/logo-bb-crema.png) | Isotipo monocromo crema, para apoyar sobre fondos de color |
+| ![Logo en carbón](src/assets/marca/logo-bb-carbon.png) | Isotipo monocromo carbón, para impresión y códigos QR |
 | _(pendiente)_ | Ícono de la aplicación (1024 × 1024) |
 | _(pendiente)_ | Ícono enmascarable para Android |
-| _(pendiente)_ | Pantalla de presentación estática |
-| _(pendiente)_ | Pantalla de presentación animada |
+| _(pendiente)_ | Pantalla de presentación estática de Capacitor |
 
 ### Pantallas
+
+Las capturas se generan solas con `node revision-visual.mjs docs/pantallas`
+(ver la sección 4), así que se mantienen al día sin sacarlas a mano.
+
 | Imagen | Descripción |
 |---|---|
-| _(pendiente)_ | Pantalla de ingreso con accesos rápidos |
-| _(pendiente)_ | Pantalla de ingreso con errores de validación |
-| _(pendiente)_ | Pantalla principal según perfil |
-| _(pendiente)_ | Indicador de espera con el logo |
+| ![Presentación](docs/pantallas/01-presentacion.png) | Presentación animada: animación de carga del logo, nombre del grupo e integrantes |
+| ![Ingreso](docs/pantallas/02-ingreso.png) | Ingreso, con el formulario y el comienzo de los accesos rápidos |
+| ![Accesos rápidos](docs/pantallas/03-ingreso-clientes.png) | Accesos rápidos completos: un color por perfil y el estado de aprobación de cada cliente |
+| ![Validaciones](docs/pantallas/04-ingreso-validaciones.png) | Ingreso con los errores de validación de todos los campos |
+| ![Espera con el logo](docs/pantallas/05-espera-con-logo.png) | Indicador de espera: la animación de carga del logo sobre naranja brasa |
+| ![Principal](docs/pantallas/06-principal.png) | Pantalla principal, con la ficha del perfil y el cierre de sesión |
 
 ---
 
@@ -102,44 +111,61 @@ vibre, que toda espera muestre el spinner con el logo y que todos los campos est
 # 1. Instalar las dependencias
 npm install
 
-# 2. Preparar la base de datos
-#    Entrar a Supabase → SQL Editor → New query
-#    Pegar y ejecutar el contenido de supabase/esquema.sql
+# 2. Cargar los usuarios de prueba en la base del grupo
+#    No hace falta ninguna clave secreta: usa la misma clave publicable
+#    que la aplicación. Es idempotente, se puede correr las veces que sea.
+node supabase/usuarios-de-prueba.mjs
 
-# 3. Configurar la conexión de la aplicación
-#    Editar src/app/nucleo/configuracion.ts con la URL del proyecto
-#    y la clave pública "anon" (Project Settings → Data API).
-
-# 4. Cargar los usuarios de prueba
-cp supabase/.env.ejemplo .env      # completar con la clave service_role
-node supabase/seed.mjs
-
-# 5. Levantar la aplicación en el navegador
+# 3. Levantar la aplicación en el navegador
 ionic serve
 
-# 6. Compilar y abrir el proyecto de Android
+# 4. Compilar y abrir el proyecto de Android
 ionic build
 npx cap add android
 npx cap sync
 npx cap open android
 ```
 
+> La conexión con Supabase ya está configurada en
+> `src/app/nucleo/configuracion.ts`. La clave que viaja ahí es la **publicable**, que es
+> pública por diseño; la secreta nunca se sube al repositorio.
+
+### Revisar las pantallas y actualizar las capturas
+
+```bash
+npm run build
+npx http-server www -p 4300     # en otra terminal
+node revision-visual.mjs docs/pantallas
+```
+
+Abre la aplicación en un teléfono simulado de 390 × 844, avisa si algo se sale del ancho de
+la pantalla y deja actualizadas las capturas del índice de imágenes.
+
 ---
 
 ## 5. Usuarios de prueba
 
-Todos usan la contraseña **`111111`**. Se cargan con `node supabase/seed.mjs` y aparecen
-solos en la pantalla de ingreso como accesos rápidos.
+Todos usan la contraseña **`123456`**. Se cargan con
+`node supabase/usuarios-de-prueba.mjs` y aparecen solos en la pantalla de ingreso como
+accesos rápidos: las fichas se leen de la base, no son botones fijos.
 
-| Perfil | Correo electrónico |
-|---|---|
-| Dueño | `dueno@labrasabrava.com.ar` |
-| Supervisor | `supervisor@labrasabrava.com.ar` |
-| Metre | `metre@labrasabrava.com.ar` |
-| Mozo | `mozo@labrasabrava.com.ar` |
-| Cocinero | `cocinero@labrasabrava.com.ar` |
-| Cantinero | `cantinero@labrasabrava.com.ar` |
-| Cliente registrado | `cliente@labrasabrava.com.ar` |
+Son los siete registros mínimos que exige el enunciado, más dos clientes extra para poder
+probar la aprobación y el rechazo (puntos 6, 7 y 8).
+
+| Perfil | Correo electrónico | Estado |
+|---|---|---|
+| Dueño | `aloureiro@labrasabrava.com` | — |
+| Supervisor | `supervisora@labrasabrava.com` | — |
+| Metre | `metre@labrasabrava.com` | — |
+| Mozo | `mozo@labrasabrava.com` | — |
+| Cocinero | `cocinero@labrasabrava.com` | — |
+| Cantinero | `cantinero@labrasabrava.com` | — |
+| Cliente registrado | `cliente@labrasabrava.com` | Aprobado, puede ingresar |
+| Cliente registrado | `valentina.ibarra@ejemplo.com.ar` | Pendiente de aprobación, no puede ingresar |
+| Cliente registrado | `rodrigo.juarez@ejemplo.com.ar` | Rechazado, no puede ingresar |
+
+Las fotos quedan vacías a propósito: se cargan desde la cámara cuando se usan las pantallas
+de alta de empleado (punto 1) y de cliente registrado (punto 5).
 
 ---
 
@@ -166,15 +192,17 @@ src/app/
     servicios/            Supabase, sesión, mensajes, espera, sonidos
     guardas/              Control de acceso por sesión y por perfil
   compartido/
-    logo-marca/           Isotipo vectorial animado
-    spinner-logo/         Indicador de espera con el logo
+    logo-marca/           Logo de la marca en sus tres variantes de color
+    logo-cargando/        Animación de carga del logo (la del manual de marca)
+    spinner-logo/         Indicador de espera a pantalla completa, con esa animación
   paginas/
     presentacion/         Pantalla de presentación animada
     ingreso/              Formulario de ingreso y accesos rápidos
     principal/            Pantalla posterior al ingreso, con cierre de sesión
 supabase/
-  esquema.sql             Tablas, tipos y políticas de seguridad
-  seed.mjs                Carga de los usuarios de prueba
+  esquema.sql             Esquema OBJETIVO, para cuando se migre a Supabase Auth
+  usuarios-de-prueba.mjs  Alta de los usuarios de prueba en la base actual
+revision-visual.mjs       Capturas de las pantallas y control de textos cortados
 ```
 
 ### Dos reglas de código que no se negocian

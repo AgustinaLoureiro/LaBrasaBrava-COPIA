@@ -11,8 +11,16 @@
       <p class="materia">{{ grupo.materia }} · {{ grupo.anio }}</p>
     </header>
 
+    <!-- La presentación es una espera: lleva la animación de carga del
+         manual, con el nombre del restaurante debajo en su propio título. -->
     <div class="medallon">
-      <app-logo-marca [tamanio]="150" [nombre]="restaurante.nombre" />
+      <app-logo-cargando
+        [tamanio]="164"
+        variante="color"
+        [conPalabra]="false"
+        [conAnillo]="false"
+        [nombre]="restaurante.nombre"
+      />
     </div>
 
     <h1 class="nombre-restaurante">{{ restaurante.nombre }}</h1>
@@ -21,7 +29,10 @@
     <div class="separador" aria-hidden="true"></div>
 
     <section class="grupo">
-      <h2 class="nombre-grupo">{{ grupo.nombre }}</h2>
+      <h2 class="nombre-grupo">
+        <span class="rotulo-grupo">Grupo</span>
+        {{ grupo.nombre }}
+      </h2>
 
       <ul class="integrantes">
         @for (integrante of integrantes; track integrante.apellidos; let i = $index) {

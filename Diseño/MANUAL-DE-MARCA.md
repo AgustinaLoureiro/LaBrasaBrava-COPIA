@@ -54,15 +54,24 @@ espera, exportada de Claude Design. Adentro vienen tres variantes, cada una como
 
 Cada una acepta `orange`, `carbon` o `crema` como parámetro de color.
 
-**Todavía no está integrada a la aplicación**, que sigue usando el spinner propio de
-`compartido/spinner-logo`. Para integrarla hay que reescribirla en Angular: el `.jsx` depende
-del entorno de ejecución de Claude Design (`support.js`, `animations-v3.jsx`), que no viaja a
-Ionic.
+**Ya está integrada a la aplicación** (04-09-2026), en
+`restaurante/src/app/compartido/logo-cargando/`. Como el `.jsx` depende del entorno de
+ejecución de Claude Design (`support.js`, `animations-v3.jsx`), que no viaja a Ionic, se
+reescribió en Angular con animaciones de CSS, reconstruyendo las tres etapas de la variante
+**Loader Pro**: encendido de abajo hacia arriba, aparición del nombre y ciclo de brasas con
+anillo de progreso.
 
-**Ojo con los fondos:** las variantes `orange` y `crema` vienen sobre fondo casi negro
-(`#1A1512`), que el enunciado y el manual prohíben. La variante `carbon` viene sobre
-`#F2E6D2`, que sí es compatible con el crema. Y el manual pide que el spinner sea el isotipo
-en crema sobre naranja brasa, así que al integrarla hay que ajustar el fondo.
+Se usa en dos lugares:
+
+| Dónde | Cómo |
+|---|---|
+| Indicador de espera (`compartido/spinner-logo`) | Isotipo en crema sobre naranja brasa, a pantalla completa, con el nombre y el anillo de progreso. |
+| Pantalla de presentación | Isotipo a color dentro del medallón, sin nombre ni anillo, porque la pantalla ya los tiene. |
+
+**Los fondos se corrigieron al integrarla.** Las variantes `orange` y `crema` del archivo
+original venían sobre un fondo casi negro (`#1A1512`), que el enunciado y el manual prohíben.
+En la aplicación el fondo lo pone quien usa el componente, así que la espera quedó como pide
+el manual: isotipo en crema sobre naranja brasa.
 
 ---
 
@@ -164,6 +173,8 @@ Sobre ámbar y sobre la crema oscurecida el texto va en **carbón**; sobre el re
 | Paleta y colores por perfil desde TypeScript | `restaurante/src/app/nucleo/diseno.ts` |
 | Logo en sus tres variantes de color | `restaurante/src/assets/marca/` |
 | Componente que elige la variante del logo | `restaurante/src/app/compartido/logo-marca/logo-marca.component.ts` |
+| Animación de carga del logo | `restaurante/src/app/compartido/logo-cargando/logo-cargando.component.ts` |
+| Indicador de espera a pantalla completa | `restaurante/src/app/compartido/spinner-logo/spinner-logo.component.ts` |
 | Datos del restaurante y del grupo | `restaurante/src/app/nucleo/marca.ts` |
 
 **Ningún color ni tamaño se escribe suelto dentro de una pantalla**: todo sale de las

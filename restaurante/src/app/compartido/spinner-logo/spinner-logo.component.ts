@@ -1,13 +1,15 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { CargandoService } from '../../nucleo/servicios/cargando.service';
-import { LogoMarcaComponent } from '../logo-marca/logo-marca.component';
+import { LogoCargandoComponent } from '../logo-cargando/logo-cargando.component';
 
 /**
  * Indicador de espera con el logo de la empresa.
  *
  * El manual de marca lo define así: el isotipo en crema sobre naranja
- * brasa, cubriendo toda la pantalla.
+ * brasa, cubriendo toda la pantalla. El isotipo no es una imagen quieta:
+ * es la animación de carga que entregó el manual, reescrita en Angular en
+ * LogoCargandoComponent.
  *
  * Se coloca una sola vez, en app.component.html, y se muestra solo cuando
  * el CargandoService informa que hay una operación en curso. Así ninguna
@@ -16,14 +18,12 @@ import { LogoMarcaComponent } from '../logo-marca/logo-marca.component';
 @Component({
   selector: 'app-spinner-logo',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LogoMarcaComponent],
+  imports: [LogoCargandoComponent],
   template: `
     @if (cargando.visible()) {
       <div class="velo" role="status" aria-live="polite">
         <div class="contenido">
-          <div class="aro">
-            <app-logo-marca [tamanio]="88" variante="crema" [animado]="true" />
-          </div>
+          <app-logo-cargando [tamanio]="216" variante="crema" />
           <p class="texto">{{ cargando.texto() }}</p>
           <div class="puntos" aria-hidden="true">
             <span></span><span></span><span></span>
@@ -34,34 +34,34 @@ import { LogoMarcaComponent } from '../logo-marca/logo-marca.component';
   `,
   styles: [
     `
+      /* Naranja brasa a pantalla completa, con las brasas del degradado
+         empujando hacia el borde: ni un espacio neutro. */
       .velo {
         position: fixed;
         inset: 0;
         z-index: 99999;
         display: grid;
         place-items: center;
-        background: var(--fondo-espera);
+        padding: var(--espacio-grande);
+        background:
+          radial-gradient(circle at 50% 42%, rgba(242, 166, 59, 0.45) 0%, rgba(242, 166, 59, 0) 62%),
+          var(--fondo-espera);
+        animation: entrar-velo 0.25s ease-out both;
+      }
+
+      @keyframes entrar-velo {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
       }
 
       .contenido {
         display: grid;
         justify-items: center;
         gap: var(--espacio);
-      }
-
-      /* El aro gira alrededor del isotipo, que queda quieto. */
-      .aro {
-        display: grid;
-        place-items: center;
-        padding: var(--espacio);
-        border-radius: 50%;
-        border: 0.3rem solid rgba(240, 223, 198, 0.3);
-        border-top-color: var(--crema-trigo);
-        animation: girar 1.15s linear infinite;
-      }
-
-      .aro app-logo-marca {
-        animation: girar 1.15s linear infinite reverse;
       }
 
       .texto {
@@ -93,12 +93,6 @@ import { LogoMarcaComponent } from '../logo-marca/logo-marca.component';
         animation-delay: 0.3s;
       }
 
-      @keyframes girar {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-
       @keyframes rebotar {
         0%,
         100% {
@@ -112,8 +106,7 @@ import { LogoMarcaComponent } from '../logo-marca/logo-marca.component';
       }
 
       @media (prefers-reduced-motion: reduce) {
-        .aro,
-        .aro app-logo-marca,
+        .velo,
         .puntos span {
           animation: none;
         }

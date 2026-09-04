@@ -2,7 +2,7 @@ import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/cor
 import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular';
 
-import { LogoMarcaComponent } from '../../compartido/logo-marca/logo-marca.component';
+import { LogoCargandoComponent } from '../../compartido/logo-cargando/logo-cargando.component';
 import { GRUPO, INTEGRANTES, RESTAURANTE, nombreCompleto } from '../../nucleo/marca';
 import { SonidosService } from '../../nucleo/servicios/sonidos.service';
 
@@ -18,7 +18,7 @@ import { SonidosService } from '../../nucleo/servicios/sonidos.service';
 @Component({
   selector: 'app-presentacion',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonContent, LogoMarcaComponent],
+  imports: [IonContent, LogoCargandoComponent],
   templateUrl: './presentacion.page.html',
   styleUrl: './presentacion.page.scss',
 })

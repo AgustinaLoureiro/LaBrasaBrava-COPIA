@@ -148,12 +148,25 @@
 
 .nombre-grupo {
   margin: 0;
+  display: grid;
+  justify-items: center;
+  gap: 0.1rem;
   font: var(--texto-subtitulo);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--texto-destacado);
   text-align: center;
   animation: aparecer 0.6s ease-out 0.85s both;
+}
+
+/* El grupo y el restaurante se llaman igual: el rótulo evita que el
+   nombre parezca repetido dos veces en la misma pantalla. */
+.rotulo-grupo {
+  font: var(--texto-ayuda);
+  font-family: var(--tipografia-titulos);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--texto-secundario);
 }
 
 .integrantes {

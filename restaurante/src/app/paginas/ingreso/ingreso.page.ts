@@ -15,6 +15,8 @@ import { CargandoService } from '../../nucleo/servicios/cargando.service';
 import {
   AccesoRapido,
   COLOR_PERFIL,
+  ETIQUETA_ESTADO_APROBACION,
+  NOMBRE_ESTADO_APROBACION,
   NOMBRE_PERFIL,
   TEXTO_SOBRE_PERFIL,
 } from '../../nucleo/modelos/usuario';
@@ -49,6 +51,8 @@ export class IngresoPage implements OnInit {
   protected readonly NOMBRE_PERFIL = NOMBRE_PERFIL;
   protected readonly COLOR_PERFIL = COLOR_PERFIL;
   protected readonly TEXTO_SOBRE_PERFIL = TEXTO_SOBRE_PERFIL;
+  protected readonly NOMBRE_ESTADO_APROBACION = NOMBRE_ESTADO_APROBACION;
+  protected readonly ETIQUETA_ESTADO_APROBACION = ETIQUETA_ESTADO_APROBACION;
 
   protected readonly accesos = signal<AccesoRapido[]>([]);
   protected readonly claveVisible = signal(false);

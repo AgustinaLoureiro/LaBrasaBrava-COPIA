@@ -724,9 +724,10 @@ Puntos 24–31: **reservas** (con tolerancia de 45 min), **delivery con mapas y 
 | Tema | Decisión | Fecha |
 |---|---|---|
 | Framework móvil | **Ionic 9 + Angular 22** (componentes standalone, sin NgRx) | 28-08-2026 |
+| Animación de carga | La del manual de marca, **reescrita en Angular con animaciones de CSS** (`compartido/logo-cargando`). El `.jsx` original de Claude Design no se puede usar en Ionic | 04-09-2026 |
 | Empaquetado nativo | **Capacitor 8** | 28-08-2026 |
 | Backend / base de datos | **Supabase** (PostgreSQL + Auth + Storage + Realtime) | 28-08-2026 |
-| Autenticación | **Supabase Auth** (correo y contraseña). Login social en 2ª fecha (punto 23) | 28-08-2026 |
+| Autenticación | **Provisoria**: validación contra las tablas `empleados` y `clientes` de la base del grupo, con la contraseña en texto plano. La migración a **Supabase Auth** está escrita en `restaurante/supabase/esquema.sql` y solo toca `sesion.service.ts`. Login social en 2ª fecha (punto 23) | 04-09-2026 |
 | Vibración / sensores | **@capacitor/haptics**, con reserva a `navigator.vibrate` en navegador | 28-08-2026 |
 | Sonidos | **Web Audio API** generados por código (sin archivos en el repositorio) | 28-08-2026 |
 | Push notifications | *pendiente* — evaluar `@capacitor/push-notifications` + Firebase | |
@@ -751,26 +752,37 @@ Puntos 24–31: **reservas** (con tolerancia de 45 min), **delivery con mapas y 
 - El archivo `src/app/nucleo/marca.ts` es el **único lugar** con datos del grupo y del
   restaurante; todas las pantallas leen de ahí.
 
-### 15.2 Estado del proyecto al 29-08-2026
+### 15.2 Estado del proyecto al 04-09-2026
 **Hecho:**
 - Proyecto Ionic + Angular creado y compilando.
-- Paleta de marca sin blancos, sin negros y sin modo oscuro.
-- Isotipo vectorial animado (`LogoMarcaComponent`).
-- Pantalla de presentación animada con ícono centrado e integrantes.
-- Spinner con logo, servicio de mensajes con vibración y servicio de sonidos.
+- Manual de identidad de la marca versión 3 aplicado a toda la aplicación: **crema trigo como
+  fondo de toda pantalla, con texto carbón**. Sin blancos, sin negros y sin modo oscuro.
+- Logo real del manual en sus tres variantes de color (`LogoMarcaComponent`).
+- **Animación de carga del logo** del manual, reescrita en Angular
+  (`LogoCargandoComponent`): se usa en el indicador de espera, en crema sobre naranja brasa,
+  y en la pantalla de presentación.
+- Pantalla de presentación animada con el logo centrado, el nombre del grupo y los cuatro
+  integrantes.
+- Servicio de mensajes con vibración y servicio de sonidos distintos al abrir y al cerrar.
 - Pantalla de ingreso con validación de correo y clave, y accesos rápidos leídos de la base.
+- **Ingreso real contra la base del grupo**, con las dos tablas: `empleados` y `clientes`. El
+  cliente pendiente de aprobación y el rechazado no pueden entrar, y cada uno recibe su
+  mensaje (puntos 5, 7 y 8).
+- **Usuarios de prueba dados de alta** en la base: los siete perfiles que exige el enunciado,
+  más un cliente pendiente y uno rechazado (`restaurante/supabase/usuarios-de-prueba.mjs`).
 - Pantalla principal con cierre de sesión que verifica el borrado de credenciales.
-- Esquema SQL y script de carga de los siete usuarios de prueba.
+- Herramienta de revisión visual (`restaurante/revision-visual.mjs`): saca las capturas del
+  índice de imágenes del README y avisa si algún texto o imagen queda cortado.
 - Repositorio privado creado con los seis docentes como colaboradores, y flujo de ramas acordado
   (`restaurante/FLUJO-DE-TRABAJO.md` y `restaurante/REPARTO-DE-TAREAS.md`).
 
 **Falta para la próxima clase:**
-- Completar `marca.ts` con apellidos y nombres de los otros tres integrantes (el nombre del grupo ya está).
-- Crear el proyecto en Supabase y completar `nucleo/configuracion.ts`.
-- Instalar Android Studio y generar el proyecto nativo.
+- Definir quién es el líder del grupo y anotarlo en el README.
+- Instalar el JDK y el SDK de Android, y generar el proyecto nativo.
 - Generar el ícono en mapa de bits y la pantalla de presentación estática de Capacitor.
-- Volcar el reparto de tareas al README con la tabla que pide la cátedra.
-- Inicializar el repositorio local y subir la base a `main`.
+- Cargar los cinco platos, las cinco bebidas y las cinco mesas que exige el enunciado.
+- Migrar la autenticación a Supabase Auth con `restaurante/supabase/esquema.sql`: hoy las
+  contraseñas están en texto plano en las tablas del grupo.
 
 ## 16. Referencias del enunciado
 

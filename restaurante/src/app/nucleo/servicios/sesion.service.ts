@@ -1,7 +1,7 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 
 import { SupabaseService } from './supabase.service';
-import { AccesoRapido, Perfil, Usuario } from '../modelos/usuario';
+import { AccesoRapido, EstadoAprobacion, Perfil, Usuario } from '../modelos/usuario';
 
 /** Resultado de un intento de ingreso, para que la pantalla decida qué mostrar. */
 export type ResultadoIngreso =
@@ -29,6 +29,26 @@ interface FilaEmpleado {
   created_at: string;
 }
 
+/**
+ * Fila de la tabla public.clientes.
+ *
+ * Los clientes registrados viven en su propia tabla, sin CUIL y sin
+ * perfil (todos son cliente_registrado), y con un estado de aprobación
+ * que la base restringe a estos tres valores. Ojo: la base dice
+ * 'aceptado' donde la aplicación dice 'aprobado'.
+ */
+interface FilaCliente {
+  id: number;
+  apellidos: string;
+  nombres: string;
+  dni: string | null;
+  email: string;
+  password: string;
+  foto_url: string | null;
+  estado: 'pendiente' | 'aceptado' | 'rechazado';
+  created_at: string;
+}
+
 /** Clave con la que se recuerda la sesión en el dispositivo. */
 const CLAVE_SESION = 'brasa-brava-sesion';
 
@@ -39,10 +59,10 @@ const CLAVE_SESION = 'brasa-brava-sesion';
  * -------------------------------------------------------------------
  * NOTA SOBRE LA AUTENTICACIÓN
  * -------------------------------------------------------------------
- * La base del grupo tiene hoy una tabla `empleados` con la contraseña
- * guardada en texto plano, y no usa Supabase Auth. Este servicio valida
- * contra esa tabla para que la aplicación funcione con los datos reales
- * que ya están cargados.
+ * La base del grupo tiene hoy dos tablas, `empleados` y `clientes`, con
+ * la contraseña guardada en texto plano, y no usa Supabase Auth. Este
+ * servicio valida contra esas dos tablas para que la aplicación funcione
+ * con los datos reales que ya están cargados.
  *
  * Cuando el grupo migre a Supabase Auth (que es lo que corresponde, y
  * para lo que ya está escrito supabase/esquema.sql), el único archivo
@@ -67,41 +87,42 @@ export class SesionService {
 
   /**
    * Valida las credenciales contra la base y, si son correctas, deja la
-   * sesión iniciada. Un cliente registrado que todavía no fue aprobado
-   * no puede entrar (puntos 5, 7 y 8 del enunciado).
+   * sesión iniciada. Busca primero entre los empleados y después entre
+   * los clientes registrados. Un cliente que todavía no fue aprobado, o
+   * que fue rechazado, no puede entrar (puntos 5, 7 y 8 del enunciado).
    */
   async ingresar(correo: string, clave: string): Promise<ResultadoIngreso> {
     const correoNormalizado = correo.trim().toLowerCase();
 
-    const { data, error } = await this.supabase.cliente
-      .from('empleados')
-      .select('*')
-      .eq('email', correoNormalizado)
-      .maybeSingle<FilaEmpleado>();
-
-    if (error) {
-      return { estado: 'error-de-conexion', detalle: this.explicar(error.message) };
+    const empleado = await this.buscarEmpleado(correoNormalizado);
+    if (empleado.error) {
+      return { estado: 'error-de-conexion', detalle: this.explicar(empleado.error) };
     }
 
-    // Se responde lo mismo si el correo no existe y si la contraseña está
-    // mal, a propósito, para no revelar qué correos están dados de alta.
-    if (!data || data.password !== clave) {
+    if (empleado.fila) {
+      // Se responde lo mismo si el correo no existe y si la contraseña
+      // está mal, a propósito, para no revelar qué correos existen.
+      if (empleado.fila.password !== clave) return { estado: 'credenciales-invalidas' };
+
+      const usuario = this.empleadoAUsuario(empleado.fila);
+      this.iniciar(usuario);
+      return { estado: 'correcto', usuario };
+    }
+
+    const cliente = await this.buscarCliente(correoNormalizado);
+    if (cliente.error) {
+      return { estado: 'error-de-conexion', detalle: this.explicar(cliente.error) };
+    }
+
+    if (!cliente.fila || cliente.fila.password !== clave) {
       return { estado: 'credenciales-invalidas' };
     }
 
-    const usuario = this.aUsuario(data);
+    if (cliente.fila.estado === 'pendiente') return { estado: 'pendiente-de-aprobacion' };
+    if (cliente.fila.estado === 'rechazado') return { estado: 'rechazado' };
 
-    if (usuario.perfil === 'cliente_registrado') {
-      if (usuario.estado_aprobacion === 'pendiente') {
-        return { estado: 'pendiente-de-aprobacion' };
-      }
-      if (usuario.estado_aprobacion === 'rechazado') {
-        return { estado: 'rechazado' };
-      }
-    }
-
-    this.usuario.set(usuario);
-    this.recordar(usuario);
+    const usuario = this.clienteAUsuario(cliente.fila);
+    this.iniciar(usuario);
     return { estado: 'correcto', usuario };
   }
 
@@ -151,38 +172,90 @@ export class SesionService {
   }
 
   /**
-   * Trae los accesos rápidos para la pantalla de ingreso.
+   * Trae los accesos rápidos para la pantalla de ingreso: primero los
+   * empleados y después los clientes registrados.
    *
    * Se leen de la base y no se escriben fijos en el código, para cumplir
    * con el requisito del enunciado de que no sean botones fijos: si el
    * supervisor da de alta un empleado nuevo, su ficha aparece sola.
+   *
+   * Los clientes pendientes y rechazados también aparecen, porque el
+   * enunciado pide verificar que esos dos NO puedan ingresar: tocando su
+   * ficha se ve el mensaje que corresponde a cada estado.
    */
   async accesosRapidos(): Promise<AccesoRapido[]> {
+    const [empleados, clientes] = await Promise.all([
+      this.supabase.cliente.from('empleados').select('*').order('id', { ascending: true }),
+      this.supabase.cliente.from('clientes').select('*').order('id', { ascending: true }),
+    ]);
+
+    const accesos: AccesoRapido[] = [];
+
+    for (const fila of (empleados.data ?? []) as FilaEmpleado[]) {
+      accesos.push({
+        usuario_id: `empleado-${fila.id}`,
+        orden: accesos.length,
+        apellidos: fila.apellidos,
+        nombres: fila.nombres,
+        correo: fila.email,
+        clave_demo: fila.password,
+        perfil: fila.perfil,
+        foto_url: fila.foto_url,
+        estado_aprobacion: 'aprobado',
+      });
+    }
+
+    for (const fila of (clientes.data ?? []) as FilaCliente[]) {
+      accesos.push({
+        usuario_id: `cliente-${fila.id}`,
+        orden: accesos.length,
+        apellidos: fila.apellidos,
+        nombres: fila.nombres,
+        correo: fila.email,
+        clave_demo: fila.password,
+        perfil: 'cliente_registrado',
+        foto_url: fila.foto_url,
+        estado_aprobacion: this.aEstadoAprobacion(fila.estado),
+      });
+    }
+
+    return accesos;
+  }
+
+  // --- Consultas a la base ---------------------------------------------
+
+  private async buscarEmpleado(correo: string) {
     const { data, error } = await this.supabase.cliente
       .from('empleados')
       .select('*')
-      .order('id', { ascending: true });
+      .eq('email', correo)
+      .maybeSingle<FilaEmpleado>();
 
-    if (error || !data) return [];
+    return { fila: data, error: error?.message ?? null };
+  }
 
-    return (data as FilaEmpleado[]).map((fila, indice) => ({
-      usuario_id: String(fila.id),
-      orden: indice,
-      apellidos: fila.apellidos,
-      nombres: fila.nombres,
-      correo: fila.email,
-      clave_demo: fila.password,
-      perfil: fila.perfil,
-      foto_url: fila.foto_url,
-    }));
+  private async buscarCliente(correo: string) {
+    const { data, error } = await this.supabase.cliente
+      .from('clientes')
+      .select('*')
+      .eq('email', correo)
+      .maybeSingle<FilaCliente>();
+
+    return { fila: data, error: error?.message ?? null };
   }
 
   // --- Auxiliares -----------------------------------------------------
 
+  /** Deja la sesión iniciada y la recuerda en el dispositivo. */
+  private iniciar(usuario: Usuario): void {
+    this.usuario.set(usuario);
+    localStorage.setItem(CLAVE_SESION, JSON.stringify(usuario));
+  }
+
   /** Traduce una fila de `empleados` al modelo de usuario de la aplicación. */
-  private aUsuario(fila: FilaEmpleado): Usuario {
+  private empleadoAUsuario(fila: FilaEmpleado): Usuario {
     return {
-      id: String(fila.id),
+      id: `empleado-${fila.id}`,
       apellidos: fila.apellidos,
       nombres: fila.nombres,
       dni: fila.dni,
@@ -191,15 +264,32 @@ export class SesionService {
       perfil: fila.perfil,
       foto_url: fila.foto_url,
       // Los empleados nacen aprobados: el estado solo aplica a los
-      // clientes registrados, que todavía no tienen tabla propia.
+      // clientes registrados.
       estado_aprobacion: 'aprobado',
       fecha_alta: fila.created_at,
     };
   }
 
-  /** Guarda la sesión en el dispositivo para no volver a pedir los datos. */
-  private recordar(usuario: Usuario): void {
-    localStorage.setItem(CLAVE_SESION, JSON.stringify(usuario));
+  /** Traduce una fila de `clientes` al modelo de usuario de la aplicación. */
+  private clienteAUsuario(fila: FilaCliente): Usuario {
+    return {
+      id: `cliente-${fila.id}`,
+      apellidos: fila.apellidos,
+      nombres: fila.nombres,
+      dni: fila.dni,
+      // El enunciado (punto 5) pide el alta del cliente sin CUIL.
+      cuil: null,
+      correo: fila.email,
+      perfil: 'cliente_registrado',
+      foto_url: fila.foto_url,
+      estado_aprobacion: this.aEstadoAprobacion(fila.estado),
+      fecha_alta: fila.created_at,
+    };
+  }
+
+  /** La base dice 'aceptado' donde la aplicación dice 'aprobado'. */
+  private aEstadoAprobacion(estado: FilaCliente['estado']): EstadoAprobacion {
+    return estado === 'aceptado' ? 'aprobado' : estado;
   }
 
   /** Convierte el error técnico de Supabase en algo legible en español. */
@@ -208,7 +298,7 @@ export class SesionService {
       return 'No se pudo llegar al servidor. Revisá tu conexión a internet.';
     }
     if (/schema cache|does not exist/i.test(mensaje)) {
-      return 'La tabla de empleados todavía no está creada en la base de datos.';
+      return 'Las tablas de usuarios todavía no están creadas en la base de datos.';
     }
     return mensaje;
   }

@@ -1,6 +1,20 @@
 -- =====================================================================
--- TFI 2026 — Restaurante · Esquema inicial (primer parcial)
+-- TFI 2026 — Restaurante · Esquema OBJETIVO (migración a Supabase Auth)
 -- Ejecutar en: Supabase → SQL Editor → New query → Run
+-- =====================================================================
+--
+-- OJO: esto TODAVÍA NO ES lo que hay en la base del grupo.
+--
+-- Hoy la base tiene las tablas `empleados`, `clientes`, `platos`,
+-- `bebidas`, `mesas` y `lista_espera`, con la contraseña guardada en
+-- texto plano y sin Supabase Auth. La aplicación valida contra esas
+-- tablas (ver nucleo/servicios/sesion.service.ts) y los usuarios de
+-- prueba se cargan con `node supabase/usuarios-de-prueba.mjs`.
+--
+-- Este archivo es a dónde queremos llegar: una sola tabla de usuarios
+-- espejo de auth.users, con las contraseñas administradas por Supabase
+-- Auth y con políticas RLS de verdad. Cuando se aplique, el único
+-- archivo de la aplicación que hay que tocar es sesion.service.ts.
 -- =====================================================================
 
 -- ---------------------------------------------------------------------

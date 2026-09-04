@@ -13,21 +13,21 @@
  * =====================================================================
  */
 
-/** Colores de marca, con los códigos exactos del manual. */
+/** Colores de marca, con los códigos exactos del manual (versión 3). */
 export const PALETA = {
-  /** Primario. Botones de acción, íconos activos, progreso. */
+  /** Primario. Botones de acción, íconos activos, progreso y espera. */
   naranjaBrasa: '#e2622c',
   /** Secundario. Destacados, etiquetas y títulos. */
   ambarCeniza: '#f2a63b',
-  /** Fondo base de la aplicación: ingreso, listados y formularios. */
+  /** Encabezados y superficies de énfasis. Nunca fondo de pantalla. */
   terracota: '#8e3418',
   /** Fondo alterno para separar módulos. */
   olivaAhumada: '#5c6b46',
-  /** Tarjetas sobre terracota. */
+  /** Acentos y tarjetas destacadas. */
   ladrillo: '#a83e1e',
   /** Barras de navegación. */
   brasaProfunda: '#6b2a13',
-  /** Texto e íconos. */
+  /** Fondo principal de toda pantalla, y texto sobre los colores oscuros. */
   cremaTrigo: '#f0dfc6',
   /** Texto sobre crema y ámbar. */
   carbonParrilla: '#2e2a28',

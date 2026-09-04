@@ -88,6 +88,27 @@ Son unos 8 a 12 GB entre los dos.
 
 ---
 
+## Una cuarta forma, para revisar el diseño
+
+```bash
+npm run build
+npx http-server www -p 4300     # en otra terminal
+node revision-visual.mjs docs/pantallas
+```
+
+`revision-visual.mjs` abre la aplicación en un Chrome sin ventana, con la pantalla de un
+teléfono de 390 × 844, recorre las pantallas y hace dos cosas:
+
+- **Avisa si algo se sale del ancho de la pantalla**, que es uno de los excluyentes que más
+  fácil se rompe sin darse cuenta («ninguna imagen o texto cortado»).
+- **Guarda las capturas** en `docs/pantallas`, que son las que el README enlaza en su índice
+  de imágenes. Así el índice se mantiene al día sin sacar capturas a mano.
+
+No reemplaza probar en el teléfono: sirve para revisar el diseño rápido y para no llegar a la
+entrega con el índice de imágenes desactualizado.
+
+---
+
 ## Recomendación
 
 Trabajar en Chrome y revisar en el celular por WiFi mientras se construyen las pantallas, pero

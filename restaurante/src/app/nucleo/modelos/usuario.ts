@@ -19,6 +19,24 @@ export type Perfil =
 /** Estado de aprobación, solo relevante para el cliente registrado. */
 export type EstadoAprobacion = 'pendiente' | 'aprobado' | 'rechazado';
 
+/** Texto legible de cada estado de aprobación, para mostrar en pantalla. */
+export const NOMBRE_ESTADO_APROBACION: Record<EstadoAprobacion, string> = {
+  pendiente: 'Pendiente de aprobación',
+  aprobado: 'Aprobado',
+  rechazado: 'Rechazado',
+};
+
+/**
+ * Clase de etiqueta con la que se pinta cada estado.
+ * Los colores salen de los semánticos del manual: alerta para lo que está
+ * esperando, éxito para lo aprobado y error para lo rechazado.
+ */
+export const ETIQUETA_ESTADO_APROBACION: Record<EstadoAprobacion, string> = {
+  pendiente: 'etiqueta-alerta',
+  aprobado: 'etiqueta-exito',
+  rechazado: 'etiqueta-error',
+};
+
 /** Fila de public.usuarios. */
 export interface Usuario {
   id: string;
@@ -98,8 +116,9 @@ export function nombreUsuario(usuario: Usuario): string {
 
 /**
  * Credencial de demostración para los botones de ingreso rápido.
- * Vive en su propia tabla de lectura pública porque la pantalla de
- * ingreso necesita mostrarlos antes de que haya una sesión iniciada.
+ * Se arma leyendo las tablas de empleados y de clientes registrados, así
+ * que las fichas no son botones fijos: aparecen solas a medida que se dan
+ * de alta usuarios nuevos.
  */
 export interface AccesoRapido {
   usuario_id: string;
@@ -110,4 +129,10 @@ export interface AccesoRapido {
   clave_demo: string;
   perfil: Perfil;
   foto_url: string | null;
+  /**
+   * Solo cambia para el cliente registrado. Los pendientes y los
+   * rechazados aparecen en la lista a propósito: el enunciado pide poder
+   * verificar que esos dos no logran ingresar.
+   */
+  estado_aprobacion: EstadoAprobacion;
 }
