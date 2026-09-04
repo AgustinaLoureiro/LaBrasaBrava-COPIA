@@ -1,0 +1,101 @@
+ion-content {
+  --background: #F0DFC6; // Crema Trigo — fondo principal de la app
+}
+
+ion-header ion-toolbar {
+  --background: #F0DFC6;
+  --color: #2E2A28; // Carbón Parrilla
+}
+
+ion-card {
+  --background: #FBF3E7; // un crema apenas más claro que el fondo, para diferenciar la tarjeta
+  border: 1px solid #F2A63B; // Ámbar Ceniza
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+ion-item {
+  --background: transparent;
+  --border-color: #F2A63B;
+  --color: #2E2A28; // Carbón Parrilla — texto oscuro, porque ahora el fondo es claro
+  margin-bottom: 4px;
+}
+
+ion-label {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  color: #2E2A28;
+}
+
+ion-input {
+  --placeholder-color: #2e2a2899;
+  font-family: 'Source Sans 3', sans-serif;
+
+  &::part(native) {
+    color: #2E2A28;
+  }
+}
+
+ion-input input:-webkit-autofill {
+  -webkit-text-fill-color: #2E2A28 !important;
+  -webkit-box-shadow: 0 0 0px 1000px #F0DFC6 inset;
+}
+
+ion-note {
+  display: block;
+  margin: 2px 0 8px 12px;
+  font-size: 16px;
+  font-family: 'Source Sans 3', sans-serif;
+  font-weight: 600;
+  color: #C2352A; // Error
+}
+
+ion-button {
+  --background: #E2622C; // Naranja Brasa — sigue siendo el primario, pero ahora es acento, no fondo
+  --background-activated: #A83E1E;
+  --color: #F0DFC6;
+  --border-radius: 12px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+}
+
+.foto-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.foto-preview, .foto-placeholder {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #F2A63B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FBF3E7; // acorde al nuevo fondo claro
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  ion-icon {
+    font-size: 64px;
+    color: #E2622C; // Naranja Brasa, como acento sobre el fondo claro
+  }
+}
+
+.mensaje-exito {
+  background: #3F8F5B; // Éxito
+  color: #F0DFC6;
+  padding: 16px;
+  border-radius: 12px;
+  font-family: 'Source Sans 3', sans-serif;
+  font-weight: 600;
+  text-align: center;
+}
