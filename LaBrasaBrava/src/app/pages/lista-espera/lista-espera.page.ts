@@ -7,7 +7,7 @@ import {
 } from '@ionic/angular';
 import { Camara } from '../../services/camara';
 import { Almacenamiento } from '../../services/almacenamiento';
-import { Supabase } from '../../services/supabase';
+import { SupabaseService } from '../../nucleo/servicios/supabase.service';
 
 @Component({
   selector: 'app-lista-espera',
@@ -23,7 +23,7 @@ export class ListaEsperaPage {
   private constructorFormulario = inject(FormBuilder);
   private camara = inject(Camara);
   private almacenamiento = inject(Almacenamiento);
-  private supabase = inject(Supabase);
+  private supabase = inject(SupabaseService);
 
   fotoPrevia: string | null = null;
   enviando = false;
@@ -60,7 +60,7 @@ export class ListaEsperaPage {
       return;
     }
 
-    const { error } = await this.supabase.client
+    const { error } = await this.supabase.cliente
       .from('lista_espera')
       .insert({
         nombre: this.formulario.value.nombre,

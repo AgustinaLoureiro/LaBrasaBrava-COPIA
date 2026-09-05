@@ -40,7 +40,7 @@ import {
   BarcodeFormat
 } from '@capacitor-mlkit/barcode-scanning';
 
-import { Supabase } from '../../services/supabase';
+import { SupabaseService } from '../../nucleo/servicios/supabase.service';
 
 @Component({
   selector: 'app-registro-cliente',
@@ -80,7 +80,7 @@ export class RegistroClientePage {
 
   constructor(
     private fb: FormBuilder,
-    private supabase: Supabase
+    private supabase: SupabaseService
   ) {
 
     this.form = this.fb.group({
@@ -431,7 +431,7 @@ export class RegistroClientePage {
       const {
         data: clienteDni,
         error: errorDni
-      } = await this.supabase.client
+      } = await this.supabase.cliente
         .from('clientes')
         .select('id')
         .eq('dni', dni)
@@ -475,7 +475,7 @@ export class RegistroClientePage {
       const {
         data: clienteEmail,
         error: errorEmail
-      } = await this.supabase.client
+      } = await this.supabase.cliente
         .from('clientes')
         .select('id')
         .eq('email', email)
@@ -587,7 +587,7 @@ export class RegistroClientePage {
 
       const {
         error: errorUpload
-      } = await this.supabase.client
+      } = await this.supabase.cliente
         .storage
         .from('fotos-clientes')
         .upload(
@@ -624,7 +624,7 @@ export class RegistroClientePage {
       const {
         data: urlFoto
       } =
-        this.supabase.client
+        this.supabase.cliente
           .storage
           .from('fotos-clientes')
           .getPublicUrl(rutaFoto);
@@ -661,7 +661,7 @@ export class RegistroClientePage {
         data: nuevoCliente,
         error: errorInsert
       } =
-        await this.supabase.client
+        await this.supabase.cliente
           .from('clientes')
           .insert({
 
