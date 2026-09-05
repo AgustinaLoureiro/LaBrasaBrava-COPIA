@@ -7,7 +7,7 @@ import {
 } from '@ionic/angular';
 import { Camara } from '../../services/camara';
 import { Almacenamiento } from '../../services/almacenamiento';
-import { Supabase } from '../../services/supabase';
+import { SupabaseService } from '../../nucleo/servicios/supabase.service';
 import { Preferences } from '@capacitor/preferences';
 
 @Component({
@@ -24,7 +24,7 @@ export class EmpleadoPage implements OnInit {
   private constructorFormulario = inject(FormBuilder);
   private camara = inject(Camara);
   private almacenamiento = inject(Almacenamiento);
-  private supabase = inject(Supabase);
+  private supabase = inject(SupabaseService);
 
   fotoPrevia: string | null = null;
   guardando = false;
@@ -83,7 +83,7 @@ export class EmpleadoPage implements OnInit {
       return;
     }
 
-    const { error } = await this.supabase.client
+    const { error } = await this.supabase.cliente
       .from('empleados')
       .insert({
         ...this.formulario.value,
