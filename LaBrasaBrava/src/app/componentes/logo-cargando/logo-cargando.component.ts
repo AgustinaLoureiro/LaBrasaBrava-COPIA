@@ -5,9 +5,8 @@ import { VarianteLogo } from '../logo-marca/logo-marca.component';
 /**
  * Animación de carga de Brasa Brava.
  *
- * Es la animación que define el manual de marca
- * (docs/marca/MANUAL-DE-MARCA.md, variante «Loader Pro»), escrita en
- * Angular con animaciones de CSS. Sus tres etapas son:
+ * Es la variante «Loader Pro» que define el manual de identidad de la
+ * marca, escrita en Angular con animaciones de CSS. Sus tres etapas son:
  *
  *   1. Encendido: la llama se revela de abajo hacia arriba.
  *   2. Aparición del nombre: «Brasa Brava» sube y se asienta.

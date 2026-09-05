@@ -3,16 +3,22 @@
    Es la única pantalla que usa el estilo Display del manual (40 / 44 · 900). */
 
 .presentacion {
+  /* Todo tiene que entrar en la pantalla, sin recortes y sin barra de
+     desplazamiento, desde un teléfono chico hasta uno grande. Por eso el
+     ritmo vertical y los tamaños se miden contra el alto disponible. */
+  --ritmo: clamp(0.15rem, 0.8vh, 0.625rem);
+
   min-height: 100%;
-  padding: var(--espacio-grande) var(--espacio-grande)
-    calc(var(--espacio-grande) + var(--ion-safe-area-bottom, 0px));
+  padding: clamp(0.5rem, 1.4vh, var(--espacio-grande))
+    var(--espacio)
+    calc(clamp(0.5rem, 1.4vh, var(--espacio-grande)) + var(--ion-safe-area-bottom, 0px));
   display: grid;
   grid-template-rows: auto auto auto auto auto 1fr auto;
   /* La columna nunca puede pasarse del ancho de la pantalla. */
   grid-template-columns: minmax(0, 1fr);
   justify-items: center;
   align-content: start;
-  gap: var(--espacio-chico);
+  gap: var(--ritmo);
   position: relative;
   overflow: hidden;
 }
@@ -74,13 +80,20 @@
 /* --- Isotipo centrado --------------------------------------------------- */
 
 .medallon {
-  margin-top: var(--espacio-chico);
-  padding: var(--espacio);
+  margin-top: var(--ritmo);
+  padding: clamp(0.3rem, 0.9vh, 1rem);
   border-radius: 50%;
   background: var(--superficie);
   border: 0.2rem solid var(--terracota);
   box-shadow: 0 0 0 0.7rem rgba(142, 52, 24, 0.12), var(--sombra-alta);
   animation: entrarMedallon 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* La animación del logo fija su lado en píxeles desde [tamanio]. Acá se
+   lo ajusta al alto disponible, para que en un teléfono chico el medallón
+   no empuje al resto fuera de la pantalla. */
+.medallon app-logo-cargando {
+  --lado: clamp(4.5rem, 14vh, 10.25rem) !important;
 }
 
 @keyframes entrarMedallon {
@@ -97,8 +110,10 @@
 /* --- Nombre del restaurante --------------------------------------------- */
 
 .nombre-restaurante {
-  margin: var(--espacio-chico) 0 0;
+  margin: var(--ritmo) 0 0;
   font: var(--texto-display);
+  font-size: clamp(1.35rem, 4.2vh, 2.5rem);
+  line-height: 1.1;
   letter-spacing: var(--espaciado-mayusculas);
   text-transform: uppercase;
   text-align: center;
@@ -121,7 +136,7 @@
   height: 0.18rem;
   border-radius: 1rem;
   background: linear-gradient(90deg, transparent, var(--ambar-ceniza), transparent);
-  margin: var(--espacio-chico) 0 var(--espacio-minimo);
+  margin: var(--ritmo) 0 var(--espacio-minimo);
   animation: ensanchar 0.8s ease-out 0.75s both;
 }
 
@@ -142,7 +157,7 @@
   width: 100%;
   max-width: 26rem;
   display: grid;
-  gap: var(--espacio-chico);
+  gap: var(--ritmo);
   justify-items: center;
 }
 
@@ -175,14 +190,14 @@
   padding: 0;
   width: 100%;
   display: grid;
-  gap: var(--espacio-chico);
+  gap: var(--ritmo);
 }
 
 .integrante {
   display: flex;
   align-items: center;
   gap: var(--espacio-chico);
-  padding: var(--espacio-chico);
+  padding: clamp(0.25rem, 0.85vh, 0.625rem);
   border-radius: var(--radio-chico);
   background: var(--superficie);
   border-left: 0.28rem solid var(--terracota);
@@ -192,8 +207,8 @@
 
 .iniciales {
   flex: 0 0 auto;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: clamp(1.9rem, 4.2vh, 2.5rem);
+  height: clamp(1.9rem, 4.2vh, 2.5rem);
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -225,6 +240,10 @@
 
 .pie {
   align-self: end;
+  /* El botón ocupa todo el ancho, para que no queden espacios neutros. */
+  width: 100%;
+  /* Aparece cuando ya se leyeron los integrantes, no antes. */
+  animation: aparecer-pie 0.5s ease-out 1.9s both;
 }
 
 .pie p {
@@ -233,6 +252,17 @@
   color: var(--texto-secundario);
   text-align: center;
   animation: parpadear 2s ease-in-out 1.9s infinite both;
+}
+
+@keyframes aparecer-pie {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 @keyframes parpadear {
