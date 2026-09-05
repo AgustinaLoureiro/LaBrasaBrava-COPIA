@@ -1,2 +1,79 @@
-// For information on how to create your own theme, please refer to:
-// https://ionicframework.com/docs/theming/
+:root {
+    /* ---- Marca ---- */
+    --brasa-naranja: #E2622C; // primario: botones de acción
+    --brasa-ambar: #F2A63B; // secundario: destacados, etiquetas
+    --brasa-crema: #F0DFC6; // FONDO PRINCIPAL de toda la app
+    --brasa-oliva: #5C6B46; // fondo alterno entre módulos
+    --brasa-ladrillo: #A83E1E; // acentos y tarjetas destacadas
+    --brasa-profunda: #6B2A13; // barras de navegación
+    --brasa-terracota: #8E3418; // headers y superficies de énfasis
+    --brasa-carbon: #2E2A28; // texto sobre crema/ámbar
+
+    /* ---- Semánticos ---- */
+    --brasa-exito: #3F8F5B;
+    --brasa-alerta: #E0A72E;
+    --brasa-error: #C2352A;
+    --brasa-info: #3C7E92;
+
+    /* ---- Colores por perfil ---- */
+    --brasa-perfil-dueno: #E2622C;
+    --brasa-perfil-supervisor: #6B2A13;
+    --brasa-perfil-metre: #F2A63B;
+    --brasa-perfil-mozo: #3C7E92;
+    --brasa-perfil-cocinero: #C2352A;
+    --brasa-perfil-cantinero: #3F8F5B;
+    --brasa-perfil-cliente-reg: #F0DFC6;
+    --brasa-perfil-cliente-anon: #6B2A13;
+
+    /* ---- Tipografía ---- */
+    --brasa-font-display: 'Montserrat', sans-serif;
+    --brasa-font-cuerpo: 'Source Sans 3', sans-serif;
+
+    /* ---- Mapeo a Ionic ---- */
+    --ion-color-primary: var(--brasa-naranja);
+    --ion-color-primary-rgb: 226, 98, 44;
+    --ion-color-primary-contrast: var(--brasa-crema);
+    --ion-color-primary-contrast-rgb: 240, 223, 198;
+    --ion-color-primary-shade: #c7551f;
+    --ion-color-primary-tint: #e6713e;
+
+    --ion-color-secondary: var(--brasa-ambar);
+    --ion-color-secondary-rgb: 242, 166, 59;
+    --ion-color-secondary-contrast: var(--brasa-carbon);
+    --ion-color-secondary-contrast-rgb: 46, 42, 40;
+    --ion-color-secondary-shade: #d69235;
+    --ion-color-secondary-tint: #f3af50;
+
+    --ion-color-success: var(--brasa-exito);
+    --ion-color-success-contrast: var(--brasa-crema);
+    --ion-color-warning: var(--brasa-alerta);
+    --ion-color-warning-contrast: var(--brasa-carbon);
+    --ion-color-danger: var(--brasa-error);
+    --ion-color-danger-contrast: var(--brasa-crema);
+    --ion-color-tertiary: var(--brasa-info);
+    --ion-color-tertiary-contrast: var(--brasa-crema);
+
+    /* FONDO PRINCIPAL: crema (cambio clave respecto a la V2 del manual) */
+    --ion-background-color: var(--brasa-crema);
+    --ion-background-color-rgb: 240, 223, 198;
+    --ion-text-color: var(--brasa-carbon);
+    --ion-text-color-rgb: 46, 42, 40;
+
+    --ion-toolbar-background: var(--brasa-profunda);
+    --ion-toolbar-color: var(--brasa-crema);
+
+    --ion-item-background: transparent;
+
+    --ion-font-family: var(--brasa-font-cuerpo);
+}
+
+.fondo-oliva {
+    --background: var(--brasa-oliva);
+    --color: var(--brasa-crema);
+}
+
+.tarjeta-brasa {
+    background: var(--brasa-ladrillo);
+    color: var(--brasa-crema);
+    border-radius: 12px;
+}

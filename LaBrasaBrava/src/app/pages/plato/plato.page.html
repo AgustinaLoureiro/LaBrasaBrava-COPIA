@@ -1,0 +1,234 @@
+<ion-header>
+  <ion-toolbar>
+
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/" text="" color="light">
+      </ion-back-button>
+    </ion-buttons>
+
+    <ion-title>Agregar plato</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+
+  <form [formGroup]="formulario">
+
+    <!-- INTRODUCCIÓN -->
+
+    <div class="introduccion">
+
+      <ion-icon name="information-circle-outline" class="icono-info">
+      </ion-icon>
+
+      <span>
+        Completá los datos del nuevo plato que estará disponible en el menú.
+      </span>
+
+    </div>
+
+
+    <!-- NOMBRE -->
+
+    <ion-item>
+
+      <ion-label position="stacked">
+        Nombre del plato
+      </ion-label>
+
+      <ion-input formControlName="nombre" maxlength="40">
+      </ion-input>
+
+    </ion-item>
+
+    @if (invalido('nombre')) {
+
+    <p class="error-campo">
+      {{ mensajeError('nombre') }}
+    </p>
+
+    }
+
+
+    <!-- DESCRIPCIÓN -->
+
+    <ion-item>
+
+      <ion-label position="stacked">
+        Descripción
+      </ion-label>
+
+      <ion-input formControlName="descripcion" maxlength="150">
+      </ion-input>
+
+    </ion-item>
+
+    @if (invalido('descripcion')) {
+
+    <p class="error-campo">
+      {{ mensajeError('descripcion') }}
+    </p>
+
+    }
+
+
+    <!-- TIEMPO + PRECIO -->
+
+    <div class="campos-secundarios">
+
+      <ion-item>
+
+        <ion-label position="stacked">
+          Tiempo de elaboración (minutos)
+        </ion-label>
+
+        <ion-input formControlName="tiempo_elaboracion" type="text" inputmode="numeric"
+          (keydown)="soloNumerosEnteros($event)">
+        </ion-input>
+
+      </ion-item>
+
+
+      <ion-item>
+
+        <ion-label position="stacked">
+          Precio
+        </ion-label>
+
+        <ion-input formControlName="precio" type="text" inputmode="decimal" (keydown)="soloNumerosConPunto($event)">
+        </ion-input>
+
+      </ion-item>
+
+    </div>
+
+
+    @if (invalido('tiempo_elaboracion')) {
+
+    <p class="error-campo">
+      {{ mensajeError('tiempo_elaboracion') }}
+    </p>
+
+    }
+
+
+    @if (invalido('precio')) {
+
+    <p class="error-campo">
+      {{ mensajeError('precio') }}
+    </p>
+
+    }
+
+
+    <!-- FOTOS -->
+
+    <section class="seccion-fotos">
+
+      <div class="encabezado-fotos">
+
+        <p class="titulo-seccion">
+
+          <ion-icon name="images-outline"></ion-icon>
+
+          Fotos del plato (3 obligatorias)
+
+        </p>
+
+        <p class="subtitulo-fotos">
+          Agregá al menos 3 fotos claras del plato.
+        </p>
+
+      </div>
+
+
+      <div class="grilla-fotos">
+
+        @for (foto of fotos; track $index) {
+
+        <div class="contenedor-foto" (click)="elegirFoto($index)">
+
+          @if (foto) {
+
+          <img [src]="foto" [alt]="'Foto ' + ($index + 1) + ' del plato'" class="imagen-foto" />
+
+          }
+
+          @else {
+
+          <div class="placeholder-foto">
+
+            <span>
+              Cambiar
+            </span>
+
+          </div>
+
+          }
+
+        </div>
+
+        }
+
+      </div>
+
+
+      @if (!fotosCompletas()) {
+
+      <p class="error-campo">
+        Faltan cargar
+        {{ 3 - fotos.filter(f => f !== null).length }}
+        foto(s).
+      </p>
+
+      }
+
+
+      <!-- IMPORTANTE -->
+
+      <div class="importante-fotos">
+
+        <ion-icon name="information-circle" class="importante-icono">
+        </ion-icon>
+
+        <div class="importante-contenido">
+
+          <p class="importante-titulo">
+            Importante
+          </p>
+
+          <p class="importante-texto">
+            Las fotos deben ser nítidas y representar fielmente el plato.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- BOTÓN GUARDAR -->
+
+    <ion-button expand="block" [disabled]="guardando" (click)="guardar()">
+
+      {{ guardando ? 'Guardando...' : 'Guardar plato' }}
+
+    </ion-button>
+
+
+    <!-- MENSAJE -->
+
+    @if (mensaje) {
+
+    <p class="ion-text-center">
+      {{ mensaje }}
+    </p>
+
+    }
+
+  </form>
+
+</ion-content>

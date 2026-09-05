@@ -10,32 +10,55 @@
     <ion-item>
       <ion-label position="floating">Nombres</ion-label>
       <ion-input formControlName="nombres"></ion-input>
-    </ion-item>
+      </ion-item>
+      @if (invalido('nombres')) {
+      <p class="error-campo">{{ mensajeError('nombres') }}</p>
+      }
+    
 
     <ion-item>
       <ion-label position="floating">Apellidos</ion-label>
       <ion-input formControlName="apellidos"></ion-input>
-    </ion-item>
+      </ion-item>
+      @if (invalido('apellidos')) {
+      <p class="error-campo">{{ mensajeError('apellidos') }}</p>
+      }
+    
 
     <ion-item>
       <ion-label position="floating">DNI</ion-label>
       <ion-input formControlName="dni" type="number"></ion-input>
-    </ion-item>
+      </ion-item>
+      @if (invalido('dni')) {
+      <p class="error-campo">{{ mensajeError('dni') }}</p>
+      }
+    
 
     <ion-item>
       <ion-label position="floating">CUIL (formato 20-12345678-9)</ion-label>
       <ion-input formControlName="cuil"></ion-input>
-    </ion-item>
+      </ion-item>
+      @if (invalido('cuil')) {
+      <p class="error-campo">{{ mensajeError('cuil') }}</p>
+      }
+    
 
     <ion-item>
       <ion-label position="floating">Email</ion-label>
       <ion-input formControlName="email" type="email"></ion-input>
-    </ion-item>
+      </ion-item>
+      @if (invalido('email')) {
+      <p class="error-campo">{{ mensajeError('email') }}</p>
+      }
+    
 
     <ion-item>
       <ion-label position="floating">Contraseña</ion-label>
       <ion-input formControlName="password" type="password"></ion-input>
     </ion-item>
+    @if (invalido('password')) {
+    <p class="error-campo">{{ mensajeError('password') }}</p>
+    }
 
     <ion-item>
       <ion-label>Perfil</ion-label>
@@ -45,6 +68,9 @@
         }
       </ion-select>
     </ion-item>
+    @if (invalido('perfil')) {
+    <p class="error-campo">{{ mensajeError('perfil') }}</p>
+    }
 
     <div class="ion-padding-top">
       <ion-button expand="block" fill="outline" type="button" (click)="sacarFoto()">

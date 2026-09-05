@@ -1,0 +1,73 @@
+<ion-content [fullscreen]="true">
+  @if (usuario(); as persona) {
+    <div class="principal">
+      <!-- Encabezado con el imagotipo horizontal sobre la barra de navegación -->
+      <header class="cabecera">
+        <app-logo-marca
+          composicion="horizontal"
+          variante="crema"
+          [tamanio]="44"
+          [animado]="false"
+          [nombre]="restaurante.nombre"
+        />
+        <p class="lema">{{ restaurante.lema }}</p>
+      </header>
+
+      <!-- Ficha del usuario con sesión iniciada, en el color de su perfil -->
+      <section
+        class="ficha-usuario"
+        [style.--color-perfil]="colorPerfil()"
+        [style.--texto-perfil]="textoSobrePerfil()"
+      >
+        <div class="avatar">
+          @if (persona.foto_url) {
+            <img [src]="persona.foto_url" [alt]="'Foto de ' + persona.nombres" />
+          } @else {
+            <span>{{ persona.nombres.charAt(0) }}{{ persona.apellidos.charAt(0) }}</span>
+          }
+        </div>
+        <div class="datos">
+          <p class="saludo">Buen servicio,</p>
+          <h1 class="nombre">{{ persona.nombres }} {{ persona.apellidos }}</h1>
+          <span class="etiqueta-perfil">{{ nombrePerfil() }}</span>
+        </div>
+      </section>
+
+      <!-- Datos de la cuenta -->
+      <section class="tarjeta detalle">
+        <h2 class="titulo-seccion">Tu cuenta</h2>
+        <dl>
+          <div><dt>Correo electrónico</dt><dd>{{ persona.correo }}</dd></div>
+          @if (persona.dni) {
+            <div><dt>Documento</dt><dd>{{ persona.dni }}</dd></div>
+          }
+          @if (persona.cuil) {
+            <div><dt>CUIL</dt><dd>{{ persona.cuil }}</dd></div>
+          }
+          <div><dt>Perfil</dt><dd>{{ nombrePerfil() }}</dd></div>
+        </dl>
+      </section>
+
+      <!-- Módulos que se van a construir en las próximas entregas -->
+      <section class="modulos">
+        <h2 class="titulo-seccion">Próximos módulos</h2>
+        <ul>
+          @for (modulo of modulosPendientes; track modulo) {
+            <li>
+              <span class="punto" aria-hidden="true"></span>
+              {{ modulo }}
+              <span class="estado">En desarrollo</span>
+            </li>
+          }
+        </ul>
+      </section>
+
+      <!-- Cierre de sesión -->
+      <footer class="pie">
+        <button type="button" class="boton-contorno" (click)="cerrarSesion()">
+          Cerrar sesión
+        </button>
+      </footer>
+    </div>
+  }
+</ion-content>
