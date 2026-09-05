@@ -184,6 +184,18 @@
   white-space: nowrap;
 }
 
+/* «Disponible» es una confirmación: color éxito del manual. */
+.estado-listo {
+  background: var(--exito);
+}
+
+/* Los módulos ya terminados se abren desde acá. */
+.modulos a {
+  color: var(--texto-sobre-color);
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+}
+
 /* --- Cierre de sesión ----------------------------------------------------- */
 
 .pie {

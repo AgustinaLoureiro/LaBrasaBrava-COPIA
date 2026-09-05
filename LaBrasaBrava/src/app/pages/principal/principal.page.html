@@ -50,13 +50,18 @@
 
       <!-- Módulos que se van a construir en las próximas entregas -->
       <section class="modulos">
-        <h2 class="titulo-seccion">Próximos módulos</h2>
+        <h2 class="titulo-seccion">Módulos</h2>
         <ul>
-          @for (modulo of modulosPendientes; track modulo) {
+          @for (modulo of modulos; track modulo.nombre) {
             <li>
               <span class="punto" aria-hidden="true"></span>
-              {{ modulo }}
-              <span class="estado">En desarrollo</span>
+              @if (modulo.ruta) {
+                <a [routerLink]="modulo.ruta">{{ modulo.nombre }}</a>
+                <span class="estado estado-listo">Disponible</span>
+              } @else {
+                {{ modulo.nombre }}
+                <span class="estado">En desarrollo</span>
+              }
             </li>
           }
         </ul>

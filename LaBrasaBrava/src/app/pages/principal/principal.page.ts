@@ -1,5 +1,5 @@
 import { Component, inject, computed, ChangeDetectionStrategy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { IonContent } from '@ionic/angular';
 
 import { LogoMarcaComponent } from '../../componentes/logo-marca/logo-marca.component';
@@ -25,7 +25,7 @@ import { RESTAURANTE } from '../../nucleo/marca';
 @Component({
   selector: 'app-principal',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonContent, LogoMarcaComponent],
+  imports: [IonContent, LogoMarcaComponent, RouterLink],
   templateUrl: './principal.page.html',
   styleUrl: './principal.page.scss',
 })
@@ -55,13 +55,21 @@ export class PrincipalPage {
   });
 
   /** Módulos que va a ver este perfil. Se completan en las próximas entregas. */
-  protected readonly modulosPendientes = [
-    'Alta de empleados',
-    'Carta de platos y bebidas',
-    'Gestión de mesas',
-    'Lista de espera',
-    'Pedidos y comanda',
-    'Encuestas y estadísticas',
+  /**
+   * Módulos de la aplicación. Los que ya tienen pantalla llevan su ruta y
+   * se abren desde acá; el resto queda anunciado como pendiente hasta que
+   * el integrante que lo tiene asignado lo termine.
+   */
+  protected readonly modulos: readonly { nombre: string; ruta: string | null }[] = [
+    { nombre: 'Alta de empleados', ruta: '/empleado' },
+    { nombre: 'Alta de platos', ruta: '/plato' },
+    { nombre: 'Registro de clientes', ruta: '/registro-cliente' },
+    { nombre: 'Aprobación de clientes', ruta: '/aprobacion-clientes' },
+    { nombre: 'Lista de espera', ruta: '/lista-espera' },
+    { nombre: 'Encuesta de satisfacción', ruta: '/encuesta' },
+    { nombre: 'Alta de bebidas', ruta: null },
+    { nombre: 'Gestión de mesas', ruta: null },
+    { nombre: 'Pedidos y comanda', ruta: null },
   ];
 
   /**
