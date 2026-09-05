@@ -1,0 +1,170 @@
+// =====================================================================
+// TFI 2026 — Brasa Brava · Sistema de diseño
+// =====================================================================
+// Traducción literal del manual de identidad de la marca, versión 3
+// (Diseño/MANUAL-DE-MARCA.md). Es la única fuente de verdad de colores,
+// tipografías y tamaños: ninguna pantalla escribe un color ni un tamaño
+// suelto, todas leen de acá.
+//
+// CAMBIO IMPORTANTE DE LA VERSIÓN 3 (04-09-2026):
+//   El fondo por defecto de TODA pantalla pasó a ser crema trigo con
+//   texto carbón. Terracota, ladrillo y naranja quedaron reservados para
+//   encabezados, tarjetas de énfasis y botones, y NUNCA se usan como
+//   fondo completo de pantalla. Oliva sigue siendo el fondo alterno para
+//   separar módulos.
+//
+// Reglas que la paleta cumple:
+//   · Sin fondos blancos ni grises claros.
+//   · Sin fondos negros ni modo oscuro.
+//   · Contraste nítido entre textos y fondos.
+//   · Ningún texto por debajo de 16 píxeles.
+// =====================================================================
+
+:root {
+  // ===================================================================
+  // 1. PALETA DE LA MARCA (códigos exactos del manual)
+  // ===================================================================
+  --crema-trigo:     #f0dfc6; // FONDO PRINCIPAL de la aplicación
+  --oliva-ahumada:   #5c6b46; // Fondo alterno para separar módulos
+  --naranja-brasa:   #e2622c; // Primario: botones, íconos activos, progreso
+  --ambar-ceniza:    #f2a63b; // Secundario: destacados, etiquetas y títulos
+  --terracota:       #8e3418; // Encabezados y superficies de énfasis
+  --ladrillo:        #a83e1e; // Acentos y tarjetas destacadas
+  --brasa-profunda:  #6b2a13; // Barras de navegación
+  --carbon-parrilla: #2e2a28; // TEXTO sobre crema y ámbar
+
+  // --- Colores semánticos --------------------------------------------
+  --exito:       #3f8f5b; // Pedido listo, alta confirmada
+  --alerta:      #e0a72e; // Pendiente de aprobación, demora en cocina
+  --error:       #c2352a; // Validación fallida (siempre con vibración)
+  --informacion: #3c7e92; // Avisos, notificaciones y estados de espera
+
+  // ===================================================================
+  // 2. ROLES (cómo se usa cada color; las pantallas usan estos nombres)
+  // ===================================================================
+
+  // --- Texto sobre el fondo crema ------------------------------------
+  --texto-principal:  var(--carbon-parrilla);
+  --texto-secundario: #6f6257;            // Carbón aclarado, derivado
+  --texto-destacado:  var(--ladrillo);    // El ámbar no contrasta sobre crema
+  // --- Texto sobre los colores oscuros de la marca --------------------
+  --texto-sobre-color: var(--crema-trigo);
+
+  // --- Superficies ----------------------------------------------------
+  // Las tarjetas comunes son un crema apenas más hondo, para separarse
+  // del fondo sin romper la regla de que crema es la superficie base.
+  --superficie:         #e6d3b4;
+  --superficie-hundida: #e1cca8;          // Campos de formulario
+  --tarjeta-enfasis:    var(--ladrillo);  // Tarjeta destacada, con texto crema
+  --encabezado:         var(--terracota); // Encabezados de pantalla
+  --barra-navegacion:   var(--brasa-profunda);
+
+  --borde:        rgba(142, 52, 24, 0.3);
+  --borde-fuerte: var(--terracota);
+  --sombra:       0 0.4rem 1.1rem rgba(46, 42, 40, 0.16);
+  --sombra-alta:  0 0.6rem 1.6rem rgba(46, 42, 40, 0.24);
+
+  // --- Fondos que cubren toda la pantalla ------------------------------
+  --fondo-app: var(--crema-trigo);
+  --fondo-modulo: var(--oliva-ahumada);
+  // El spinner es la única superficie naranja a pantalla completa, y el
+  // manual lo pide expresamente así.
+  --fondo-espera: var(--naranja-brasa);
+
+  // ===================================================================
+  // 3. TIPOGRAFÍAS
+  // ===================================================================
+  // Montserrat: títulos, botones, números de mesa y precios.
+  // Source Sans 3: cuerpo, descripciones, validaciones y encuestas.
+  --tipografia-titulos: 'Montserrat', 'Segoe UI', system-ui, sans-serif;
+  --tipografia-cuerpo: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+
+  // --- Escala tipográfica del manual (tamaño / interlineado · peso) ---
+  --texto-display: 900 2.5rem / 2.75rem var(--tipografia-titulos);      // 40 / 44 · 900
+  --texto-titulo: 800 1.75rem / 2.125rem var(--tipografia-titulos);     // 28 / 34 · 800
+  --texto-subtitulo: 700 1.3125rem / 1.625rem var(--tipografia-titulos); // 21 / 26 · 700
+  --texto-cuerpo: 400 1.125rem / 1.625rem var(--tipografia-cuerpo);     // 18 / 26 · 400
+  --texto-boton: 800 1.125rem / 1.25rem var(--tipografia-titulos);      // 18 · 800
+  --texto-ayuda: 600 1rem / 1.375rem var(--tipografia-cuerpo);          // 16 / 22 · 600
+
+  // Espaciado entre letras leve para las mayúsculas de Montserrat.
+  --espaciado-mayusculas: 0.04em;
+
+  // ===================================================================
+  // 4. MEDIDAS
+  // ===================================================================
+  --alto-boton: 3.5rem;   // 56 píxeles, tal como fija el manual
+  --radio: 1rem;
+  --radio-chico: 0.65rem;
+  --radio-grande: 1.5rem;
+
+  --espacio-minimo: 0.375rem;
+  --espacio-chico: 0.625rem;
+  --espacio: 1rem;
+  --espacio-grande: 1.5rem;
+
+  // ===================================================================
+  // 5. MAPEO SOBRE LAS VARIABLES DE IONIC
+  // ===================================================================
+  --ion-background-color: #f0dfc6;
+  --ion-background-color-rgb: 240, 223, 198;
+  --ion-text-color: #2e2a28;
+  --ion-text-color-rgb: 46, 42, 40;
+  --ion-font-family: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+
+  // Primario: naranja brasa, con texto crema encima.
+  --ion-color-primary: #e2622c;
+  --ion-color-primary-rgb: 226, 98, 44;
+  --ion-color-primary-contrast: #f0dfc6;
+  --ion-color-primary-contrast-rgb: 240, 223, 198;
+  --ion-color-primary-shade: #c75627;
+  --ion-color-primary-tint: #e57241;
+
+  // Secundario: ámbar ceniza, con texto carbón encima.
+  --ion-color-secondary: #f2a63b;
+  --ion-color-secondary-rgb: 242, 166, 59;
+  --ion-color-secondary-contrast: #2e2a28;
+  --ion-color-secondary-contrast-rgb: 46, 42, 40;
+  --ion-color-secondary-shade: #d59234;
+  --ion-color-secondary-tint: #f3af4f;
+
+  --ion-color-success: #3f8f5b;
+  --ion-color-success-rgb: 63, 143, 91;
+  --ion-color-success-contrast: #f0dfc6;
+  --ion-color-success-contrast-rgb: 240, 223, 198;
+  --ion-color-success-shade: #377e50;
+  --ion-color-success-tint: #529a6b;
+
+  --ion-color-warning: #e0a72e;
+  --ion-color-warning-rgb: 224, 167, 46;
+  --ion-color-warning-contrast: #2e2a28;
+  --ion-color-warning-contrast-rgb: 46, 42, 40;
+  --ion-color-warning-shade: #c59328;
+  --ion-color-warning-tint: #e3b043;
+
+  --ion-color-danger: #c2352a;
+  --ion-color-danger-rgb: 194, 53, 42;
+  --ion-color-danger-contrast: #f0dfc6;
+  --ion-color-danger-contrast-rgb: 240, 223, 198;
+  --ion-color-danger-shade: #ab2f25;
+  --ion-color-danger-tint: #c8493f;
+
+  // Información (avisos y estados de espera).
+  --ion-color-tertiary: #3c7e92;
+  --ion-color-tertiary-rgb: 60, 126, 146;
+  --ion-color-tertiary-contrast: #f0dfc6;
+  --ion-color-tertiary-contrast-rgb: 240, 223, 198;
+  --ion-color-tertiary-shade: #356f80;
+  --ion-color-tertiary-tint: #508b9d;
+}
+
+// El enunciado y el manual prohíben el modo oscuro: se ignora por completo
+// la preferencia del sistema y se mantiene siempre la misma paleta.
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ion-background-color: #f0dfc6;
+    --ion-background-color-rgb: 240, 223, 198;
+    --ion-text-color: #2e2a28;
+    --ion-text-color-rgb: 46, 42, 40;
+  }
+}

@@ -1,0 +1,375 @@
+/* =====================================================================
+   TFI 2026 — Brasa Brava · Estilos globales
+   =====================================================================
+   Acá viven las piezas que se repiten en toda la aplicación: la escala
+   tipográfica del manual de marca, las tarjetas, los botones y los
+   campos de formulario. Cada pantalla nueva debería poder armarse con
+   estas clases sin inventar colores ni tamaños propios.
+   ===================================================================== */
+
+/* Tipografías de la marca: Montserrat para títulos y botones,
+   Source Sans 3 para el cuerpo de texto. */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Source+Sans+3:wght@400;600;700&display=swap');
+
+@import '@ionic/angular/css/core.css';
+@import '@ionic/angular/css/normalize.css';
+@import '@ionic/angular/css/structure.css';
+@import '@ionic/angular/css/typography.css';
+@import '@ionic/angular/css/display.css';
+
+@import '@ionic/angular/css/padding.css';
+@import '@ionic/angular/css/flex-utils.css';
+
+/* =====================================================================
+   1. Base
+   ===================================================================== */
+
+body {
+  font: var(--texto-cuerpo);
+  color: var(--texto-principal);
+}
+
+/* Ningún fondo neutro: el degradado cálido cubre toda la superficie. */
+ion-content {
+  --background: var(--fondo-app);
+  --color: var(--texto-principal);
+}
+
+/* Pantallas de módulos que usan el fondo alterno oliva. */
+ion-content.fondo-modulo {
+  --background: var(--fondo-modulo);
+}
+
+ion-header ion-toolbar {
+  --background: var(--barra-navegacion);
+  --color: var(--texto-principal);
+  --border-color: var(--borde-fuerte);
+}
+
+ion-title {
+  font: var(--texto-subtitulo);
+  letter-spacing: var(--espaciado-mayusculas);
+}
+
+/* =====================================================================
+   2. Escala tipográfica del manual
+   =====================================================================
+   Los títulos y el cuerpo heredan el color de su contenedor: sobre el
+   fondo crema toman el carbón del body, y dentro de una superficie de
+   color (oliva, ladrillo, información) toman el crema sin repetirlo. */
+
+.texto-display {
+  font: var(--texto-display);
+  letter-spacing: var(--espaciado-mayusculas);
+  text-transform: uppercase;
+  color: inherit;
+  margin: 0;
+}
+
+.titulo-pantalla {
+  font: var(--texto-titulo);
+  letter-spacing: var(--espaciado-mayusculas);
+  color: inherit;
+  margin: 0;
+}
+
+.titulo-seccion {
+  font: var(--texto-subtitulo);
+  letter-spacing: var(--espaciado-mayusculas);
+  color: inherit;
+  margin: 0;
+}
+
+.subtitulo-seccion {
+  font: var(--texto-ayuda);
+  color: var(--texto-secundario);
+  margin: 0;
+}
+
+.texto-cuerpo {
+  font: var(--texto-cuerpo);
+  color: inherit;
+  margin: 0;
+}
+
+.texto-ayuda {
+  font: var(--texto-ayuda);
+  color: var(--texto-secundario);
+  margin: 0;
+}
+
+/* =====================================================================
+   3. Tarjetas
+   ===================================================================== */
+
+.tarjeta {
+  background: var(--superficie);
+  border: 0.125rem solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: var(--espacio);
+}
+
+.tarjeta-destacada {
+  background: var(--tarjeta-enfasis);
+  border-color: var(--borde-fuerte);
+  box-shadow: var(--sombra-alta);
+  color: var(--texto-sobre-color);
+}
+
+/* =====================================================================
+   4. Botones
+   ===================================================================== */
+
+/* Botón principal: naranja brasa, alto 56 píxeles, Montserrat 800. */
+.boton-principal {
+  width: 100%;
+  min-height: var(--alto-boton);
+  padding: 0 var(--espacio-grande);
+  border: none;
+  border-radius: var(--radio-chico);
+  background: var(--naranja-brasa);
+  color: var(--texto-sobre-color);
+  font: var(--texto-boton);
+  letter-spacing: var(--espaciado-mayusculas);
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 0.25rem 0 var(--brasa-profunda);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
+}
+
+.boton-principal:hover {
+  background: var(--ladrillo);
+}
+
+.boton-principal:active {
+  transform: translateY(0.2rem);
+  box-shadow: 0 0.05rem 0 var(--brasa-profunda);
+}
+
+/* Botón secundario: ámbar ceniza con texto carbón. */
+.boton-secundario {
+  width: 100%;
+  min-height: var(--alto-boton);
+  padding: 0 var(--espacio-grande);
+  border: none;
+  border-radius: var(--radio-chico);
+  background: var(--ambar-ceniza);
+  color: var(--texto-principal);
+  font: var(--texto-boton);
+  letter-spacing: var(--espaciado-mayusculas);
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 0.25rem 0 var(--terracota);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.boton-secundario:active {
+  transform: translateY(0.2rem);
+  box-shadow: 0 0.05rem 0 var(--terracota);
+}
+
+/* Botón de contorno, para acciones de menor peso (cerrar sesión, volver). */
+.boton-contorno {
+  width: 100%;
+  min-height: var(--alto-boton);
+  padding: 0 var(--espacio-grande);
+  border: 0.15rem solid var(--borde-fuerte);
+  border-radius: var(--radio-chico);
+  background: transparent;
+  color: var(--texto-destacado);
+  font: var(--texto-boton);
+  letter-spacing: var(--espaciado-mayusculas);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.boton-contorno:hover,
+.boton-contorno:active {
+  background: var(--ambar-ceniza);
+  color: var(--texto-principal);
+}
+
+/* =====================================================================
+   5. Campos de formulario
+   ===================================================================== */
+
+.campo {
+  display: grid;
+  gap: var(--espacio-minimo);
+}
+
+.campo > label {
+  font: var(--texto-ayuda);
+  font-weight: 700;
+  color: var(--texto-principal);
+  letter-spacing: 0.01em;
+}
+
+.entrada {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: var(--espacio-chico);
+  min-height: var(--alto-boton);
+  padding: 0 var(--espacio);
+  background: var(--superficie-hundida);
+  border: 0.125rem solid var(--borde);
+  border-radius: var(--radio-chico);
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+
+.entrada:focus-within {
+  border-color: var(--borde-fuerte);
+  background: #dcc49d;
+}
+
+.campo-con-error .entrada {
+  border-color: var(--error);
+  background: rgba(194, 53, 42, 0.12);
+}
+
+.entrada input {
+  flex: 1 1 auto;
+  /* Sin esto el ancho propio del campo empuja la pantalla hacia la derecha. */
+  min-width: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--texto-principal);
+  font: var(--texto-cuerpo);
+  font-weight: 600;
+}
+
+.entrada input::placeholder {
+  color: rgba(46, 42, 40, 0.5);
+  font-weight: 400;
+}
+
+/* Evita que el navegador pinte el fondo claro del autocompletado. */
+.entrada input:-webkit-autofill,
+.entrada input:-webkit-autofill:hover,
+.entrada input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--texto-principal);
+  caret-color: var(--texto-principal);
+  transition: background-color 100000s ease-in-out 0s;
+}
+
+/* Mensaje de validación: color de error, texto completo y en español. */
+.mensaje-validacion {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-minimo);
+  margin: 0;
+  padding: var(--espacio-minimo) var(--espacio-chico);
+  border-radius: var(--radio-chico);
+  background: var(--error);
+  color: var(--texto-sobre-color);
+  font: var(--texto-ayuda);
+}
+
+.mensaje-validacion::before {
+  content: '\26A0';
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+/* =====================================================================
+   6. Etiquetas de estado (usan los colores semánticos del manual)
+   ===================================================================== */
+
+.etiqueta {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  font: var(--texto-ayuda);
+  font-weight: 700;
+  letter-spacing: var(--espaciado-mayusculas);
+}
+
+.etiqueta-exito {
+  background: var(--exito);
+  color: var(--texto-sobre-color);
+}
+
+.etiqueta-alerta {
+  background: var(--alerta);
+  color: var(--texto-principal);
+}
+
+.etiqueta-error {
+  background: var(--error);
+  color: var(--texto-sobre-color);
+}
+
+.etiqueta-informacion {
+  background: var(--informacion);
+  color: var(--texto-sobre-color);
+}
+
+/* =====================================================================
+   7. Mensajes emergentes (nunca se usa el alert del navegador)
+   ===================================================================== */
+
+.mensaje-correcto {
+  --background: var(--exito);
+  --color: var(--texto-sobre-color);
+}
+
+.mensaje-error {
+  --background: var(--error);
+  --color: var(--texto-sobre-color);
+}
+
+.mensaje-aviso {
+  --background: var(--informacion);
+  --color: var(--texto-sobre-color);
+}
+
+ion-toast {
+  --border-radius: var(--radio-chico);
+  --box-shadow: var(--sombra-alta);
+}
+
+ion-toast::part(header) {
+  font: var(--texto-subtitulo);
+  font-size: 1.125rem;
+}
+
+ion-toast::part(message) {
+  font: var(--texto-ayuda);
+}
+
+ion-toast::part(button) {
+  font-family: var(--tipografia-titulos);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: var(--espaciado-mayusculas);
+}
+
+/* =====================================================================
+   8. Accesibilidad
+   ===================================================================== */
+
+:focus-visible {
+  outline: 0.2rem solid var(--terracota);
+  outline-offset: 0.15rem;
+}
+
+/* Barra de desplazamiento en colores de la marca, para que ningún borde
+   de la pantalla quede en un gris neutro. */
+::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--superficie);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--terracota);
+  border-radius: 999px;
+}
