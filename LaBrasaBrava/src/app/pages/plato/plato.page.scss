@@ -1,321 +1,82 @@
-// ======================================================
-// AGREGAR PLATO - BRASA BRAVA
-// Diseño compacto para Android
-// ======================================================
+/* Reutiliza el layout en grilla de la página principal */
+.principal {
+    min-height: 100%;
+    padding: calc(var(--espacio) + var(--ion-safe-area-top, 0px)) var(--espacio) calc(var(--espacio) + var(--ion-safe-area-bottom, 0px));
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--espacio);
+    align-content: start;
+}
 
-// ------------------------------------------------------
-// CONTENEDOR PRINCIPAL
-// ------------------------------------------------------
+.volver {
+    justify-self: start;
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--texto-secundario);
+    text-decoration: underline;
+    text-underline-offset: 0.2rem;
+    cursor: pointer;
+}
 
-ion-content {
-    --background: var(--brasa-crema);
+/* --- Cabecera ----------------------------------------------------------- */
 
-    --padding-start: 8px;
-    --padding-end: 8px;
-    --padding-top: 0;
-    --padding-bottom: 8px;
+.cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espacio-chico);
+    padding: var(--espacio-chico) var(--espacio);
+    border-radius: var(--radio);
+    background: var(--barra-navegacion);
+    border: 0.125rem solid var(--borde-fuerte);
+    color: var(--texto-sobre-color);
+}
+
+.cabecera .lema {
+    margin: 0;
+    font: var(--texto-ayuda);
+    color: var(--ambar-ceniza);
+    text-align: right;
 }
 
 form {
-    display: flex;
-    flex-direction: column;
-
-    width: 100%;
-    max-width: 640px;
-
-    margin: 0 auto;
+    display: grid;
+    gap: var(--espacio);
 }
 
-// ------------------------------------------------------
-// HEADER
-// ------------------------------------------------------
-
-ion-header {
-    box-shadow: none;
+.tarjeta,
+.tarjeta-destacada {
+    display: grid;
+    gap: var(--espacio-chico);
 }
-
-ion-toolbar {
-    --background: var(--brasa-terracota);
-    --color: var(--brasa-crema);
-
-    --min-height: 56px;
-
-    padding: 0 4px;
-}
-
-ion-title {
-    font-family: var(--brasa-font-display);
-
-    font-weight: 900;
-    font-size: 21px;
-
-    letter-spacing: 0.02em;
-
-    text-transform: uppercase;
-
-    color: var(--brasa-crema);
-
-    padding-inline: 4px;
-}
-
-// ------------------------------------------------------
-// INTRODUCCIÓN
-// ------------------------------------------------------
-
-.introduccion {
-    display: flex;
-    align-items: center;
-
-    gap: 7px;
-
-    margin: 9px 4px 8px;
-
-    font-family: var(--brasa-font-cuerpo);
-
-    font-size: 11px;
-    line-height: 14px;
-
-    font-weight: 600;
-
-    color: var(--brasa-carbon);
-}
-
-.icono-info {
-    min-width: 18px;
-    min-height: 18px;
-
-    color: var(--brasa-naranja);
-
-    font-size: 18px;
-}
-
-// ------------------------------------------------------
-// CAMPOS PRINCIPALES
-// ------------------------------------------------------
-
-ion-item {
-    --background: #fffaf3;
-    --border-color: transparent;
-    --border-width: 0;
-
-    --highlight-color-focused: var(--brasa-naranja);
-
-    --padding-start: 13px;
-    --inner-padding-end: 13px;
-
-    --color: var(--brasa-carbon);
-
-    border-radius: 12px;
-
-    margin: 0 0 8px;
-
-    min-height: 62px;
-
-    box-shadow:
-        0 2px 6px rgba(46, 42, 40, 0.08);
-
-    overflow: hidden;
-
-    transition:
-        transform 0.15s ease,
-        box-shadow 0.15s ease;
-}
-
-ion-item.item-has-focus {
-    box-shadow:
-        0 0 0 2px rgba(226, 98, 44, 0.18),
-        0 3px 8px rgba(46, 42, 40, 0.10);
-}
-
-ion-label {
-    --color: var(--brasa-terracota) !important;
-
-    font-family: var(--brasa-font-display);
-
-    font-weight: 800;
-
-    font-size: 11px;
-
-    line-height: 14px;
-
-    letter-spacing: 0.02em;
-
-    text-transform: uppercase;
-
-    margin-top: 7px;
-    margin-bottom: 1px;
-}
-
-ion-input {
-    --color: var(--brasa-carbon);
-    --placeholder-color: rgba(46, 42, 40, 0.45);
-
-    font-family: var(--brasa-font-cuerpo);
-
-    font-size: 17px;
-
-    line-height: 21px;
-
-    font-weight: 400;
-
-    margin-bottom: 5px;
-}
-
-// ------------------------------------------------------
-// CAMPOS PEQUEÑOS
-// ------------------------------------------------------
 
 .campos-secundarios {
     display: grid;
-
     grid-template-columns: 1fr 1fr;
-
-    gap: 8px;
-
-    width: 100%;
+    gap: var(--espacio-chico);
 }
 
-.campos-secundarios ion-item {
-    min-height: 74px;
-
-    margin-bottom: 0;
-}
-
-.campos-secundarios ion-label {
-    font-size: 10px;
-
-    line-height: 13px;
-
-    margin-top: 8px;
-}
-
-.campos-secundarios ion-input {
-    font-size: 18px;
-
-    line-height: 21px;
-
-    font-family: var(--brasa-font-display);
-
-    font-weight: 700;
-
-    margin-bottom: 6px;
-}
-
-// ------------------------------------------------------
-// ERRORES
-// ------------------------------------------------------
-
-.error-campo {
-    color: var(--brasa-error);
-
-    font-family: var(--brasa-font-cuerpo);
-
-    font-size: 11px;
-
-    line-height: 14px;
-
-    font-weight: 600;
-
-    margin: -3px 4px 7px;
-}
-
-// ------------------------------------------------------
-// SECCIÓN FOTOS
-// ------------------------------------------------------
-
-.seccion-fotos {
-    margin-top: 10px;
-
-    background: #fffaf3;
-
-    border-radius: 13px;
-
-    overflow: hidden;
-
-    box-shadow:
-        0 3px 8px rgba(46, 42, 40, 0.09);
-}
-
-.encabezado-fotos {
-    background: var(--brasa-oliva);
-
-    padding: 9px 12px 8px;
-}
-
-.titulo-seccion {
-    display: flex;
-    align-items: center;
-
-    gap: 6px;
-
-    font-family: var(--brasa-font-display);
-
-    font-weight: 800;
-
-    font-size: 12px;
-
-    line-height: 15px;
-
-    letter-spacing: 0.02em;
-
-    text-transform: uppercase;
-
-    color: var(--brasa-crema);
-
-    margin: 0;
-}
-
-.subtitulo-fotos {
-    font-family: var(--brasa-font-cuerpo);
-
-    font-size: 10px;
-
-    line-height: 13px;
-
-    color: var(--brasa-crema);
-
-    margin: 3px 0 0;
-}
-
-// ------------------------------------------------------
-// GRILLA DE FOTOS
-// ------------------------------------------------------
-
+/* --- Fotos --- */
 .grilla-fotos {
     display: grid;
-
     grid-template-columns: repeat(3, 1fr);
+    gap: var(--espacio-chico);
 
-    gap: 7px;
-
-    width: 100%;
-
-    padding: 9px 10px;
 }
 
 .contenedor-foto {
-    position: relative;
-
     aspect-ratio: 1 / 1;
-
-    border-radius: 9px;
-
+    border-radius: var(--radio-chico);
     overflow: hidden;
-
-    background: var(--brasa-crema);
-
+    background: var(--superficie-hundida);
+    border: 0.15rem dashed var(--borde-fuerte);
+    padding: 0;
+    cursor: pointer;
     display: flex;
-
     align-items: center;
     justify-content: center;
-
-    cursor: pointer;
-
-    border: 1.5px dashed rgba(92, 107, 70, 0.55);
-
-    transition:
-        transform 0.15s ease,
-        border-color 0.15s ease;
+    transition: transform 0.15s ease;
 }
 
 .contenedor-foto:active {
@@ -325,295 +86,38 @@ ion-input {
 .imagen-foto {
     width: 100%;
     height: 100%;
-
+    border-radius: var(--radio-chico);
+    border: 0.125rem solid var(--borde-fuerte);
     object-fit: cover;
-
     object-position: center;
 }
 
 .placeholder-foto {
-    width: 100%;
-    height: 100%;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-    justify-content: center;
-
-    gap: 4px;
-
-    color: var(--brasa-terracota);
-
-    font-family: var(--brasa-font-display);
-
-    font-size: 10px;
-
+    font-family: var(--tipografia-titulos);
     font-weight: 800;
-
-    text-align: center;
-
-    padding: 5px;
+    font-size: 0.8rem;
+    color: var(--texto-sobre-color);
 }
 
-.placeholder-foto::before {
-    content: "+";
-
-    width: 28px;
-    height: 28px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 50%;
-
-    border: 1.5px solid var(--brasa-naranja);
-
-    color: var(--brasa-naranja);
-
-    font-size: 20px;
-
-    line-height: 1;
+.aviso {
+    border: 0.125rem solid var(--alerta);
+    border-left: 0.4rem solid var(--alerta);
+    background: rgba(224, 167, 46, 0.32); // subido de 0.14 a 0.32 — ahí sí se distingue del fondo crema
+    border-radius: var(--radio-chico);
+    padding: var(--espacio-chico);
 }
 
-// ------------------------------------------------------
-// BLOQUE IMPORTANTE
-// ------------------------------------------------------
-
-.importante-fotos {
-    display: flex;
-
-    align-items: center;
-
-    gap: 7px;
-
-    margin: 0 10px 9px;
-
-    padding: 7px 9px;
-
-    border: 1px solid var(--brasa-naranja);
-
-    border-radius: 9px;
-
-    background: rgba(242, 166, 59, 0.12);
+.aviso .texto-ayuda {
+    color: var(--texto-principal);
 }
 
-.importante-icono {
-    flex-shrink: 0;
-
-    color: var(--brasa-naranja);
-
-    font-size: 17px;
-}
-
-.importante-contenido {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 1px;
-}
-
-.importante-titulo {
-    margin: 0;
-
-    font-family: var(--brasa-font-display);
-
-    font-size: 10px;
-
-    line-height: 12px;
-
+.aviso strong {
+    color: var(--brasa-profunda); // el ámbar puro sobre este fondo más saturado pierde contraste; usamos un tono más oscuro para el "Importante:"
+    font-family: var(--tipografia-titulos);
     font-weight: 800;
-
-    color: var(--brasa-carbon);
-
-    text-transform: uppercase;
 }
 
-.importante-texto {
-    margin: 0;
-
-    font-family: var(--brasa-font-cuerpo);
-
-    font-size: 9px;
-
-    line-height: 12px;
-
-    color: var(--brasa-carbon);
-}
-
-// ------------------------------------------------------
-// BOTÓN FINAL
-// ------------------------------------------------------
-
-ion-button {
-    --background: var(--brasa-naranja);
-
-    --background-activated: var(--brasa-ladrillo);
-
-    --background-hover: var(--brasa-ladrillo);
-
-    --color: var(--brasa-crema);
-
-    --border-radius: 10px;
-
-    height: 48px;
-
-    font-family: var(--brasa-font-display);
-
-    font-size: 14px;
-
-    font-weight: 800;
-
-    letter-spacing: 0.03em;
-
-    margin-top: 10px;
-
-    margin-bottom: 2px;
-
-    box-shadow:
-        0 3px 7px rgba(46, 42, 40, 0.14);
-}
-
-ion-button[disabled] {
-    opacity: 0.55;
-}
-
-// ------------------------------------------------------
-// MENSAJE FINAL
-// ------------------------------------------------------
-
-p.ion-text-center {
-    margin: 8px 0 0;
-
-    padding: 8px 10px;
-
-    border-radius: 9px;
-
-    font-family: var(--brasa-font-cuerpo);
-
-    font-size: 11px;
-
-    line-height: 14px;
-
-    font-weight: 700;
-
-    text-align: center;
-
-    background: var(--brasa-exito);
-
-    color: var(--brasa-crema);
-}
-
-// ======================================================
-// RESPONSIVE
-// ======================================================
-
-// ------------------------------------------------------
-// ANDROID MUY PEQUEÑO
-// ------------------------------------------------------
-
-@media (max-width: 350px) {
-
-    ion-content {
-        --padding-start: 6px;
-        --padding-end: 6px;
-    }
-
-    ion-title {
-        font-size: 19px;
-    }
-
-    .introduccion {
-        font-size: 10px;
-        margin-top: 7px;
-        margin-bottom: 6px;
-    }
-
-    ion-item {
-        min-height: 58px;
-
-        --padding-start: 11px;
-        --inner-padding-end: 11px;
-    }
-
-    ion-label {
-        font-size: 10px;
-    }
-
-    ion-input {
-        font-size: 16px;
-    }
-
-    .campos-secundarios ion-item {
-        min-height: 68px;
-    }
-
-    .campos-secundarios ion-input {
-        font-size: 17px;
-    }
-
-    .seccion-fotos {
-        margin-top: 8px;
-    }
-
-    .grilla-fotos {
-        gap: 5px;
-        padding: 7px 8px;
-    }
-
-    .importante-fotos {
-        margin-left: 8px;
-        margin-right: 8px;
-        margin-bottom: 7px;
-    }
-
-    ion-button {
-        height: 45px;
-        margin-top: 8px;
-    }
-}
-
-// ------------------------------------------------------
-// PANTALLAS MEDIANAS
-// ------------------------------------------------------
-
-@media (min-width: 480px) {
-
-    ion-content {
-        --padding-start: 16px;
-        --padding-end: 16px;
-    }
-
-    ion-item {
-        min-height: 70px;
-    }
-
-    ion-label {
-        font-size: 12px;
-    }
-    
-
-    ion-input {
-        font-size: 18px;
-    }
-
-    .campos-secundarios ion-item {
-        min-height: 82px;
-    }
-
-    .titulo-seccion {
-        font-size: 14px;
-    }
-
-    .subtitulo-fotos {
-        font-size: 11px;
-    }
-
-    .importante-texto {
-        font-size: 10px;
-    }
+.pie {
+    display: grid;
+    gap: var(--espacio-chico);
 }
