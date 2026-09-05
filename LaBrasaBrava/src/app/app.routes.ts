@@ -3,13 +3,19 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'registro-cliente',
     pathMatch: 'full',
   },
-  {
+  /*{
     path: 'login',
     loadComponent: () => import('./pages/login/login.page').then((m) => m.LoginPage),
+  },*/
+
+  {
+    path: 'registro-cliente',
+    loadComponent: () => import('./pages/registro-cliente/registro-cliente.page').then( m => m.RegistroClientePage)
   },
+  
   {
     path: 'home',
     loadComponent: () => import('./home/home.page').then((m) => m.HomePage),

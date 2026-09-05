@@ -6,82 +6,315 @@
 
 <ion-content class="ion-padding">
 
-  <div *ngIf="registroExitoso" class="mensaje-exito">
-    Tu registro fue enviado. Un supervisor va a revisar tus datos antes de que puedas ingresar.
+  <!-- REGISTRO EXITOSO -->
+  <div
+    *ngIf="registroExitoso"
+    class="mensaje-exito"
+  >
+    Tu registro fue enviado.
+    Un supervisor va a revisar tus datos
+    antes de que puedas ingresar.
   </div>
 
+
   <ion-card *ngIf="!registroExitoso">
+
     <ion-card-content>
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <form
+        [formGroup]="form"
+        (ngSubmit)="onSubmit()"
+      >
+        <!-- ===================== -->
+        <!-- FOTO -->
+        <!-- ===================== -->
 
         <div class="foto-container">
-          <div class="foto-preview" *ngIf="fotoPreview">
-            <img [src]="fotoPreview" alt="Foto personal" />
+          <div
+            class="foto-preview"
+            *ngIf="foto_url"
+          >
+            <img
+              [src]="foto_url"
+              alt="Foto personal"
+            />
           </div>
-          <div class="foto-placeholder" *ngIf="!fotoPreview">
-            <ion-icon name="person-circle-outline"></ion-icon>
+          <div
+            class="foto-placeholder"
+            *ngIf="!foto_url"
+          >
+            <ion-icon
+              name="person-circle-outline"
+            ></ion-icon>
           </div>
-          <ion-button (click)="tomarFoto()" fill="outline">
-            {{ fotoPreview ? 'Volver a tomar la foto' : 'Tomar foto personal' }}
+
+
+          <ion-button
+            type="button"
+            (click)="tomarFoto()"
+          >
+            {{
+              foto_url
+                ? 'Volver a tomar la foto'
+                : 'Tomar foto personal'
+            }}
           </ion-button>
+
         </div>
 
-        <ion-item>
-          <ion-label position="floating">Nombres</ion-label>
-          <ion-input formControlName="nombres" type="text"></ion-input>
-        </ion-item>
-        <ion-note color="danger" *ngIf="f['nombres'].invalid && f['nombres'].touched">
-          <ng-container *ngIf="f['nombres'].errors?.['required']">El nombre es obligatorio.</ng-container>
-          <ng-container *ngIf="f['nombres'].errors?.['minlength']">Debe tener al menos 2 caracteres.</ng-container>
-          <ng-container *ngIf="f['nombres'].errors?.['pattern']">Solo se permiten letras.</ng-container>
-        </ion-note>
+
+        <!-- ===================== -->
+        <!-- DNI -->
+        <!-- ===================== -->
+
+        <div class="qr-container">
+
+          <ion-button
+            type="button"
+            expand="block"
+            (click)="escanearDni()"
+          >
+
+            <ion-icon
+              name="qr-code-outline"
+              slot="start"
+            ></ion-icon>
+
+            Escanear DNI
+
+          </ion-button>
+
+
+          <ion-note
+            *ngIf="qrEscaneado"
+            color="success"
+          >
+            Datos autocompletados desde el DNI.
+            Podés corregirlos si hace falta.
+          </ion-note>
+
+        </div>
+
+
+        <!-- ===================== -->
+        <!-- DEBUG DNI -->
+        <!-- ===================== -->
+<!--
+        <div
+          *ngIf="codigoDetectado"
+          class="debug-qr"
+        >
+
+          <strong>
+            Formato detectado:
+          </strong>
+
+          <p>
+            {{ formatoDetectado }}
+          </p>
+
+
+          <strong>
+            Contenido:
+          </strong>
+
+          <p>
+            {{ codigoDetectado }}
+          </p>
+
+        </div>*/
+-->
+
+        <!-- ===================== -->
+        <!-- NOMBRES -->
+        <!-- ===================== -->
 
         <ion-item>
-          <ion-label position="floating">Apellidos</ion-label>
-          <ion-input formControlName="apellidos" type="text"></ion-input>
+
+          <ion-label position="stacked">
+            Nombres
+          </ion-label>
+
+          <ion-input
+            formControlName="nombres"
+            type="text"
+          ></ion-input>
+
         </ion-item>
-        <ion-note color="danger" *ngIf="f['apellidos'].invalid && f['apellidos'].touched">
-          <ng-container *ngIf="f['apellidos'].errors?.['required']">El apellido es obligatorio.</ng-container>
-          <ng-container *ngIf="f['apellidos'].errors?.['minlength']">Debe tener al menos 2 caracteres.</ng-container>
-          <ng-container *ngIf="f['apellidos'].errors?.['pattern']">Solo se permiten letras.</ng-container>
+
+
+        <ion-note
+          color="danger"
+          *ngIf="
+            f['nombres'].touched &&
+            f['nombres'].invalid
+          "
+        >
+          Ingresá un nombre válido.
         </ion-note>
+
+
+        <!-- ===================== -->
+        <!-- APELLIDOS -->
+        <!-- ===================== -->
 
         <ion-item>
-          <ion-label position="floating">DNI</ion-label>
-          <ion-input formControlName="dni" type="text" inputmode="numeric"></ion-input>
+
+          <ion-label position="stacked">
+            Apellidos
+          </ion-label>
+
+          <ion-input
+            formControlName="apellidos"
+            type="text"
+          ></ion-input>
+
         </ion-item>
-        <ion-note color="danger" *ngIf="f['dni'].invalid && f['dni'].touched">
-          <ng-container *ngIf="f['dni'].errors?.['required']">El DNI es obligatorio.</ng-container>
-          <ng-container *ngIf="f['dni'].errors?.['pattern']">Debe tener entre 7 y 8 dígitos, sin letras.</ng-container>
+
+
+        <ion-note
+          color="danger"
+          *ngIf="
+            f['apellidos'].touched &&
+            f['apellidos'].invalid
+          "
+        >
+          Ingresá un apellido válido.
         </ion-note>
+
+
+        <!-- ===================== -->
+        <!-- DNI -->
+        <!-- ===================== -->
 
         <ion-item>
-          <ion-label position="floating">Correo electrónico</ion-label>
-          <ion-input formControlName="email" type="email"></ion-input>
+
+          <ion-label position="stacked">
+            DNI
+          </ion-label>
+
+          <ion-input
+            formControlName="dni"
+            type="text"
+            inputmode="numeric"
+          ></ion-input>
+
         </ion-item>
-        <ion-note color="danger" *ngIf="f['email'].invalid && f['email'].touched">
-          <ng-container *ngIf="f['email'].errors?.['required']">El correo es obligatorio.</ng-container>
-          <ng-container *ngIf="f['email'].errors?.['email']">El formato de correo no es válido.</ng-container>
+
+
+        <ion-note
+          color="danger"
+          *ngIf="
+            f['dni'].touched &&
+            f['dni'].invalid
+          "
+        >
+          El DNI debe tener entre 7 y 8 números.
         </ion-note>
+
+
+        <!-- ===================== -->
+        <!-- EMAIL -->
+        <!-- ===================== -->
 
         <ion-item>
-          <ion-label position="floating">Contraseña</ion-label>
-          <ion-input formControlName="password" type="password"></ion-input>
+
+          <ion-label position="stacked">
+            Correo electrónico
+          </ion-label>
+
+          <ion-input
+            formControlName="email"
+            type="email"
+          ></ion-input>
+
         </ion-item>
-        <ion-note color="danger" *ngIf="f['password'].invalid && f['password'].touched">
-          <ng-container *ngIf="f['password'].errors?.['required']">La contraseña es obligatoria.</ng-container>
-          <ng-container *ngIf="f['password'].errors?.['minlength']">Debe tener al menos 6 caracteres.</ng-container>
+
+
+        <ion-note
+          color="danger"
+          *ngIf="
+            f['email'].touched &&
+            f['email'].invalid
+          "
+        >
+          Ingresá un correo electrónico válido.
         </ion-note>
 
-        <ion-note color="danger" *ngIf="errorGeneral">{{ errorGeneral }}</ion-note>
 
-        <ion-button expand="block" type="submit" [disabled]="form.invalid || enviando" class="ion-margin-top">
-          <ion-spinner *ngIf="enviando" name="crescent"></ion-spinner>
-          <span *ngIf="!enviando">Registrarme</span>
+        <!-- ===================== -->
+        <!-- PASSWORD -->
+        <!-- ===================== -->
+
+        <ion-item>
+
+          <ion-label position="stacked">
+            Contraseña
+          </ion-label>
+
+          <ion-input
+            formControlName="password"
+            type="password"
+          ></ion-input>
+
+        </ion-item>
+
+
+        <ion-note
+          color="danger"
+          *ngIf="
+            f['password'].touched &&
+            f['password'].invalid
+          "
+        >
+          La contraseña debe tener al menos
+          6 caracteres.
+        </ion-note>
+
+
+        <!-- ===================== -->
+        <!-- ERROR -->
+        <!-- ===================== -->
+
+        <ion-note
+          color="danger"
+          *ngIf="errorGeneral"
+        >
+          {{ errorGeneral }}
+        </ion-note>
+
+
+        <!-- ===================== -->
+        <!-- REGISTRAR -->
+        <!-- ===================== -->
+
+        <ion-button
+          expand="block"
+          type="submit"
+          class="ion-margin-top"
+          [disabled]="
+            form.invalid ||
+            !foto_url ||
+            enviando
+          "
+        >
+
+          <ion-spinner
+            *ngIf="enviando"
+            name="crescent"
+          ></ion-spinner>
+
+
+          <span *ngIf="!enviando">
+            Registrarme
+          </span>
+
         </ion-button>
 
+
       </form>
+
     </ion-card-content>
+
   </ion-card>
 
 </ion-content>
