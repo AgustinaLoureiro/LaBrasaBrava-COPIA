@@ -24,3 +24,10 @@ notas-personales/
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# --- Material de trabajo, fuera del repositorio -------------------------
+# Al repositorio va solo la aplicación. La documentación, el enunciado, el
+# manual de marca y las capturas de pantalla se conservan en la carpeta de
+# cada uno, pero no se suben: no hacen falta para que la aplicación corra.
+*.md
+LaBrasaBrava/docs/
