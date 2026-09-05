@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { IonContent } from '@ionic/angular';
 
-import { LogoMarcaComponent } from '../../compartido/logo-marca/logo-marca.component';
+import { LogoMarcaComponent } from '../../componentes/logo-marca/logo-marca.component';
 import { SesionService } from '../../nucleo/servicios/sesion.service';
 import { MensajesService } from '../../nucleo/servicios/mensajes.service';
 import { CargandoService } from '../../nucleo/servicios/cargando.service';
