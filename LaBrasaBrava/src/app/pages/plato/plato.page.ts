@@ -4,7 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, Validati
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonInput, IonButton, IonIcon, IonButtons, IonBackButton} from '@ionic/angular';
 import { Camera } from '@capacitor/camera';
 import { ActionSheetController } from '@ionic/angular';
-import { Supabase } from '../../services/supabase';
+import { SupabaseService } from '../../nucleo/servicios/supabase.service';
 import { Almacenamiento } from '../../services/almacenamiento';
 
 //import { IonButton } from "@ionic/angular/standalone";
@@ -34,7 +34,7 @@ function numeroPositivo(): ValidatorFn {
 export class PlatoPage{
   private constructorFormulario = inject(FormBuilder);
   private actionSheetCtrl = inject(ActionSheetController);
-  private supabase = inject(Supabase);
+  private supabase = inject(SupabaseService);
   private almacenamiento = inject(Almacenamiento);
 
   guardando = false;
@@ -220,7 +220,7 @@ export class PlatoPage{
       urlsFotos.push(url);
     }
 
-    const { error } = await this.supabase.client
+    const { error } = await this.supabase.cliente
       .from('platos')
       .insert({
         ...this.formulario.value,

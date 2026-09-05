@@ -34,7 +34,8 @@ import {
   BarcodeScanner,
   BarcodeFormat
 } from '@capacitor-mlkit/barcode-scanning';
-import { Supabase } from '../../services/supabase';
+
+import { SupabaseService } from '../../nucleo/servicios/supabase.service';
 
 @Component({
   selector: 'app-registro-cliente',
@@ -71,7 +72,7 @@ export class RegistroClientePage {
 
   constructor(
     private fb: FormBuilder,
-    private supabase: Supabase
+    private supabase: SupabaseService
   ) {
     this.form = this.fb.group({
       nombres: ['', [
@@ -256,6 +257,277 @@ export class RegistroClientePage {
           nombres,
           apellidos,
           dni,
+
+          email
+        }
+      );
+
+
+      // =====================================================
+      // VERIFICAR DNI EXISTENTE
+      // =====================================================
+
+      console.log(
+        '2. Verificando DNI existente...'
+      );
+
+
+      const {
+        data: clienteDni,
+        error: errorDni
+      } = await this.supabase.cliente
+        .from('clientes')
+        .select('id')
+        .eq('dni', dni)
+        .maybeSingle();
+
+        console.log('🟢 REGISTRO: terminó consulta DNI', {
+  clienteDni,
+  errorDni
+});
+
+
+      if (errorDni) {
+
+        console.error(
+          'Error verificando DNI:',
+          errorDni
+        );
+        throw new Error(
+          'No se pudo verificar el DNI.'
+        );
+      }
+
+
+      if (clienteDni) {
+
+        this.errorGeneral =
+          'Ya existe un cliente registrado con ese DNI.';
+        return;
+      }
+
+
+      // =====================================================
+      // VERIFICAR EMAIL EXISTENTE
+      // =====================================================
+
+      console.log(
+        '3. Verificando email existente...'
+      );
+
+
+      const {
+        data: clienteEmail,
+        error: errorEmail
+      } = await this.supabase.cliente
+        .from('clientes')
+        .select('id')
+        .eq('email', email)
+        .maybeSingle();
+
+        console.log('🟢 REGISTRO: terminó consulta EMAIL', {
+  clienteEmail,
+  errorEmail
+});
+
+
+      if (errorEmail) {
+
+        console.error(
+          'Error verificando email:',
+          errorEmail
+        );
+
+        throw new Error(
+          'No se pudo verificar el email.'
+        );
+      }
+
+
+      if (clienteEmail) {
+
+        this.errorGeneral =
+          'Ya existe un cliente registrado con ese email.';
+
+        return;
+      }
+
+
+      // =====================================================
+      // CONVERTIR FOTO A BLOB
+      // =====================================================
+
+      console.log(
+        '4. Preparando foto...'
+      );
+
+
+      const respuestaFoto =
+        await fetch(this.foto_url);
+
+
+      if (!respuestaFoto.ok) {
+
+        throw new Error(
+          'No se pudo preparar la foto.'
+        );
+      }
+
+
+      const blob =
+        await respuestaFoto.blob();
+
+        console.log('🟢 REGISTRO: foto convertida a Blob', {
+          size: blob.size,
+          type: blob.type
+});
+
+
+      console.log(
+        'Tamaño de la foto:',
+        blob.size,
+        'bytes'
+      );
+
+
+      if (blob.size === 0) {
+
+        throw new Error(
+          'La foto está vacía.'
+        );
+      }
+
+
+      // =====================================================
+      // NOMBRE DEL ARCHIVO
+      // =====================================================
+
+      const nombreArchivo =
+        `${dni}_${Date.now()}.jpg`;
+
+
+      const rutaFoto =
+        `clientes/${nombreArchivo}`;
+
+
+      console.log(
+        '5. Subiendo foto a Storage...'
+      );
+
+      console.log(
+        'Bucket:',
+        'fotos-clientes'
+      );
+
+      console.log(
+        'Ruta:',
+        rutaFoto
+      );
+
+
+      // =====================================================
+      // SUBIR FOTO
+      // =====================================================
+
+      const {
+        error: errorUpload
+      } = await this.supabase.cliente
+        .storage
+        .from('fotos-clientes')
+        .upload(
+          rutaFoto,
+          blob,
+          {
+            upsert: false
+          }
+        );
+
+
+      if (errorUpload) {
+
+        console.error(
+          'Error subiendo foto:',
+          errorUpload
+        );
+
+        throw new Error(
+          `No se pudo subir la foto: ${errorUpload.message}`
+        );
+      }
+
+
+      console.log(
+        '6. Foto subida correctamente.'
+      );
+
+
+      // =====================================================
+      // OBTENER URL
+      // =====================================================
+
+      const {
+        data: urlFoto
+      } =
+        this.supabase.cliente
+          .storage
+          .from('fotos-clientes')
+          .getPublicUrl(rutaFoto);
+
+
+      const fotoUrl =
+        urlFoto.publicUrl;
+
+
+      console.log(
+        '7. URL de la foto:',
+        fotoUrl
+      );
+
+
+      if (!fotoUrl) {
+
+        throw new Error(
+          'No se pudo obtener la URL de la foto.'
+        );
+      }
+
+
+      // =====================================================
+      // INSERTAR CLIENTE
+      // =====================================================
+
+      console.log(
+        '8. Guardando cliente en la base de datos...'
+      );
+
+
+      const {
+        data: nuevoCliente,
+        error: errorInsert
+      } =
+        await this.supabase.cliente
+          .from('clientes')
+          .insert({
+
+            nombres: nombres,
+
+            apellidos: apellidos,
+
+            dni: dni,
+
+            email: email,
+
+            password: password,
+
+            foto_url: fotoUrl,
+
+            estado: 'pendiente'
+
+          })
+          .select()
+          .single();
+
+
           email,
           foto_url: urlFoto.publicUrl,
           estado: 'pendiente'
