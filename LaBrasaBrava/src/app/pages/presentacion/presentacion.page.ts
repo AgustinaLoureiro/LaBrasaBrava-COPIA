@@ -1,10 +1,11 @@
-import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular';
 
 import { LogoCargandoComponent } from '../../componentes/logo-cargando/logo-cargando.component';
 import { GRUPO, INTEGRANTES, RESTAURANTE, nombreCompleto } from '../../nucleo/marca';
 import { SonidosService } from '../../nucleo/servicios/sonidos.service';
+import { CargandoService } from '../../nucleo/servicios/cargando.service';
 
 /**
  * Pantalla de presentación animada.
@@ -25,26 +26,41 @@ import { SonidosService } from '../../nucleo/servicios/sonidos.service';
 export class PresentacionPage implements OnInit {
   private readonly router = inject(Router);
   private readonly sonidos = inject(SonidosService);
+  private readonly cargando = inject(CargandoService);
 
   protected readonly restaurante = RESTAURANTE;
   protected readonly grupo = GRUPO;
   protected readonly integrantes = INTEGRANTES;
   protected readonly nombreCompleto = nombreCompleto;
 
-  /** Duración total de la animación antes de pasar al ingreso. */
-  private readonly DURACION_MS = 4200;
+  /**
+   * Cuánto dura el indicador de espera al pasar al ingreso.
+   * La pantalla NO avanza sola: se queda hasta que se toca «Ingresar».
+   */
+  private readonly ESPERA_MS = 3000;
 
-  async ngOnInit(): Promise<void> {
+  /** Evita que se dispare dos veces si se toca el botón repetidas veces. */
+  protected readonly pasando = signal(false);
+
+  ngOnInit(): void {
     // Requisito del enunciado: sonido al iniciar la aplicación.
     void this.sonidos.inicioDeAplicacion();
-
-    setTimeout(() => {
-      void this.router.navigateByUrl('/ingreso', { replaceUrl: true });
-    }, this.DURACION_MS);
   }
 
-  /** Permite saltear la animación tocando la pantalla. */
-  protected saltear(): void {
-    void this.router.navigateByUrl('/ingreso', { replaceUrl: true });
+  /**
+   * Pasa a la pantalla de ingreso mostrando el indicador de espera con el
+   * logo durante tres segundos. De ahí en adelante la aplicación sigue su
+   * curso normal.
+   */
+  protected async ingresar(): Promise<void> {
+    if (this.pasando()) return;
+    this.pasando.set(true);
+
+    await this.cargando.durante(
+      'Preparando el ingreso',
+      () => new Promise<void>((seguir) => setTimeout(seguir, this.ESPERA_MS)),
+    );
+
+    await this.router.navigateByUrl('/ingreso', { replaceUrl: true });
   }
 }

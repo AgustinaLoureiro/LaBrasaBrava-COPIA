@@ -1,4 +1,4 @@
-<ion-content [fullscreen]="true" (click)="saltear()">
+<ion-content [fullscreen]="true">
   <div class="presentacion">
     <!-- Brasas de fondo: evitan cualquier espacio neutro -->
     <div class="brasas" aria-hidden="true">
@@ -45,7 +45,14 @@
     </section>
 
     <footer class="pie">
-      <p>Tocá la pantalla para continuar</p>
+      <button
+        type="button"
+        class="boton-principal"
+        [disabled]="pasando()"
+        (click)="ingresar()"
+      >
+        Ingresar
+      </button>
     </footer>
   </div>
 </ion-content>
