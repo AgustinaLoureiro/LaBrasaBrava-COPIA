@@ -1,0 +1,683 @@
+// ======================================================
+// REGISTRO DE CLIENTE - BRASA BRAVA
+// ======================================================
+
+// ------------------------------------------------------
+// CONTENEDOR PRINCIPAL
+// ------------------------------------------------------
+
+ion-content {
+  --background: #F0DFC6; // Crema Trigo
+
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 0;
+  --padding-bottom: 28px;
+}
+
+// ------------------------------------------------------
+// HEADER
+// ------------------------------------------------------
+
+ion-header {
+  box-shadow: none;
+}
+
+ion-toolbar {
+  --background: #8E3418; // Terracota
+  --color: #F0DFC6; // Crema Trigo
+
+  --min-height: 72px;
+
+  padding: 4px 8px;
+}
+
+ion-title {
+  font-family: 'Montserrat', sans-serif;
+
+  font-size: 26px;
+  font-weight: 900;
+
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+
+  color: #F0DFC6;
+
+  padding-inline: 8px;
+}
+
+// ------------------------------------------------------
+// TARJETA PRINCIPAL
+// ------------------------------------------------------
+
+ion-card {
+  --background: #FBF3E7;
+
+  margin: 20px auto 0;
+
+  width: 100%;
+  max-width: 640px;
+
+  border: 1px solid #F2A63B; // Ámbar Ceniza
+  border-radius: 24px;
+
+  box-shadow:
+    0 6px 18px rgba(107, 42, 19, 0.12);
+
+  overflow: hidden;
+
+  animation: aparecer 0.45s ease-out;
+}
+
+ion-card-content {
+  padding: 24px 20px 28px;
+}
+
+// ------------------------------------------------------
+// FORMULARIO
+// ------------------------------------------------------
+
+form {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+}
+
+// ------------------------------------------------------
+// FOTO PERSONAL
+// ------------------------------------------------------
+
+.foto-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+
+  margin: 4px 0 28px;
+
+  gap: 12px;
+}
+
+.foto-preview,
+.foto-placeholder {
+  position: relative;
+
+  width: 150px;
+  height: 150px;
+
+  border-radius: 50%;
+
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #F0DFC6;
+
+  border: 4px solid #F2A63B; // Ámbar Ceniza
+
+  box-shadow:
+    0 7px 18px rgba(107, 42, 19, 0.16);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.foto-preview:hover,
+.foto-placeholder:hover {
+  transform: scale(1.03);
+
+  box-shadow:
+    0 10px 24px rgba(107, 42, 19, 0.22);
+}
+
+.foto-preview img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center;
+}
+
+.foto-placeholder ion-icon {
+  font-size: 70px;
+
+  color: #E2622C; // Naranja Brasa
+}
+
+// ------------------------------------------------------
+// BOTÓN DE FOTO
+// ------------------------------------------------------
+
+.foto-container ion-button {
+  --background: transparent;
+
+  --background-hover: rgba(226, 98, 44, 0.10);
+  --background-activated: rgba(168, 62, 30, 0.14);
+
+  --color: #8E3418; // Terracota
+
+  --border-color: #E2622C; // Naranja Brasa
+  --border-style: solid;
+  --border-width: 1.5px;
+
+  --border-radius: 14px;
+
+  height: 48px;
+
+  margin: 0;
+
+  font-family: 'Montserrat', sans-serif;
+
+  font-size: 16px;
+  font-weight: 800;
+
+  letter-spacing: 0.02em;
+}
+
+.foto-container ion-button:active {
+  transform: scale(0.97);
+}
+
+// ------------------------------------------------------
+// SEPARADOR VISUAL
+// ------------------------------------------------------
+
+.foto-container::after {
+  content: "";
+
+  width: 100%;
+  height: 1px;
+
+  margin-top: 12px;
+
+  background: rgba(142, 52, 24, 0.18);
+}
+
+// ------------------------------------------------------
+// BLOQUE DNI
+// ------------------------------------------------------
+
+.qr-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+
+  margin: 0 0 30px;
+
+  padding: 22px 18px 20px;
+
+  // Oliva Ahumada como módulo diferenciado
+  background: #5C6B46;
+
+  border: 1px solid rgba(46, 42, 40, 0.15);
+
+  border-radius: 20px;
+
+  box-shadow:
+    0 4px 10px rgba(46, 42, 40, 0.12);
+}
+
+// ------------------------------------------------------
+// ICONO DNI
+// ------------------------------------------------------
+
+.qr-container::before {
+  content: "🪪";
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 54px;
+  height: 54px;
+
+  margin-bottom: 10px;
+  border-radius: 50%;
+  background: #F2A63B; // Ámbar Ceniza
+  font-size: 27px;
+  box-shadow:
+    0 4px 10px rgba(46, 42, 40, 0.15);
+}
+
+// ------------------------------------------------------
+// TEXTOS DEL BLOQUE DNI
+// ------------------------------------------------------
+
+.qr-container h2 {
+  margin: 4px 0 6px;
+
+  font-family: 'Montserrat', sans-serif;
+
+  font-size: 20px;
+  line-height: 26px;
+  font-weight: 800;
+  color: #F0DFC6;
+}
+
+.qr-container p {
+  max-width: 300px;
+  margin: 0 0 16px;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 16px;
+  line-height: 22px;
+  color: #F0DFC6;
+}
+
+// ------------------------------------------------------
+// BOTÓN ESCANEAR DNI
+// ------------------------------------------------------
+
+.qr-container ion-button {
+  width: 100%;
+  max-width: 320px;
+
+  height: 56px;
+
+  margin: 0 auto;
+
+  --background: #E2622C; // Naranja Brasa
+  --background-hover: #A83E1E; // Ladrillo
+  --background-activated: #A83E1E;
+
+  --color: #F0DFC6;
+
+  --border-radius: 16px;
+
+  font-family: 'Montserrat', sans-serif;
+
+  font-size: 17px;
+  font-weight: 800;
+
+  letter-spacing: 0.02em;
+
+  box-shadow:
+    0 5px 12px rgba(46, 42, 40, 0.18);
+
+  transition:
+    transform 0.15s ease,
+    filter 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.qr-container ion-button:active {
+  transform: scale(0.97);
+
+  filter: brightness(0.94);
+
+  box-shadow:
+    0 2px 6px rgba(46, 42, 40, 0.12);
+}
+
+// ------------------------------------------------------
+// MENSAJE DNI ESCANEADO
+// ------------------------------------------------------
+
+.qr-container ion-note {
+  display: block;
+
+  margin: 13px 0 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  width: 100%;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 600;
+  text-align: center;
+  background: rgba(63, 143, 91, 0.18);
+
+  color: #F0DFC6 !important;
+}
+
+// ------------------------------------------------------
+// DEBUG DEL QR
+// ------------------------------------------------------
+
+.debug-qr {
+  display: none;
+}
+
+// ------------------------------------------------------
+// SECCIÓN DATOS PERSONALES
+// ------------------------------------------------------
+
+form::before {
+  content: "DATOS PERSONALES";
+
+  font-family: 'Montserrat', sans-serif;
+
+  font-size: 18px;
+  line-height: 24px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.03em;
+
+  color: #8E3418; // Terracota
+
+  margin: 0 0 14px;
+}
+
+// ------------------------------------------------------
+// CAMPOS
+// ------------------------------------------------------
+
+ion-item {
+  --background: #FBF3E7;
+  --border-color: transparent;
+  --border-width: 0;
+  --highlight-color-focused: #E2622C;
+  --padding-start: 18px;
+  --inner-padding-end: 18px;
+  --color: #2E2A28;
+  min-height: 92px;
+  margin: 0 0 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(242, 166, 59, 0.45);
+
+  box-shadow:
+  0 3px 9px rgba(107, 42, 19, 0.08);
+  overflow: hidden;
+  transition:
+  box-shadow 0.2s ease,
+  transform 0.2s ease;
+}
+
+// ------------------------------------------------------
+// ESTADO FOCUS
+// ------------------------------------------------------
+
+ion-item.item-has-focus {
+  border-color: #E2622C;
+
+  box-shadow:
+    0 0 0 2px rgba(226, 98, 44, 0.18),
+    0 5px 12px rgba(107, 42, 19, 0.12);
+}
+
+// ------------------------------------------------------
+// LABELS
+// ------------------------------------------------------
+
+ion-label {
+  --color: #8E3418 !important;
+
+  font-family: 'Montserrat', sans-serif;
+
+  font-size: 15px;
+
+  line-height: 21px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.03em;
+
+  text-transform: uppercase;
+
+  margin-top: 12px;
+  margin-bottom: 3px;
+}
+
+// ------------------------------------------------------
+// INPUTS
+// ------------------------------------------------------
+
+ion-input {
+  --color: #2E2A28;
+
+  --placeholder-color: rgba(46, 42, 40, 0.45);
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 400;
+  margin-bottom: 9px;
+}
+
+// ------------------------------------------------------
+// AUTOFILL
+// ------------------------------------------------------
+
+ion-input input:-webkit-autofill {
+  -webkit-text-fill-color: #2E2A28 !important;
+
+  -webkit-box-shadow:
+    0 0 0 1000px #FBF3E7 inset !important;
+}
+
+// ------------------------------------------------------
+// SEGUNDA SECCIÓN
+// ------------------------------------------------------
+
+ion-item:nth-of-type(4) {
+  margin-top: 14px;
+}
+
+// ------------------------------------------------------
+// ERRORES
+// ------------------------------------------------------
+
+ion-note[color="danger"] {
+  display: block;
+
+  margin: -5px 4px 12px;
+
+  font-family: 'Source Sans 3', sans-serif;
+
+  font-size: 16px;
+  line-height: 22px;
+
+  font-weight: 600;
+
+  color: #C2352A !important;
+}
+
+// ------------------------------------------------------
+// MENSAJE DE ÉXITO
+// ------------------------------------------------------
+
+.mensaje-exito {
+  max-width: 640px;
+
+  margin: 28px auto;
+
+  padding: 22px 20px;
+
+  border-radius: 18px;
+
+  background: #3F8F5B;
+
+  color: #F0DFC6;
+
+  font-family: 'Source Sans 3', sans-serif;
+
+  font-size: 18px;
+  line-height: 26px;
+
+  font-weight: 700;
+
+  text-align: center;
+
+  box-shadow:
+    0 6px 16px rgba(46, 42, 40, 0.14);
+
+  animation: aparecer 0.4s ease-out;
+}
+
+// ------------------------------------------------------
+// BOTÓN FINAL
+// ------------------------------------------------------
+
+form > ion-button[type="submit"] {
+  --background: #E2622C; // Naranja Brasa
+
+  --background-hover: #A83E1E; // Ladrillo
+  --background-activated: #A83E1E;
+
+  --color: #F0DFC6;
+
+  --border-radius: 18px;
+
+  width: 100%;
+
+  height: 60px;
+
+  margin: 14px 0 4px;
+
+  font-family: 'Montserrat', sans-serif;
+
+  font-size: 18px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.03em;
+
+  box-shadow:
+    0 6px 14px rgba(107, 42, 19, 0.18);
+
+  transition:
+    transform 0.15s ease,
+    filter 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+form > ion-button[type="submit"]:active {
+  transform: scale(0.98);
+
+  filter: brightness(0.94);
+
+  box-shadow:
+    0 3px 8px rgba(107, 42, 19, 0.12);
+}
+
+// ------------------------------------------------------
+// BOTÓN DESHABILITADO
+// ------------------------------------------------------
+
+form > ion-button[type="submit"][disabled] {
+  opacity: 0.55;
+
+  box-shadow: none;
+}
+
+// ------------------------------------------------------
+// SPINNER
+// ------------------------------------------------------
+
+ion-spinner {
+  width: 24px;
+  height: 24px;
+
+  --color: #F0DFC6;
+}
+
+// ------------------------------------------------------
+// CABECERA DEL REGISTRO
+// ------------------------------------------------------
+
+.cabecera-registro {
+  text-align: center;
+
+  margin-bottom: 24px;
+}
+
+.cabecera-registro h1 {
+  margin: 0;
+
+  font-family: 'Montserrat', sans-serif;
+
+  font-size: 28px;
+  line-height: 34px;
+
+  font-weight: 800;
+
+  color: #8E3418;
+
+  letter-spacing: 0.02em;
+}
+
+.cabecera-registro p {
+  max-width: 340px;
+
+  margin: 7px auto 0;
+
+  font-family: 'Source Sans 3', sans-serif;
+
+  font-size: 18px;
+  line-height: 26px;
+
+  font-weight: 400;
+
+  color: #2E2A28;
+}
+
+// ------------------------------------------------------
+// ANIMACIÓN DE ENTRADA
+// ------------------------------------------------------
+
+@keyframes aparecer {
+
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+}
+
+// ------------------------------------------------------
+// RESPONSIVE
+// ------------------------------------------------------
+
+@media (max-width: 380px) {
+
+  ion-title {
+    font-size: 23px;
+  }
+
+  ion-card-content {
+    padding: 20px 16px 24px;
+  }
+
+  .foto-preview,
+  .foto-placeholder {
+    width: 135px;
+    height: 135px;
+  }
+
+  .foto-placeholder ion-icon {
+    font-size: 62px;
+  }
+
+  .qr-container {
+    padding: 18px 14px;
+  }
+
+  .qr-container ion-button {
+    max-width: 100%;
+  }
+
+}
+
+@media (min-width: 480px) {
+
+  ion-content {
+    --padding-start: 24px;
+    --padding-end: 24px;
+  }
+
+  ion-card-content {
+    padding: 28px 28px 32px;
+  }
+
+}

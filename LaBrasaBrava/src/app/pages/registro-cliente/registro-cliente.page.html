@@ -1,0 +1,321 @@
+<ion-header>
+  <ion-toolbar>
+    <div class="cabecera-registro"></div>
+    <ion-title>Registro de cliente</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- REGISTRO EXITOSO -->
+  <div
+    *ngIf="registroExitoso"
+    class="mensaje-exito"
+  >
+    Tu registro fue enviado.
+    Un supervisor va a revisar tus datos
+    antes de que puedas ingresar.
+  </div>
+
+
+  <ion-card *ngIf="!registroExitoso">
+
+    <ion-card-content>
+      <form
+        [formGroup]="form"
+        (ngSubmit)="onSubmit()"
+      >
+        <!-- ===================== -->
+        <!-- FOTO -->
+        <!-- ===================== -->
+
+        <div class="foto-container">
+          <div
+            class="foto-preview"
+            *ngIf="foto_url"
+          >
+            <img
+              [src]="foto_url"
+              alt="Foto personal"
+            />
+          </div>
+          <div
+            class="foto-placeholder"
+            *ngIf="!foto_url"
+          >
+            <ion-icon
+              name="person-circle-outline"
+            ></ion-icon>
+          </div>
+
+
+          <ion-button
+            type="button"
+            (click)="tomarFoto()"
+          >
+            {{
+              foto_url
+                ? 'Volver a tomar la foto'
+                : 'Tomar foto personal'
+            }}
+          </ion-button>
+
+        </div>
+
+
+        <!-- ===================== -->
+        <!-- DNI -->
+        <!-- ===================== -->
+
+        <div class="qr-container">
+
+          <ion-button
+            type="button"
+            expand="block"
+            (click)="escanearDni()"
+          >
+
+            <ion-icon
+              name="qr-code-outline"
+              slot="start"
+            ></ion-icon>
+
+            Escanear DNI
+
+          </ion-button>
+
+
+          <ion-note
+            *ngIf="qrEscaneado"
+            color="success"
+          >
+            Datos autocompletados desde el DNI.
+            Podés corregirlos si hace falta.
+          </ion-note>
+
+        </div>
+
+
+        <!-- ===================== -->
+        <!-- DEBUG DNI -->
+        <!-- ===================== -->
+<!--
+        <div
+          *ngIf="codigoDetectado"
+          class="debug-qr"
+        >
+
+          <strong>
+            Formato detectado:
+          </strong>
+
+          <p>
+            {{ formatoDetectado }}
+          </p>
+
+
+          <strong>
+            Contenido:
+          </strong>
+
+          <p>
+            {{ codigoDetectado }}
+          </p>
+
+        </div>*/
+-->
+
+        <!-- ===================== -->
+        <!-- NOMBRES -->
+        <!-- ===================== -->
+
+        <ion-item>
+
+          <ion-label position="stacked">
+            Nombres
+          </ion-label>
+
+          <ion-input
+            formControlName="nombres"
+            type="text"
+          ></ion-input>
+
+        </ion-item>
+
+
+        <ion-note
+          color="danger"
+          *ngIf="
+            f['nombres'].touched &&
+            f['nombres'].invalid
+          "
+        >
+          Ingresá un nombre válido.
+        </ion-note>
+
+
+        <!-- ===================== -->
+        <!-- APELLIDOS -->
+        <!-- ===================== -->
+
+        <ion-item>
+
+          <ion-label position="stacked">
+            Apellidos
+          </ion-label>
+
+          <ion-input
+            formControlName="apellidos"
+            type="text"
+          ></ion-input>
+
+        </ion-item>
+
+
+        <ion-note
+          color="danger"
+          *ngIf="
+            f['apellidos'].touched &&
+            f['apellidos'].invalid
+          "
+        >
+          Ingresá un apellido válido.
+        </ion-note>
+
+
+        <!-- ===================== -->
+        <!-- DNI -->
+        <!-- ===================== -->
+
+        <ion-item>
+
+          <ion-label position="stacked">
+            DNI
+          </ion-label>
+
+          <ion-input
+            formControlName="dni"
+            type="text"
+            inputmode="numeric"
+          ></ion-input>
+
+        </ion-item>
+
+
+        <ion-note
+          color="danger"
+          *ngIf="
+            f['dni'].touched &&
+            f['dni'].invalid
+          "
+        >
+          El DNI debe tener entre 7 y 8 números.
+        </ion-note>
+
+
+        <!-- ===================== -->
+        <!-- EMAIL -->
+        <!-- ===================== -->
+
+        <ion-item>
+
+          <ion-label position="stacked">
+            Correo electrónico
+          </ion-label>
+
+          <ion-input
+            formControlName="email"
+            type="email"
+          ></ion-input>
+
+        </ion-item>
+
+
+        <ion-note
+          color="danger"
+          *ngIf="
+            f['email'].touched &&
+            f['email'].invalid
+          "
+        >
+          Ingresá un correo electrónico válido.
+        </ion-note>
+
+
+        <!-- ===================== -->
+        <!-- PASSWORD -->
+        <!-- ===================== -->
+
+        <ion-item>
+
+          <ion-label position="stacked">
+            Contraseña
+          </ion-label>
+
+          <ion-input
+            formControlName="password"
+            type="password"
+          ></ion-input>
+
+        </ion-item>
+
+
+        <ion-note
+          color="danger"
+          *ngIf="
+            f['password'].touched &&
+            f['password'].invalid
+          "
+        >
+          La contraseña debe tener al menos
+          6 caracteres.
+        </ion-note>
+
+
+        <!-- ===================== -->
+        <!-- ERROR -->
+        <!-- ===================== -->
+
+        <ion-note
+          color="danger"
+          *ngIf="errorGeneral"
+        >
+          {{ errorGeneral }}
+        </ion-note>
+
+
+        <!-- ===================== -->
+        <!-- REGISTRAR -->
+        <!-- ===================== -->
+
+        <ion-button
+          expand="block"
+          type="submit"
+          class="ion-margin-top"
+          [disabled]="
+            form.invalid ||
+            !foto_url ||
+            enviando
+          "
+        >
+
+          <ion-spinner
+            *ngIf="enviando"
+            name="crescent"
+          ></ion-spinner>
+
+
+          <span *ngIf="!enviando">
+            Registrarme
+          </span>
+
+        </ion-button>
+
+
+      </form>
+
+    </ion-card-content>
+
+  </ion-card>
+
+</ion-content>
