@@ -34,7 +34,7 @@ import {
   BarcodeScanner,
   BarcodeFormat
 } from '@capacitor-mlkit/barcode-scanning';
-import { Supabase } from '../../services/supabase';
+import { SupabaseService } from '../../nucleo/servicios/supabase.service';
 
 @Component({
   selector: 'app-registro-cliente',
@@ -71,7 +71,7 @@ export class RegistroClientePage {
 
   constructor(
     private fb: FormBuilder,
-    private supabase: Supabase
+    private supabase: SupabaseService
   ) {
     this.form = this.fb.group({
       nombres: ['', [
@@ -218,7 +218,7 @@ export class RegistroClientePage {
       //    Si el email ya existe, Supabase devuelve error acá y no seguimos:
       //    todavía no se creó ningún dato huérfano.
       const { data: authData, error: authError } =
-        await this.supabase.client.auth.signUp({ email, password });
+        await this.supabase.cliente.auth.signUp({ email, password });
 
       if (authError || !authData.user) {
         this.errorGeneral = authError?.message ?? 'No se pudo crear la cuenta.';
@@ -235,13 +235,13 @@ export class RegistroClientePage {
       const nombreArchivo = `${dni}_${Date.now()}.jpg`;
       const rutaFoto = `clientes/${nombreArchivo}`;
 
-      const { error: errorUpload } = await this.supabase.client
+      const { error: errorUpload } = await this.supabase.cliente
         .storage.from('fotos-clientes')
         .upload(rutaFoto, blob, { upsert: false });
 
       if (errorUpload) throw new Error(`No se pudo subir la foto: ${errorUpload.message}`);
 
-      const { data: urlFoto } = this.supabase.client
+      const { data: urlFoto } = this.supabase.cliente
         .storage.from('fotos-clientes')
         .getPublicUrl(rutaFoto);
 
@@ -249,7 +249,7 @@ export class RegistroClientePage {
 
       // 4. Insertar el perfil del cliente, usando el id que generó Auth.
       //    Sin password: eso ya lo maneja Auth de forma segura.
-      const { error: errorInsert } = await this.supabase.client
+      const { error: errorInsert } = await this.supabase.cliente
         .from('clientes')
         .insert({
           id: authData.user.id,
