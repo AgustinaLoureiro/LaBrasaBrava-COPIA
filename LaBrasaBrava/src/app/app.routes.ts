@@ -28,14 +28,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/principal/principal.page').then((m) => m.PrincipalPage),
   },
-  {
-    path: 'login',
-    loadComponent: () => import('./pages/login/login.page').then((m) => m.LoginPage),
-  },
-  {
-    path: 'home',
-    loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
-  },
+  
 
   // --- Clientes -----------------------------------------------------------
   {
