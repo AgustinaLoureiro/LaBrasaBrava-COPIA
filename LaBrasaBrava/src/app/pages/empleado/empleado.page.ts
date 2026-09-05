@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
@@ -8,6 +8,7 @@ import {
 import { Camara } from '../../services/camara';
 import { Almacenamiento } from '../../services/almacenamiento';
 import { Supabase } from '../../services/supabase';
+import { Preferences } from '@capacitor/preferences';
 
 @Component({
   selector: 'app-empleado',
@@ -19,7 +20,7 @@ import { Supabase } from '../../services/supabase';
     IonInput, IonSelect, IonSelectOption, IonButton, IonImg
   ]
 })
-export class EmpleadoPage {
+export class EmpleadoPage implements OnInit {
   private constructorFormulario = inject(FormBuilder);
   private camara = inject(Camara);
   private almacenamiento = inject(Almacenamiento);
@@ -40,6 +41,20 @@ export class EmpleadoPage {
   });
 
   perfiles = ['dueño', 'supervisor', 'metre', 'mozo', 'cocinero', 'cantinero'];
+  
+
+  async ngOnInit() {
+    // Restaurar borrador si existe
+    const { value } = await Preferences.get({ key: 'borrador-alta-empleado' });
+    if (value) {
+      this.formulario.patchValue(JSON.parse(value));
+    }
+
+    // Autoguardar cada vez que cambia algo del formulario
+    this.formulario.valueChanges.subscribe(valores => {
+      Preferences.set({ key: 'borrador-alta-empleado', value: JSON.stringify(valores) });
+    });
+  }
 
   async sacarFoto() {
     const foto = await this.camara.tomarFoto();
@@ -83,6 +98,36 @@ export class EmpleadoPage {
       this.mensaje = 'Empleado guardado correctamente.';
       this.formulario.reset();
       this.fotoPrevia = null;
+      await Preferences.remove({ key: 'borrador-alta-empleado' });
     }
+
+    
   }
+
+  invalido(campo: string): boolean {
+    const control = this.formulario.get(campo);
+    return !!control && control.invalid && (control.dirty || control.touched);
+  }
+
+  mensajeError(campo: string): string {
+    const control = this.formulario.get(campo);
+    if (!control || !control.errors) return '';
+
+    if (control.errors['required']) return 'Este dato es requerido.';
+    if (control.errors['minlength']) {
+      const requerido = control.errors['minlength'].requiredLength;
+      return `Debe tener al menos ${requerido} caracteres.`;
+    }
+    if (control.errors['pattern']) {
+      switch (campo) {
+        case 'dni': return 'El DNI debe tener 7 u 8 números, sin puntos.';
+        case 'cuil': return 'Formato de CUIL inválido. Ejemplo: 20-12345678-9';
+        default: return 'El formato ingresado no es válido.';
+      }
+    }
+    if (control.errors['email']) return 'Ingresá un correo electrónico válido.';
+
+    return 'Dato inválido.';
+  }
+
 }
