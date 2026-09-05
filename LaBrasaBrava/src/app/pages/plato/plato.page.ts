@@ -1,13 +1,16 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonInput, IonButton, IonIcon, IonButtons, IonBackButton} from '@ionic/angular';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { CommonModule, Location } from '@angular/common';
+import {
+  FormBuilder, ReactiveFormsModule,
+  Validators, AbstractControl, ValidationErrors, ValidatorFn,
+} from '@angular/forms';
+import { IonContent } from '@ionic/angular';
+import { ActionSheetController, IonHeader, IonToolbar, IonButtons, IonBackButton } from '@ionic/angular';
 import { Camera } from '@capacitor/camera';
-import { ActionSheetController } from '@ionic/angular';
 import { SupabaseService } from '../../nucleo/servicios/supabase.service';
 import { Almacenamiento } from '../../services/almacenamiento';
-
-//import { IonButton } from "@ionic/angular/standalone";
+import { LogoMarcaComponent } from '../../componentes/logo-marca/logo-marca.component';
+import { RESTAURANTE } from '../../nucleo/marca';
 
 function numeroPositivo(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -17,30 +20,25 @@ function numeroPositivo(): ValidatorFn {
   };
 }
 
-// Componente que representa la página de creación de un plato
-
 @Component({
   selector: 'app-plato',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './plato.page.html',
   styleUrls: ['./plato.page.scss'],
-  imports: [IonBackButton, IonButtons, IonIcon, IonButton, 
-    CommonModule, ReactiveFormsModule,
-    IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonInput
-  ]
+  imports: [/*IonBackButton, IonButtons, IonToolbar, IonHeader, */CommonModule, ReactiveFormsModule, IonContent, LogoMarcaComponent],
 })
 
-// Clase que representa la página de creación de un plato
-
-export class PlatoPage{
+export class PlatoPage {
   private constructorFormulario = inject(FormBuilder);
   private actionSheetCtrl = inject(ActionSheetController);
   private supabase = inject(SupabaseService);
   private almacenamiento = inject(Almacenamiento);
+  private location = inject(Location);
+
+  protected readonly restaurante = RESTAURANTE;
 
   guardando = false;
   mensaje = '';
-
-  // Formulario reactivo para la creación de un plato, con validaciones para cada campo
 
   formulario = this.constructorFormulario.group({
     nombre: ['', [
@@ -64,14 +62,13 @@ export class PlatoPage{
       Validators.pattern(/^\d+(\.\d{1,2})?$/),
       numeroPositivo(),
     ]],
-    
   });
-
-  // Array para almacenar las fotos del plato, inicializado con valores nulos
 
   fotos: (string | null)[] = [null, null, null];
 
-  // Método para mostrar un ActionSheet que permite al usuario elegir entre tomar una foto con la cámara o seleccionar una de la galería
+  volver() {
+    this.location.back();
+  }
 
   async elegirFoto(indice: number) {
     const actionSheet = await this.actionSheetCtrl.create({
@@ -85,28 +82,18 @@ export class PlatoPage{
     await actionSheet.present();
   }
 
-  //  Método para tomar una foto con la cámara del dispositivo
-
   private async tomarConCamara(indice: number) {
     try {
-      const resultado = await Camera.takePhoto({
-        quality: 80,
-        includeMetadata: true,
-      });
+      const resultado = await Camera.takePhoto({ quality: 80, includeMetadata: true });
       this.fotos[indice] = `data:image/${resultado.metadata?.format ?? 'jpeg'};base64,${resultado.thumbnail}`;
     } catch {
-      // el usuario canceló, no hacemos nada
+      // el usuario canceló
     }
   }
 
-  // Método para elegir una foto de la galería del dispositivo
-
   private async elegirDeGaleria(indice: number) {
     try {
-      const { results } = await Camera.chooseFromGallery({
-        quality: 80,
-        includeMetadata: true,
-      });
+      const { results } = await Camera.chooseFromGallery({ quality: 80, includeMetadata: true });
       if (results[0]) {
         this.fotos[indice] = `data:image/${results[0].metadata?.format ?? 'jpeg'};base64,${results[0].thumbnail}`;
       }
@@ -115,62 +102,49 @@ export class PlatoPage{
     }
   }
 
-  // Método para verificar si todas las fotos han sido cargadas
-
   fotosCompletas(): boolean {
     return this.fotos.every(f => f !== null);
   }
 
-  // Método para verificar si un campo del formulario es inválido y ha sido tocado o modificado
+  fotosFaltantes(): number {
+    return this.fotos.filter(f => f === null).length;
+  }
 
   invalido(campo: string): boolean {
     const control = this.formulario.get(campo);
     return !!control && control.invalid && (control.dirty || control.touched);
   }
 
-  // Método para permitir solo números y un punto decimal en el campo de precio
-
   soloNumerosEnteros(evento: KeyboardEvent) {
     const teclasPermitidas = ['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End'];
     if (teclasPermitidas.includes(evento.key)) return;
     if (evento.ctrlKey || evento.metaKey) return;
-    if (!/^[0-9]$/.test(evento.key)) {
-      evento.preventDefault();
-    }
+    if (!/^[0-9]$/.test(evento.key)) evento.preventDefault();
   }
-
-  // Método para permitir solo números y un punto decimal en el campo de precio
 
   soloNumerosConPunto(evento: KeyboardEvent) {
     const teclasPermitidas = ['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End'];
     if (teclasPermitidas.includes(evento.key)) return;
     if (evento.ctrlKey || evento.metaKey) return;
-
     const valorActual = (evento.target as HTMLInputElement).value;
-    // bloquea un segundo punto si ya hay uno
     if (evento.key === '.' && valorActual.includes('.')) {
       evento.preventDefault();
       return;
     }
-    if (!/^[0-9.]$/.test(evento.key)) {
-      evento.preventDefault();
-    }
+    if (!/^[0-9.]$/.test(evento.key)) evento.preventDefault();
   }
 
-  // Método para obtener el mensaje de error de un campo del formulario
+
 
   mensajeError(campo: string): string {
     const control = this.formulario.get(campo);
     if (!control || !control.errors) return '';
-
     if (control.errors['required']) return 'Este dato es requerido.';
     if (control.errors['minlength']) {
-      const requerido = control.errors['minlength'].requiredLength;
-      return `Debe tener al menos ${requerido} caracteres.`;
+      return `Debe tener al menos ${control.errors['minlength'].requiredLength} caracteres.`;
     }
     if (control.errors['maxlength']) {
-      const max = control.errors['maxlength'].requiredLength;
-      return `No puede superar los ${max} caracteres.`;
+      return `No puede superar los ${control.errors['maxlength'].requiredLength} caracteres.`;
     }
     if (control.errors['pattern']) {
       switch (campo) {
@@ -181,11 +155,10 @@ export class PlatoPage{
       }
     }
     if (control.errors['numeroPositivo']) return 'El valor debe ser mayor a 0.';
-
     return 'Dato inválido.';
   }
 
-  // Método para guardar el plato en la base de datos
+  mensajeEsError = false;
 
   async guardar() {
     this.mensaje = '';
@@ -193,55 +166,48 @@ export class PlatoPage{
     if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       this.mensaje = 'Revisá los campos marcados.';
+      this.mensajeEsError = true;
       return;
     }
-
     if (this.fotos.some(f => f === null)) {
       this.mensaje = 'Faltan cargar las 3 fotos del plato.';
+      this.mensajeEsError = true;
       return;
     }
 
-    // AGREGAMOS UN TRY/CATCH GLOBAL PARA CAPTURAR CUALQUIER CAÍDA SILENCIOSA
     try {
+      this.guardando = true;
 
-    this.guardando = true;
-
-    // Subir las 3 fotos y juntar sus URLs
-    const urlsFotos: string[] = [];
-    for (const foto of this.fotos) {
-
-      const url = await this.almacenamiento.subirImagen(foto as string, 'platos');
-
-      if (!url) {
-        this.guardando = false;
-        this.mensaje = 'No se pudo subir una de las fotos, intentá nuevamente.';
-        return;
+      const urlsFotos: string[] = [];
+      for (const foto of this.fotos) {
+        const url = await this.almacenamiento.subirImagen(foto as string, 'platos');
+        if (!url) {
+          this.guardando = false;
+          this.mensaje = 'No se pudo subir una de las fotos, intentá nuevamente.';
+          return;
+        }
+        urlsFotos.push(url);
       }
-      urlsFotos.push(url);
-    }
 
-    const { error } = await this.supabase.cliente
-      .from('platos')
-      .insert({
-        ...this.formulario.value,
-        fotos: urlsFotos,
-      });
+      const { error } = await this.supabase.cliente
+        .from('platos')
+        .insert({ ...this.formulario.value, fotos: urlsFotos });
 
-    this.guardando = false;
-
-    if (error) {
-      this.mensaje = 'Error al guardar: ' + error.message;
-    } else {
-      this.mensaje = 'Plato guardado correctamente.';
-      this.formulario.reset();
-      this.fotos = [null, null, null];
-    }
-    } catch (err: any) {
-      // SI ALGO SE ROMPE NATIVAMENTE, LO MUESTRA EN LA PANTALLA DE LA APP
       this.guardando = false;
-      this.mensaje = 'ERROR CRÍTICO CAPTURADO: ' + (err.message || JSON.stringify(err));
+
+      if (error) {
+        this.mensaje = 'Error al guardar: ' + error.message;
+        this.mensajeEsError = true;
+      } else {
+        this.mensaje = 'Plato guardado correctamente.';
+        this.mensajeEsError = false;
+        this.formulario.reset();
+        this.fotos = [null, null, null];
+      }
+    } catch (err: any) {
+      this.guardando = false;
+      this.mensaje = 'ERROR: ' + (err.message || JSON.stringify(err));
+      this.mensajeEsError = true;
     }
   }
 }
-
-

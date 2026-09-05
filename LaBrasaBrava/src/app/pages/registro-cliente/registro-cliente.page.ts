@@ -6,20 +6,7 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
-import {
-  IonContent,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonCard,
-  IonCardContent,
-  IonItem,
-  IonLabel,
-  IonInput,
-  IonNote,
-  IonButton,
-  IonIcon,
-  IonSpinner
+import {IonContent,IonHeader,IonToolbar,IonTitle,IonCard,IonCardContent,IonItem,IonLabel,IonInput,IonNote,IonButton,IonIcon,IonSpinner
 } from '@ionic/angular';
 import {
   Camera,
@@ -34,7 +21,6 @@ import {
   BarcodeScanner,
   BarcodeFormat
 } from '@capacitor-mlkit/barcode-scanning';
-
 import { SupabaseService } from '../../nucleo/servicios/supabase.service';
 
 @Component({
@@ -142,42 +128,33 @@ export class RegistroClientePage {
         this.errorGeneral = 'Necesitamos permiso de cámara para escanear el DNI.';
         return;
       }
-
       const { barcodes } = await BarcodeScanner.scan({
         formats: [BarcodeFormat.Pdf417]
       });
-
       if (barcodes.length === 0) {
         this.errorGeneral = 'No se detectó ningún código PDF417.';
         return;
       }
-
       const codigo = barcodes[0];
       this.formatoDetectado = codigo.format;
       this.codigoDetectado = codigo.rawValue ?? null;
-
       if (!codigo.rawValue) {
         this.errorGeneral = 'El código no contiene datos legibles.';
         return;
       }
-
       // El PDF417 del DNI devuelve los datos separados por @
       const datos = codigo.rawValue.split('@');
-
       if (datos.length < 5) {
         this.errorGeneral = 'El formato del DNI no pudo ser interpretado.';
         return;
       }
-
       const apellido = datos[1]?.trim();
       const nombres = datos[2]?.trim();
       const dni = datos[4]?.trim();
-
       if (!apellido || !nombres || !dni) {
         this.errorGeneral = 'No se pudieron obtener correctamente los datos del DNI.';
         return;
       }
-
       this.form.patchValue({ nombres, apellidos: apellido, dni });
       this.qrEscaneado = true;
       await Haptics.impact({ style: ImpactStyle.Light });
@@ -216,10 +193,9 @@ export class RegistroClientePage {
       const password = this.form.value.password;
 
       // 1. Crear la cuenta de autenticación.
-      //    Si el email ya existe, Supabase devuelve error acá y no seguimos:
-      //    todavía no se creó ningún dato huérfano.
+      //    Si el email ya existe, Supabase devuelve error acá y no seguimos.
       const { data: authData, error: authError } =
-        await this.supabase.client.auth.signUp({ email, password });
+        await this.supabase.cliente.auth.signUp({ email, password });
 
       if (authError || !authData.user) {
         this.errorGeneral = authError?.message ?? 'No se pudo crear la cuenta.';
@@ -236,13 +212,13 @@ export class RegistroClientePage {
       const nombreArchivo = `${dni}_${Date.now()}.jpg`;
       const rutaFoto = `clientes/${nombreArchivo}`;
 
-      const { error: errorUpload } = await this.supabase.client
+      const { error: errorUpload } = await this.supabase.cliente
         .storage.from('fotos-clientes')
         .upload(rutaFoto, blob, { upsert: false });
 
       if (errorUpload) throw new Error(`No se pudo subir la foto: ${errorUpload.message}`);
 
-      const { data: urlFoto } = this.supabase.client
+      const { data: urlFoto } = this.supabase.cliente
         .storage.from('fotos-clientes')
         .getPublicUrl(rutaFoto);
 
@@ -250,7 +226,7 @@ export class RegistroClientePage {
 
       // 4. Insertar el perfil del cliente, usando el id que generó Auth.
       //    Sin password: eso ya lo maneja Auth de forma segura.
-      const { error: errorInsert } = await this.supabase.client
+      const { error: errorInsert } = await this.supabase.cliente
         .from('clientes')
         .insert({
           id: authData.user.id,
