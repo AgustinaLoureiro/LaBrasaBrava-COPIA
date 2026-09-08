@@ -126,7 +126,14 @@ export interface AccesoRapido {
   apellidos: string;
   nombres: string;
   correo: string;
-  clave_demo: string;
+  /**
+   * Contraseña con la que la ficha completa el formulario sola.
+   *
+   * Los clientes registrados vienen en null: su contraseña la guarda
+   * Supabase Auth, encriptada, así que la aplicación no la puede leer.
+   * En esos casos la ficha completa el correo y la contraseña se escribe.
+   */
+  clave_demo: string | null;
   perfil: Perfil;
   foto_url: string | null;
   /**

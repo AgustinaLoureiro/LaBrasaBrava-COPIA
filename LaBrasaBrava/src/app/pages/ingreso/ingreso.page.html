@@ -115,6 +115,11 @@
                   <!-- Los clientes que todavía no fueron aprobados, o que
                        fueron rechazados, avisan su estado antes de que se
                        toque la ficha (puntos 6, 7 y 8 del enunciado). -->
+                  <!-- La contraseña de un cliente la guarda Supabase Auth, asi
+                       que la ficha completa el correo y nada más. -->
+                  @if (acceso.estado_aprobacion === 'aprobado' && !acceso.clave_demo) {
+                    <span class="aclaracion">Completa el correo, la contraseña se escribe</span>
+                  }
                   @if (acceso.estado_aprobacion !== 'aprobado') {
                     <span
                       [class]="
