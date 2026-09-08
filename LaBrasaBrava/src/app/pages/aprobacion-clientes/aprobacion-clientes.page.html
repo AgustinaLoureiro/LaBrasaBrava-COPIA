@@ -1,13 +1,34 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>aprobacion-clientes</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">aprobacion-clientes</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="pantalla-modulo">
+
+    <button type="button" class="volver texto-ayuda" (click)="volver()">‹ Volver</button>
+
+    <header class="cabecera">
+      <app-logo-marca
+        composicion="horizontal"
+        variante="crema"
+        [tamanio]="44"
+        [animado]="false"
+        [nombre]="restaurante.nombre"
+      />
+      <p class="lema">{{ restaurante.lema }}</p>
+    </header>
+
+    <section class="tarjeta">
+      <h2 class="titulo-seccion">Aprobación de clientes</h2>
+      <p class="subtitulo-seccion">Acá el dueño o el supervisor van a ver a los clientes que se registraron y todavía esperan respuesta, para aprobarlos o rechazarlos.</p>
+      <span class="etiqueta etiqueta-alerta">En desarrollo</span>
+    </section>
+
+    <section class="tarjeta">
+      <h2 class="titulo-seccion">Lo que va a hacer</h2>
+      <ul class="pendientes">
+            <li>Listado de los clientes pendientes, con su foto y sus datos.</li>
+            <li>Botones para aprobar y para rechazar a cada uno.</li>
+            <li>Aviso al cliente cuando se resuelve su solicitud.</li>
+      </ul>
+      <p class="texto-ayuda">Puntos 6, 7 y 8 del enunciado.</p>
+    </section>
+
+  </div>
 </ion-content>

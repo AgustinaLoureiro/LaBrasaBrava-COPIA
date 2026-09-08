@@ -201,3 +201,15 @@
 .pie {
   align-self: end;
 }
+
+/* Cuando a un perfil todavía no le toca ningún módulo, se lo dice con
+   todas las letras en vez de dejar la lista vacía. */
+.modulos .sin-modulos {
+  margin: 0;
+  padding: var(--espacio-chico);
+  border-radius: var(--radio-chico);
+  background: var(--superficie-hundida);
+  border: 0.125rem dashed var(--borde-fuerte);
+  font: var(--texto-ayuda);
+  color: var(--texto-secundario);
+}

@@ -328,7 +328,6 @@ export class PlatoPage {
     if (control.errors['numeroPositivo']) return 'El valor debe ser mayor a 0.';
     return 'Dato inválido.';
   }
-
   // ---- Guardar (alta o edición) ----
   async guardar() {
     this.mensaje = '';
