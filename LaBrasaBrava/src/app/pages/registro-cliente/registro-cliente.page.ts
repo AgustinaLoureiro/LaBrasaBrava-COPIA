@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -59,7 +59,8 @@ export class RegistroClientePage {
 
   constructor(
     private fb: FormBuilder,
-    private supabase: SupabaseService
+    private supabase: SupabaseService,
+    private cdr: ChangeDetectorRef
   ) {
     this.form = this.fb.group({
       nombres: ['', [
@@ -91,9 +92,6 @@ export class RegistroClientePage {
     return this.form.controls;
   }
 
-  // =========================================================
-  // FOTO PERSONAL
-  // =========================================================
   async tomarFoto() {
     this.errorGeneral = null;
     try {
@@ -108,25 +106,26 @@ export class RegistroClientePage {
       if (!foto.dataUrl) {
         this.foto_url = null;
         this.errorGeneral = 'No se pudo obtener la foto. Intentá nuevamente.';
+        this.cdr.detectChanges();
         return;
       }
       this.foto_url = foto.dataUrl;
+      this.cdr.detectChanges();
       await Haptics.impact({ style: ImpactStyle.Light });
     } catch (error) {
       console.error('Error al tomar la foto:', error);
       this.errorGeneral = 'No se pudo tomar la foto. Intentá nuevamente.';
+      this.cdr.detectChanges();
     }
   }
 
-  // =========================================================
-  // ESCANEAR DNI (PDF417)
-  // =========================================================
   async escanearDni() {
     this.errorGeneral = null;
     try {
       const { camera } = await BarcodeScanner.requestPermissions();
       if (camera !== 'granted' && camera !== 'limited') {
         this.errorGeneral = 'Necesitamos permiso de cámara para escanear el DNI.';
+        this.cdr.detectChanges();
         return;
       }
       const { barcodes } = await BarcodeScanner.scan({
@@ -134,6 +133,7 @@ export class RegistroClientePage {
       });
       if (barcodes.length === 0) {
         this.errorGeneral = 'No se detectó ningún código PDF417.';
+        this.cdr.detectChanges();
         return;
       }
       const codigo = barcodes[0];
@@ -141,12 +141,13 @@ export class RegistroClientePage {
       this.codigoDetectado = codigo.rawValue ?? null;
       if (!codigo.rawValue) {
         this.errorGeneral = 'El código no contiene datos legibles.';
+        this.cdr.detectChanges();
         return;
       }
-      // El PDF417 del DNI devuelve los datos separados por @
       const datos = codigo.rawValue.split('@');
       if (datos.length < 5) {
         this.errorGeneral = 'El formato del DNI no pudo ser interpretado.';
+        this.cdr.detectChanges();
         return;
       }
       const apellido = datos[1]?.trim();
@@ -154,21 +155,21 @@ export class RegistroClientePage {
       const dni = datos[4]?.trim();
       if (!apellido || !nombres || !dni) {
         this.errorGeneral = 'No se pudieron obtener correctamente los datos del DNI.';
+        this.cdr.detectChanges();
         return;
       }
       this.form.patchValue({ nombres, apellidos: apellido, dni });
       this.qrEscaneado = true;
+      this.cdr.detectChanges();
       await Haptics.impact({ style: ImpactStyle.Light });
     } catch (error) {
       console.error('Error al escanear:', error);
       this.errorGeneral = 'No se pudo leer el DNI. Intentá nuevamente.';
+      this.cdr.detectChanges();
       await Haptics.impact({ style: ImpactStyle.Medium });
     }
   }
 
-  // =========================================================
-  // REGISTRO COMPLETO
-  // =========================================================
   async onSubmit() {
     this.errorGeneral = null;
     this.registroExitoso = false;
@@ -176,15 +177,18 @@ export class RegistroClientePage {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.errorGeneral = 'Completá correctamente todos los campos.';
+      this.cdr.detectChanges();
       return;
     }
 
     if (!this.foto_url) {
       this.errorGeneral = 'Tenés que tomar una foto personal antes de registrarte.';
+      this.cdr.detectChanges();
       return;
     }
 
     this.enviando = true;
+    this.cdr.detectChanges(); // 👈 para que el spinner aparezca de inmediato
 
     try {
       const nombres = this.form.value.nombres.trim();
@@ -193,23 +197,25 @@ export class RegistroClientePage {
       const email = this.form.value.email.trim();
       const password = this.form.value.password;
 
-      // 1. Crear la cuenta de autenticación.
-      //    Si el email ya existe, Supabase devuelve error acá y no seguimos.
       const { data: authData, error: authError } =
         await this.supabase.cliente.auth.signUp({ email, password });
 
       if (authError || !authData.user) {
-        this.errorGeneral = authError?.message ?? 'No se pudo crear la cuenta.';
+        if (authError?.code === 'user_already_exists') {
+          this.errorGeneral = 'Ya existe una cuenta registrada con ese correo electrónico.';
+        } else {
+          this.errorGeneral = 'No se pudo crear la cuenta. Intentá nuevamente.';
+        }
+        this.cdr.detectChanges(); // 👈 el que faltaba
+        await Haptics.impact({ style: ImpactStyle.Medium });
         return;
       }
 
-      // 2. Convertir la foto a Blob
       const respuestaFoto = await fetch(this.foto_url);
       if (!respuestaFoto.ok) throw new Error('No se pudo preparar la foto.');
       const blob = await respuestaFoto.blob();
       if (blob.size === 0) throw new Error('La foto está vacía.');
 
-      // 3. Subir la foto a Storage
       const nombreArchivo = `${dni}_${Date.now()}.jpg`;
       const rutaFoto = `clientes/${nombreArchivo}`;
 
@@ -225,8 +231,6 @@ export class RegistroClientePage {
 
       if (!urlFoto.publicUrl) throw new Error('No se pudo obtener la URL de la foto.');
 
-      // 4. Insertar el perfil del cliente, usando el id que generó Auth.
-      //    Sin password: eso ya lo maneja Auth de forma segura.
       const { error: errorInsert } = await this.supabase.cliente
         .from('clientes')
         .insert({
@@ -240,12 +244,12 @@ export class RegistroClientePage {
         });
 
       if (errorInsert) {
-        // 23505 = violación de unique (dni o email ya usado en la tabla clientes)
         if (errorInsert.code === '23505') {
           this.errorGeneral = 'Ya existe un cliente registrado con ese DNI.';
         } else {
           throw new Error(`No se pudo guardar el cliente: ${errorInsert.message}`);
         }
+        this.cdr.detectChanges();
         return;
       }
 
@@ -255,13 +259,15 @@ export class RegistroClientePage {
       this.qrEscaneado = false;
       this.codigoDetectado = null;
       this.formatoDetectado = null;
+      this.cdr.detectChanges();
       await Haptics.impact({ style: ImpactStyle.Light });
-
     } catch (error: any) {
       console.error('Error en registro:', error);
       this.errorGeneral = error?.message ?? 'Ocurrió un error durante el registro.';
+      this.cdr.detectChanges();
     } finally {
       this.enviando = false;
+      this.cdr.detectChanges(); // 👈 el más importante: apaga el spinner de verdad
     }
   }
 }
