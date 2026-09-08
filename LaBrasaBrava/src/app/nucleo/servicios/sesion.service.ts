@@ -36,14 +36,16 @@ interface FilaEmpleado {
  * perfil (todos son cliente_registrado), y con un estado de aprobación
  * que la base restringe a estos tres valores. Ojo: la base dice
  * 'aceptado' donde la aplicación dice 'aprobado'.
+ *
+ * No tiene columna de contraseña: la contraseña la guarda Supabase Auth
+ * y el `id` de esta fila es el mismo uuid que Auth le dio al usuario.
  */
 interface FilaCliente {
-  id: number;
+  id: string;
   apellidos: string;
   nombres: string;
   dni: string | null;
   email: string;
-  password: string;
   foto_url: string | null;
   estado: 'pendiente' | 'aceptado' | 'rechazado';
   created_at: string;
@@ -59,15 +61,19 @@ const CLAVE_SESION = 'brasa-brava-sesion';
  * -------------------------------------------------------------------
  * NOTA SOBRE LA AUTENTICACIÓN
  * -------------------------------------------------------------------
- * La base del grupo tiene hoy dos tablas, `empleados` y `clientes`, con
- * la contraseña guardada en texto plano, y no usa Supabase Auth. Este
- * servicio valida contra esas dos tablas para que la aplicación funcione
- * con los datos reales que ya están cargados.
+ * Hoy conviven dos formas, porque las dos tablas están en momentos
+ * distintos de la migración:
  *
- * Cuando el grupo migre a Supabase Auth (que es lo que corresponde, y
- * para lo que ya está escrito supabase/esquema.sql), el único archivo
- * que hay que tocar es este: las pantallas no saben cómo se valida, solo
- * piden ingresar() y leen el resultado.
+ *   · `clientes` ya usa **Supabase Auth**, igual que la pantalla de
+ *     registro: la contraseña la guarda Auth y la tabla solo tiene el
+ *     perfil, con el mismo uuid que Auth le dio al usuario.
+ *   · `empleados` todavía guarda la contraseña en texto plano en la
+ *     tabla. Migrarlos también implica crear en Auth a los empleados que
+ *     ya están cargados, así que queda para cuando lo decida el grupo.
+ *
+ * Las pantallas no saben nada de esto: solo piden ingresar() y leen el
+ * resultado, así que el día que se migren los empleados se toca
+ * únicamente este archivo.
  * -------------------------------------------------------------------
  */
 @Injectable({ providedIn: 'root' })
@@ -86,10 +92,13 @@ export class SesionService {
   }
 
   /**
-   * Valida las credenciales contra la base y, si son correctas, deja la
-   * sesión iniciada. Busca primero entre los empleados y después entre
-   * los clientes registrados. Un cliente que todavía no fue aprobado, o
-   * que fue rechazado, no puede entrar (puntos 5, 7 y 8 del enunciado).
+   * Valida las credenciales y, si son correctas, deja la sesión iniciada.
+   *
+   * Busca primero entre los empleados, que todavía se validan contra la
+   * tabla, y si el correo no es de ningún empleado prueba con Supabase
+   * Auth, que es donde viven los clientes registrados. Un cliente que
+   * todavía no fue aprobado, o que fue rechazado, no puede entrar
+   * (puntos 5, 7 y 8 del enunciado).
    */
   async ingresar(correo: string, clave: string): Promise<ResultadoIngreso> {
     const correoNormalizado = correo.trim().toLowerCase();
@@ -109,21 +118,68 @@ export class SesionService {
       return { estado: 'correcto', usuario };
     }
 
-    const cliente = await this.buscarCliente(correoNormalizado);
-    if (cliente.error) {
-      return { estado: 'error-de-conexion', detalle: this.explicar(cliente.error) };
-    }
+    return this.ingresarComoCliente(correoNormalizado, clave);
+  }
 
-    if (!cliente.fila || cliente.fila.password !== clave) {
+  /**
+   * Ingreso de un cliente registrado, contra Supabase Auth.
+   *
+   * Es el otro lado de la pantalla de registro: allá se crea la cuenta
+   * con signUp() y acá se entra con signInWithPassword(). La contraseña
+   * nunca pasa por la tabla `clientes`: la guarda Auth, encriptada.
+   */
+  private async ingresarComoCliente(correo: string, clave: string): Promise<ResultadoIngreso> {
+    const { data, error } = await this.supabase.cliente.auth.signInWithPassword({
+      email: correo,
+      password: clave,
+    });
+
+    if (error || !data.user) {
+      // Auth distingue "no hay conexión" de "los datos están mal", y esa
+      // diferencia sí le sirve a la persona que está entrando.
+      if (error && /fetch|network/i.test(error.message)) {
+        return { estado: 'error-de-conexion', detalle: this.explicar(error.message) };
+      }
       return { estado: 'credenciales-invalidas' };
     }
 
-    if (cliente.fila.estado === 'pendiente') return { estado: 'pendiente-de-aprobacion' };
-    if (cliente.fila.estado === 'rechazado') return { estado: 'rechazado' };
+    // La contraseña era correcta: ahora se busca su ficha de cliente,
+    // que lleva el mismo uuid que le dio Auth.
+    const { data: fila, error: errorFicha } = await this.supabase.cliente
+      .from('clientes')
+      .select('*')
+      .eq('id', data.user.id)
+      .maybeSingle<FilaCliente>();
 
-    const usuario = this.clienteAUsuario(cliente.fila);
+    if (errorFicha) {
+      await this.cerrarSesionDeAuth();
+      return { estado: 'error-de-conexion', detalle: this.explicar(errorFicha.message) };
+    }
+
+    // Tiene cuenta en Auth pero nadie le creó la ficha de cliente, así
+    // que no hay perfil con el que entrar.
+    if (!fila) {
+      await this.cerrarSesionDeAuth();
+      return { estado: 'sin-perfil' };
+    }
+
+    // Al que no está aprobado se le cierra la sesión de Auth en el acto,
+    // para que no le quede nada abierto en el dispositivo.
+    if (fila.estado === 'pendiente' || fila.estado === 'rechazado') {
+      await this.cerrarSesionDeAuth();
+      return fila.estado === 'pendiente'
+        ? { estado: 'pendiente-de-aprobacion' }
+        : { estado: 'rechazado' };
+    }
+
+    const usuario = this.clienteAUsuario(fila);
     this.iniciar(usuario);
     return { estado: 'correcto', usuario };
+  }
+
+  /** Cierra la sesión de Auth sin tocar la sesión propia de la aplicación. */
+  private async cerrarSesionDeAuth(): Promise<void> {
+    await this.supabase.cliente.auth.signOut().catch(() => undefined);
   }
 
   /**
@@ -182,6 +238,10 @@ export class SesionService {
    * Los clientes pendientes y rechazados también aparecen, porque el
    * enunciado pide verificar que esos dos NO puedan ingresar: tocando su
    * ficha se ve el mensaje que corresponde a cada estado.
+   *
+   * La ficha de un empleado entra sola, porque su contraseña todavía
+   * está en la tabla. La de un cliente completa el correo y nada más:
+   * su contraseña la guarda Supabase Auth y no se puede leer.
    */
   async accesosRapidos(): Promise<AccesoRapido[]> {
     const [empleados, clientes] = await Promise.all([
@@ -212,7 +272,7 @@ export class SesionService {
         apellidos: fila.apellidos,
         nombres: fila.nombres,
         correo: fila.email,
-        clave_demo: fila.password,
+        clave_demo: null,
         perfil: 'cliente_registrado',
         foto_url: fila.foto_url,
         estado_aprobacion: this.aEstadoAprobacion(fila.estado),
@@ -230,16 +290,6 @@ export class SesionService {
       .select('*')
       .eq('email', correo)
       .maybeSingle<FilaEmpleado>();
-
-    return { fila: data, error: error?.message ?? null };
-  }
-
-  private async buscarCliente(correo: string) {
-    const { data, error } = await this.supabase.cliente
-      .from('clientes')
-      .select('*')
-      .eq('email', correo)
-      .maybeSingle<FilaCliente>();
 
     return { fila: data, error: error?.message ?? null };
   }
