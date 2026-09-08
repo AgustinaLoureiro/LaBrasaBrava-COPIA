@@ -1,34 +1,74 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Solicitar mesa</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true">
+  <div class="pantalla-modulo">
 
-<ion-content class="ion-padding">
-  <form [formGroup]="formulario" (ngSubmit)="solicitarMesa()">
+    <button type="button" class="volver texto-ayuda" (click)="volver()">‹ Volver</button>
 
-    <ion-item>
-      <ion-label position="floating">Nombre</ion-label>
-      <ion-input formControlName="nombre"></ion-input>
-    </ion-item>
+    <header class="cabecera">
+      <app-logo-marca
+        composicion="horizontal"
+        variante="crema"
+        [tamanio]="44"
+        [animado]="false"
+        [nombre]="restaurante.nombre"
+      />
+      <p class="lema">{{ restaurante.lema }}</p>
+    </header>
 
-    <div class="ion-padding-top">
-      <ion-button expand="block" fill="outline" type="button" (click)="sacarFoto()">
-        Sacar foto
-      </ion-button>
+    <form [formGroup]="formulario" (ngSubmit)="solicitarMesa()">
 
-      @if (fotoPrevia) {
-        <ion-img [src]="fotoPrevia" style="max-width: 200px; margin: 10px auto;"></ion-img>
-      }
-    </div>
+      <section class="tarjeta">
+        <h2 class="titulo-seccion">Solicitar una mesa</h2>
+        <p class="subtitulo-seccion">
+          Dejá tu nombre y tu foto para entrar en la lista de espera. El metre te
+          avisa apenas tenga una mesa libre.
+        </p>
 
-    <ion-button expand="block" type="submit" [disabled]="enviando">
-      {{ enviando ? 'Enviando...' : 'Solicitar mesa' }}
-    </ion-button>
+        <div class="campo" [class.campo-con-error]="invalido('nombre')">
+          <label for="nombre">Nombre</label>
+          <div class="entrada">
+            <input id="nombre" type="text" formControlName="nombre" maxlength="40" />
+          </div>
+          @if (invalido('nombre')) {
+            <p class="mensaje-validacion">{{ mensajeError('nombre') }}</p>
+          }
+        </div>
+      </section>
 
-    @if (mensaje) {
-      <p class="ion-text-center">{{ mensaje }}</p>
-    }
+      <section class="tarjeta">
+        <h2 class="titulo-seccion">Tu foto</h2>
+        <p class="subtitulo-seccion">
+          Sirve para que el metre te reconozca cuando te toque la mesa.
+        </p>
 
-  </form>
+        <div class="marco-foto">
+          @if (fotoPrevia) {
+            <img class="vista-previa" [src]="fotoPrevia" alt="Tu foto" />
+          } @else {
+            <span class="sin-foto">Todavía no sacaste la foto</span>
+          }
+
+          <button type="button" class="boton-secundario" (click)="sacarFoto()">
+            {{ fotoPrevia ? 'Sacar otra foto' : 'Sacar foto' }}
+          </button>
+        </div>
+      </section>
+
+      <footer class="pie">
+        <button type="submit" class="boton-principal" [disabled]="enviando">
+          {{ enviando ? 'Enviando tu solicitud' : 'Solicitar mesa' }}
+        </button>
+
+        @if (mensaje) {
+          <p
+            class="etiqueta ion-text-center"
+            [class.etiqueta-exito]="!mensajeEsError"
+            [class.etiqueta-error]="mensajeEsError"
+          >
+            {{ mensaje }}
+          </p>
+        }
+      </footer>
+
+    </form>
+  </div>
 </ion-content>
