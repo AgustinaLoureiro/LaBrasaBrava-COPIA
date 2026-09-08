@@ -54,9 +54,9 @@
         <p class="subtitulo-seccion">
           Estas son las tareas que le corresponden a un {{ nombrePerfil().toLowerCase() }}.
         </p>
-        @if (modulos().length > 0) {
+        @if (modulosDelPerfil().length > 0) {
           <ul>
-            @for (modulo of modulos(); track modulo.nombre) {
+            @for (modulo of modulosDelPerfil(); track modulo.nombre) {
               <li>
                 <span class="punto" aria-hidden="true"></span>
                 @if (modulo.ruta) {

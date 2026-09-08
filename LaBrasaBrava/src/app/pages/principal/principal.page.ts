@@ -54,6 +54,12 @@ export class PrincipalPage {
     return actual ? TEXTO_SOBRE_PERFIL[actual.perfil] : PALETA.cremaTrigo;
   });
 
+  modulosDelPerfil = computed(() => {
+    const actual = this.usuario();
+    return actual ? modulosDelPerfil(actual.perfil) : [];
+  });
+
+
   /**
    * Módulos que ve este perfil, y solamente los de este perfil.
    *
