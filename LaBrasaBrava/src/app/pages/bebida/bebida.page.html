@@ -13,52 +13,52 @@
 
     <div class="campo buscador">
       <div class="entrada">
-        <input type="text" placeholder="Buscar plato..." [value]="busqueda()"
+        <input type="text" placeholder="Buscar bebida..." [value]="busqueda()"
           (input)="buscar($any($event.target).value)" />
       </div>
     </div>
 
     @if (cargandoLista()) {
-    <p class="texto-ayuda ion-text-center">Cargando platos...</p>
+    <p class="texto-ayuda ion-text-center">Cargando bebidas...</p>
     }
 
     <button type="button" class="volver texto-ayuda" (click)="toggleVistaInactivos()">
-      {{ mostrarInactivos() ? 'Ver platos activos' : 'Ver platos inactivos' }}
+      {{ mostrarInactivos() ? 'Ver bebidas activas' : 'Ver bebidas inactivas' }}
     </button>
 
-    @if (!cargandoLista() && platosFiltrados().length === 0) {
+    @if (!cargandoLista() && bebidasFiltradas().length === 0) {
     <section class="tarjeta">
-      <p class="texto-cuerpo">No se encontraron platos.</p>
+      <p class="texto-cuerpo">No se encontraron bebidas.</p>
     </section>
     }
 
-    @if (!cargandoLista() && platosPagina().length > 0) {
-    <section class="lista-platos">
-      @for (plato of platosPagina(); track plato.id) {
-      <article class="tarjeta plato-item">
-        <button type="button" class="foto-boton" (click)="abrirCarrusel(plato)">
-          @if (plato.fotos?.[0]) {
-          <img [src]="plato.fotos[0]" [alt]="'Foto de ' + plato.nombre" class="foto-plato" />
+    @if (!cargandoLista() && bebidasPagina().length > 0) {
+    <section class="lista-bebidas">
+      @for (bebida of bebidasPagina(); track bebida.id) {
+      <article class="tarjeta bebida-item">
+        <button type="button" class="foto-boton" (click)="abrirCarrusel(bebida)">
+          @if (bebida.fotos?.[0]) {
+          <img [src]="bebida.fotos[0]" [alt]="'Foto de ' + bebida.nombre" class="foto-bebida" />
           }
         </button>
 
-        <div class="datos-plato">
-          <h2 class="titulo-seccion">{{ plato.nombre }}</h2>
-          <h2 class="nombre-plato">{{ plato.nombre }}</h2>
-          <span class="precio-plato">$ {{ plato.precio }}</span>
-          <span class="minutos-plato">{{ plato.tiempo_elaboracion }} min</span>
+        <div class="datos-bebida">
+          <h2 class="titulo-seccion">{{ bebida.nombre }}</h2>
+          <h2 class="nombre-bebida">{{ bebida.nombre }}</h2>
+          <span class="precio-bebida">$ {{ bebida.precio }}</span>
+          <span class="minutos-bebida">{{ bebida.tiempo_elaboracion }} min</span>
           </div>
-          <div class="acciones-plato">
-            <button type="button" class="boton-accion boton-editar" (click)="editarPlato(plato)">
+          <div class="acciones-bebida">
+            <button type="button" class="boton-accion boton-editar" (click)="editarBebida(bebida)">
               ✎ Editar
             </button>
             @if (!mostrarInactivos()) {
-            <button type="button" class="boton-accion boton-chico boton-peligro" (click)="pedirEliminar(plato)">
+            <button type="button" class="boton-accion boton-chico boton-peligro" (click)="pedirEliminar(bebida)">
               🗑 Eliminar
             </button>
             }
             @if (mostrarInactivos()) {
-            <button type="button" class="boton-accion boton-editar" (click)="cambiarEstadoPlato(plato)">
+            <button type="button" class="boton-accion boton-editar" (click)="cambiarEstadoBebida(bebida)">
               {{ mostrarInactivos() ? 'Mostrar en el menú' : 'Desactivar' }}
               
             </button>
@@ -89,7 +89,7 @@
 
     <footer class="pie">
       <button type="button" class="boton-principal" (click)="mostrarFormularioNuevo()">
-        Crear Nuevo Plato
+        Crear Nueva Bebida
       </button>
     </footer>
     }
@@ -99,14 +99,14 @@
     <form [formGroup]="formulario">
 
       <section class="tarjeta">
-        <h2 class="titulo-seccion">{{ platoEditandoId ? 'Editar plato' : 'Agregar plato' }}</h2>
-        <p class="subtitulo-seccion">Agregá al menos 3 fotos claras del plato.</p>
+        <h2 class="titulo-seccion">{{ bebidaEditandoId ? 'Editar bebida' : 'Agregar bebida' }}</h2>
+        <p class="subtitulo-seccion">Agregá al menos 3 fotos claras del bebida.</p>
 
         <div class="grilla-fotos">
           @for (foto of fotos; track $index) {
           <button type="button" class="contenedor-foto" (click)="elegirFoto($index)">
             @if (foto) {
-            <img [src]="foto" [alt]="'Foto ' + ($index + 1) + ' del plato'" class="imagen-foto" />
+            <img [src]="foto" [alt]="'Foto ' + ($index + 1) + ' del bebida'" class="imagen-foto" />
             } @else {
             <span class="subtitulo-seccion">+ Foto</span>
             }
@@ -120,16 +120,16 @@
 
         <div class="aviso">
           <p class="texto-ayuda"><strong>Importante:</strong> las fotos deben ser nítidas y representar fielmente el
-            plato.</p>
+            bebida.</p>
         </div>
       </section>
 
       <section class="tarjeta">
         <h2 class="titulo-seccion">Detalles</h2>
-        <p class="subtitulo-seccion">El plato quedará disponible en el menú.</p>
+        <p class="subtitulo-seccion">El bebida quedará disponible en el menú.</p>
 
         <div class="campo" [class.campo-con-error]="invalido('nombre')">
-          <label for="nombre">Nombre del plato</label>
+          <label for="nombre">Nombre del bebida</label>
           <div class="entrada">
             <input id="nombre" formControlName="nombre" maxlength="40" type="text" />
           </div>
@@ -171,7 +171,7 @@
           Cancelar
         </button>
         <button type="button" class="boton-principal" [disabled]="guardando" (click)="guardar()">
-          {{ guardando ? 'Guardando...' : (platoEditandoId ? 'Guardar cambios' : 'Guardar plato') }}
+          {{ guardando ? 'Guardando...' : (bebidaEditandoId ? 'Guardar cambios' : 'Guardar bebida') }}
         </button>
 
         @if (mensaje) {
@@ -193,7 +193,7 @@
       <button type="button" class="overlay-cerrar" (click)="cerrarCarrusel()">✕</button>
 
       @if (c.fotos.length > 0) {
-      <img [src]="c.fotos[c.indice]" alt="Foto del plato ampliada" class="foto-ampliada" />
+      <img [src]="c.fotos[c.indice]" alt="Foto del bebida ampliada" class="foto-ampliada" />
 
       @if (c.fotos.length > 1) {
       <button type="button" class="carrusel-flecha carrusel-anterior" (click)="fotoAnterior()">‹</button>
@@ -206,11 +206,11 @@
   }
 
   <!-- ============ CONFIRMACIÓN DE BORRADO ============ -->
-  @if (platoAEliminar(); as plato) {
+  @if (bebidaAEliminar(); as bebida) {
   <div class="overlay" (click)="cancelarEliminar()">
     <div class="overlay-contenido overlay-confirmacion" (click)="$event.stopPropagation()">
-      <h2 class="titulo-seccion">¿Eliminar plato del menú?</h2>
-      <p class="texto-cuerpo">Desea eliminar "{{ plato.nombre }}" del menú del cliente.</p>
+      <h2 class="titulo-seccion">¿Eliminar bebida del menú?</h2>
+      <p class="texto-cuerpo">Desea eliminar "{{ bebida.nombre }}" del menú del cliente.</p>
       <div class="acciones-confirmacion">
         <button type="button" class="boton-contorno" (click)="cancelarEliminar()">Cancelar</button>
         <button type="button" class="boton-principal boton-peligro-solido"

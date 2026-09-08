@@ -63,12 +63,13 @@ export class PrincipalPage {
   protected readonly modulos: readonly { nombre: string; ruta: string | null }[] = [
     { nombre: 'Alta de empleados', ruta: '/empleado' },
     { nombre: 'Alta de platos', ruta: '/plato' },
+    { nombre: 'Carta / Menú', ruta: null },
     { nombre: 'Registro de clientes', ruta: '/registro-cliente' },
     { nombre: 'Aprobación de clientes', ruta: '/aprobacion-clientes' },
-    { nombre: 'Lista de espera', ruta: '/lista-espera' },
-    { nombre: 'Encuesta de satisfacción', ruta: '/encuesta' },
-    { nombre: 'Alta de bebidas', ruta: null },
-    { nombre: 'Gestión de mesas', ruta: null },
+    { nombre: 'Lista de espera', ruta: null },
+    { nombre: 'Encuesta de satisfacción', ruta: null },
+    { nombre: 'Alta de bebidas', ruta: '/bebida' },
+    { nombre: 'Gestión de mesas', ruta: '/mesa' },
     { nombre: 'Pedidos y comanda', ruta: null },
   ];
 

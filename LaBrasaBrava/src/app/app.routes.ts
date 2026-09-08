@@ -59,6 +59,14 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/plato/plato.page').then((m) => m.PlatoPage),
   },
   {
+    path: 'bebida',
+    loadComponent: () => import('./pages/bebida/bebida.page').then((m) => m.BebidaPage),
+  },
+  {
+    path: 'mesa',
+    loadComponent: () => import('./pages/mesa/mesa.page').then((m) => m.MesaPage),
+  },
+  {
     path: 'encuesta',
     loadComponent: () => import('./pages/encuesta/encuesta.page').then((m) => m.EncuestaPage),
   },
