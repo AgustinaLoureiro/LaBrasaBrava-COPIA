@@ -66,7 +66,7 @@ export class PrincipalPage {
     { nombre: 'Carta / Menú', ruta: null },
     { nombre: 'Registro de clientes', ruta: '/registro-cliente' },
     { nombre: 'Aprobación de clientes', ruta: '/aprobacion-clientes' },
-    { nombre: 'Lista de espera', ruta: null },
+    { nombre: 'Lista de espera', ruta: '/lista-espera' },
     { nombre: 'Encuesta de satisfacción', ruta: null },
     { nombre: 'Alta de bebidas', ruta: '/bebida' },
     { nombre: 'Gestión de mesas', ruta: '/mesa' },
