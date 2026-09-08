@@ -129,7 +129,7 @@ export class IngresoPage implements OnInit {
 
   /** Carga las credenciales del acceso rápido elegido y entra directamente. */
   protected async usarAccesoRapido(acceso: AccesoRapido): Promise<void> {
-    this.formulario.setValue({ correo: acceso.correo, clave: acceso.clave_demo });
+    this.formulario.patchValue({ correo: acceso.correo, clave: acceso.clave_demo });
     await this.ingresar();
   }
 

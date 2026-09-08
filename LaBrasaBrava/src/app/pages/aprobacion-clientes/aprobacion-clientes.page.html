@@ -1,13 +1,392 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>aprobacion-clientes</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">aprobacion-clientes</ion-title>
-    </ion-toolbar>
-  </ion-header>
+
+  <div class="principal">
+
+    <!-- CABECERA -->
+    <header class="cabecera">
+
+      <app-logo-marca
+        composicion="horizontal"
+        variante="crema"
+        [tamanio]="44"
+        [nombre]="'BRASA BRAVA'">
+      </app-logo-marca>
+
+      <p class="lema">
+        Parrilla y cocina de autor
+      </p>
+
+    </header>
+
+
+    <!-- BUSCADOR -->
+    <div class="buscador">
+
+      <input
+        type="text"
+        placeholder="Buscar cliente..."
+      />
+
+    </div>
+
+
+    <!-- CLIENTES INACTIVOS -->
+    <button
+      type="button"
+      class="link-inactivos">
+
+      Ver clientes inactivos
+
+    </button>
+
+
+    <!-- CARGANDO -->
+    <div
+      *ngIf="cargando"
+      class="texto-ayuda ion-text-center">
+
+      <p>Cargando clientes...</p>
+
+    </div>
+
+
+    <!-- ERROR -->
+    <div
+      *ngIf="!cargando && errorGeneral"
+      class="texto-ayuda ion-text-center">
+
+      <p>{{ errorGeneral }}</p>
+
+      <button
+        type="button"
+        class="boton-contorno boton-chico"
+        (click)="cargarPendientes()">
+
+        Intentar nuevamente
+
+      </button>
+
+    </div>
+
+
+    <!-- SIN CLIENTES -->
+    <section
+      class="sin-clientes"
+      *ngIf="
+        !cargando &&
+        !errorGeneral &&
+        pendientes.length === 0
+      ">
+
+      <p>
+        Todavía no hay clientes cargados o pendientes.
+      </p>
+
+    </section>
+
+
+    <!-- LISTADO -->
+    <section
+      class="lista-clientes"
+      *ngIf="
+        !cargando &&
+        !errorGeneral &&
+        pendientes.length > 0
+      ">
+
+
+      <!-- TARJETA -->
+      <article
+        class="cliente-card"
+        *ngFor="let cliente of pendientes">
+
+
+        <!-- CONTENIDO SUPERIOR -->
+        <div class="cliente-principal">
+
+
+          <!-- FOTO -->
+          <div class="foto-container">
+
+            <img
+              *ngIf="cliente.foto_url"
+              [src]="cliente.foto_url"
+              [alt]="cliente.nombres + ' ' + cliente.apellidos"
+            />
+
+            <div
+              *ngIf="!cliente.foto_url"
+              class="foto-fallback">
+
+              <ion-icon name="person-outline"></ion-icon>
+
+            </div>
+
+          </div>
+
+
+          <!-- DATOS -->
+          <div class="datos-principales">
+
+            <h2
+              [title]="cliente.nombres + ' ' + cliente.apellidos">
+
+              {{ cliente.nombres }}
+              {{ cliente.apellidos }}
+
+            </h2>
+
+            <p
+              class="email"
+              [title]="cliente.email">
+
+              {{ cliente.email }}
+
+            </p>
+
+            <p class="dni">
+
+              DNI: {{ cliente.dni }}
+
+            </p>
+
+            <span class="estado-pendiente">
+
+              Pendiente de aprobación
+
+            </span>
+
+          </div>
+
+
+          <!-- BOTONES A LA DERECHA -->
+          <div class="acciones-cliente">
+
+
+            <!-- ACEPTAR -->
+            <button
+              type="button"
+              class="boton-aceptar"
+              [disabled]="procesandoId === cliente.id"
+              (click)="confirmarAprobacion(cliente)">
+
+              <span class="icono-boton">
+                ✓
+              </span>
+
+              <span>
+                Aceptar
+              </span>
+
+            </button>
+
+
+            <!-- RECHAZAR -->
+            <button
+              type="button"
+              class="boton-rechazar"
+              [disabled]="procesandoId === cliente.id"
+              (click)="confirmarRechazo(cliente)">
+
+              <span class="icono-boton">
+                ✕
+              </span>
+
+              <span>
+                Rechazar
+              </span>
+
+            </button>
+
+
+          </div>
+
+        </div>
+
+
+        <!-- INFORMACIÓN COMPLETA -->
+        <button
+          type="button"
+          class="boton-detalle"
+          (click)="verDetalle(cliente)">
+
+          Ver información completa
+
+        </button>
+
+
+      </article>
+
+    </section>
+
+  </div>
+
+
+  <!-- ==========================================
+       MODAL
+  =========================================== -->
+
+  <ion-modal
+    [isOpen]="clienteSeleccionado !== null"
+    (didDismiss)="cerrarDetalle()">
+
+    <ng-template>
+
+
+      <ion-header class="ion-no-border">
+
+        <ion-toolbar class="toolbar-modal">
+
+          <ion-title>
+            Información del cliente
+          </ion-title>
+
+          <ion-buttons slot="end">
+
+            <ion-button
+              class="btn-cerrar"
+              (click)="cerrarDetalle()">
+
+              Cerrar
+
+            </ion-button>
+
+          </ion-buttons>
+
+        </ion-toolbar>
+
+      </ion-header>
+
+
+      <ion-content class="modal-contenido">
+
+        <ng-container *ngIf="clienteSeleccionado">
+
+
+          <!-- FOTO -->
+          <div class="detalle-foto">
+
+            <img
+              *ngIf="clienteSeleccionado.foto_url"
+              [src]="clienteSeleccionado.foto_url"
+              [alt]="
+                clienteSeleccionado.nombres +
+                ' ' +
+                clienteSeleccionado.apellidos
+              "
+            />
+
+            <ion-icon
+              *ngIf="!clienteSeleccionado.foto_url"
+              name="person-circle-outline">
+            </ion-icon>
+
+          </div>
+
+
+          <!-- NOMBRE -->
+          <div class="detalle-nombre">
+
+            <h2>
+              {{ clienteSeleccionado.nombres }}
+              {{ clienteSeleccionado.apellidos }}
+            </h2>
+
+            <span class="estado-pendiente">
+              Pendiente de aprobación
+            </span>
+
+          </div>
+
+
+          <!-- DATOS -->
+          <div class="datos-modal">
+
+            <div class="dato-cliente">
+
+              <span class="titulo-dato">
+                DNI
+              </span>
+
+              <strong>
+                {{ clienteSeleccionado.dni }}
+              </strong>
+
+            </div>
+
+
+            <div class="dato-cliente">
+
+              <span class="titulo-dato">
+                Email
+              </span>
+
+              <strong>
+                {{ clienteSeleccionado.email }}
+              </strong>
+
+            </div>
+
+
+            <div class="dato-cliente">
+
+              <span class="titulo-dato">
+                Fecha de registro
+              </span>
+
+              <strong>
+                {{
+                  clienteSeleccionado.created_at
+                    | date:'dd/MM/yyyy HH:mm'
+                }}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <!-- BOTONES DEL MODAL -->
+          <div class="acciones-detalle">
+
+            <button
+              type="button"
+              class="boton-aceptar boton-modal"
+              [disabled]="
+                procesandoId === clienteSeleccionado.id
+              "
+              (click)="
+                confirmarAprobacion(clienteSeleccionado)
+              ">
+
+              ✓ Aceptar
+
+            </button>
+
+
+            <button
+              type="button"
+              class="boton-rechazar boton-modal"
+              [disabled]="
+                procesandoId === clienteSeleccionado.id
+              "
+              (click)="
+                confirmarRechazo(clienteSeleccionado)
+              ">
+
+              ✕ Rechazar
+
+            </button>
+
+          </div>
+
+
+        </ng-container>
+
+      </ion-content>
+
+    </ng-template>
+
+  </ion-modal>
+
 </ion-content>
