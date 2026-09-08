@@ -11,7 +11,7 @@ import { Almacenamiento } from '../../services/almacenamiento';
 import { LogoMarcaComponent } from '../../componentes/logo-marca/logo-marca.component';
 import { RESTAURANTE } from '../../nucleo/marca';
 
-interface Plato {
+interface Bebida {
   id: string;
   nombre: string;
   descripcion: string;
@@ -32,13 +32,13 @@ function numeroPositivo(): ValidatorFn {
 const POR_PAGINA = 5;
 
 @Component({
-  selector: 'app-plato',
+  selector: 'app-bebida',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './plato.page.html',
-  styleUrls: ['./plato.page.scss'],
+  templateUrl: './bebida.page.html',
+  styleUrls: ['./bebida.page.scss'],
   imports: [CommonModule, ReactiveFormsModule, IonContent, LogoMarcaComponent],
 })
-export class PlatoPage {
+export class BebidaPage {
   private constructorFormulario = inject(FormBuilder);
   private actionSheetCtrl = inject(ActionSheetController);
   private supabase = inject(SupabaseService);
@@ -51,32 +51,32 @@ export class PlatoPage {
   vista = signal<'lista' | 'formulario'>('lista');
 
   // ---- Listado ----
-  platos = signal<Plato[]>([]);
+  bebidas = signal<Bebida[]>([]);
   cargandoLista = signal(true);
   busqueda = signal('');
   paginaActual = signal(1);
 
-  platosFiltrados = computed(() => {
+  bebidasFiltradas = computed(() => {
     const termino = this.busqueda().trim().toLowerCase();
-    if (!termino) return this.platos();
-    return this.platos().filter(p => p.nombre.toLowerCase().includes(termino));
+    if (!termino) return this.bebidas();
+    return this.bebidas().filter(b => b.nombre.toLowerCase().includes(termino));
   });
 
-  totalPaginas = computed(() => Math.max(1, Math.ceil(this.platosFiltrados().length / POR_PAGINA)));
+  totalPaginas = computed(() => Math.max(1, Math.ceil(this.bebidasFiltradas().length / POR_PAGINA)));
 
-  platosPagina = computed(() => {
+  bebidasPagina = computed(() => {
     const inicio = (this.paginaActual() - 1) * POR_PAGINA;
-    return this.platosFiltrados().slice(inicio, inicio + POR_PAGINA);
+    return this.bebidasFiltradas().slice(inicio, inicio + POR_PAGINA);
   });
 
   // ---- Carrusel flotante ----
   carrusel = signal<{ fotos: string[]; indice: number } | null>(null);
 
   // ---- Confirmación de borrado ----
-  platoAEliminar = signal<Plato | null>(null);
+  bebidaAEliminar = signal<Bebida | null>(null);
 
   // ---- Formulario (alta/edición) ----
-  platoEditandoId: string | null = null;
+  bebidaEditandoId: string | null = null;
   guardando = false;
   mensaje = '';
   mensajeEsError = false;
@@ -108,7 +108,7 @@ export class PlatoPage {
   fotos: (string | null)[] = [null, null, null];
 
   constructor() {
-    this.cargarPlatos();
+    this.cargarBebidas();
   }
 
   volver() {
@@ -118,22 +118,22 @@ export class PlatoPage {
   mostrarInactivos = signal(false);
 
   // ---- Cargar listado ----
-  async cargarPlatos() {
+  async cargarBebidas() {
     this.cargandoLista.set(true);
     this.mensaje = '';
 
     const { data, error } = await this.supabase.cliente
-      .from('platos')
+      .from('bebidas')
       .select('id, nombre, descripcion, tiempo_elaboracion, precio, fotos, activo')
       .eq('activo', !this.mostrarInactivos())
       .order('id', { ascending: false });
 
     if (error) {
-      this.mensaje = 'No se pudieron cargar los platos: ' + error.message;
+      this.mensaje = 'No se pudieron cargar los bebidas: ' + error.message;
       this.mensajeEsError = true;
       return;
     } else {
-      this.platos.set(data ?? []);
+      this.bebidas.set(data ?? []);
     }
 
     this.cargandoLista.set(false);
@@ -142,17 +142,17 @@ export class PlatoPage {
 
   toggleVistaInactivos() {
     this.mostrarInactivos.update(v => !v);
-    this.cargarPlatos();
+    this.cargarBebidas();
   }
 
-  async cambiarEstadoPlato(plato: any) {
+  async cambiarEstadoBebida(bebida: any) {
     const { error } = await this.supabase.cliente
-      .from('platos')
-      .update({ activo: !plato.activo })
-      .eq('id', plato.id);
+      .from('bebidas')
+      .update({ activo: !bebida.activo })
+      .eq('id', bebida.id);
 
     if (!error) {
-      this.cargarPlatos(); // refresca la lista
+      this.cargarBebidas(); // refresca la lista
     }
   }
 
@@ -172,8 +172,8 @@ export class PlatoPage {
   }
 
   // ---- Carrusel ----
-  abrirCarrusel(plato: Plato) {
-    this.carrusel.set({ fotos: plato.fotos ?? [], indice: 0 });
+  abrirCarrusel(bebida: Bebida) {
+    this.carrusel.set({ fotos: bebida.fotos ?? [], indice: 0 });
   }
   cerrarCarrusel() {
     this.carrusel.set(null);
@@ -195,22 +195,22 @@ export class PlatoPage {
 
   // ---- Alta / edición ----
   mostrarFormularioNuevo() {
-    this.platoEditandoId = null;
+    this.bebidaEditandoId = null;
     this.formulario.reset();
     this.fotos = [null, null, null];
     this.mensaje = '';
     this.vista.set('formulario');
   }
 
-  editarPlato(plato: Plato) {
-    this.platoEditandoId = plato.id;
+  editarBebida(bebida: Bebida) {
+    this.bebidaEditandoId = bebida.id;
     this.formulario.reset({
-      nombre: plato.nombre,
-      descripcion: plato.descripcion,
-      tiempo_elaboracion: String(plato.tiempo_elaboracion),
-      precio: String(plato.precio),
+      nombre: bebida.nombre,
+      descripcion: bebida.descripcion,
+      tiempo_elaboracion: String(bebida.tiempo_elaboracion),
+      precio: String(bebida.precio),
     });
-    const fotosExistentes = plato.fotos ?? [];
+    const fotosExistentes = bebida.fotos ?? [];
     this.fotos = [0, 1, 2].map(i => fotosExistentes[i] ?? null);
     this.mensaje = '';
     this.vista.set('formulario');
@@ -222,38 +222,38 @@ export class PlatoPage {
   }
 
   // ---- Borrado (BAJA LOGICA)----
-  pedirEliminar(plato: Plato) {
-    this.platoAEliminar.set(plato);
+  pedirEliminar(bebida: Bebida) {
+    this.bebidaAEliminar.set(bebida);
   }
   cancelarEliminar() {
-    this.platoAEliminar.set(null);
+    this.bebidaAEliminar.set(null);
   }
   async confirmarEliminar() {
-    const plato = this.platoAEliminar();
-    if (!plato) return;
+    const bebida = this.bebidaAEliminar();
+    if (!bebida) return;
 
     const { error } = await this.supabase.cliente
-      .from('platos')
+      .from('bebidas')
       .update({ activo: false })
-      .eq('id', plato.id);
+      .eq('id', bebida.id);
 
-    this.platoAEliminar.set(null);
+    this.bebidaAEliminar.set(null);
 
     if (error) {
-      this.mensaje = 'No se pudo dar de baja el plato: ' + error.message;
+      this.mensaje = 'No se pudo dar de baja la bebida: ' + error.message;
       this.mensajeEsError = true;
       return;
     }
 
-    this.mensaje = 'Plato dado de baja correctamente.';
+    this.mensaje = 'Bebida dada de baja correctamente.';
     this.mensajeEsError = false;
-    this.platos.update(lista => lista.filter(p => p.id !== plato.id));
+    this.bebidas.update(lista => lista.filter(b => b.id !== bebida.id));
   }
 
   // ---- Fotos (cámara / galería) ----
   async elegirFoto(indice: number) {
     const actionSheet = await this.actionSheetCtrl.create({
-      header: 'Foto del plato',
+      header: 'Foto de la bebida',
       buttons: [
         { text: 'Tomar foto', handler: () => this.tomarConCamara(indice) },
         { text: 'Elegir de galería', handler: () => this.elegirDeGaleria(indice) },
@@ -328,6 +328,7 @@ export class PlatoPage {
     if (control.errors['numeroPositivo']) return 'El valor debe ser mayor a 0.';
     return 'Dato inválido.';
   }
+
   // ---- Guardar (alta o edición) ----
   async guardar() {
     this.mensaje = '';
@@ -339,7 +340,7 @@ export class PlatoPage {
       return;
     }
     if (this.fotos.some(f => f === null)) {
-      this.mensaje = 'Faltan cargar las 3 fotos del plato.';
+      this.mensaje = 'Faltan cargar las 3 fotos de la bebida.';
       this.mensajeEsError = true;
       return;
     }
@@ -351,7 +352,7 @@ export class PlatoPage {
       const urlsFotos: string[] = [];
       for (const foto of this.fotos) {
         if (foto!.startsWith('data:')) {
-          const url = await this.almacenamiento.subirImagen(foto as string, 'platos');
+          const url = await this.almacenamiento.subirImagen(foto as string, 'bebidas');
           if (!url) {
             this.guardando = false;
             this.mensaje = 'No se pudo subir una de las fotos, intentá nuevamente.';
@@ -364,11 +365,11 @@ export class PlatoPage {
         }
       }
 
-      const datosPlato = { ...this.formulario.value, fotos: urlsFotos };
+      const datosBebida = { ...this.formulario.value, fotos: urlsFotos };
 
-      const { error } = this.platoEditandoId
-        ? await this.supabase.cliente.from('platos').update(datosPlato).eq('id', this.platoEditandoId)
-        : await this.supabase.cliente.from('platos').insert(datosPlato);
+      const { error } = this.bebidaEditandoId
+        ? await this.supabase.cliente.from('bebidas').update(datosBebida).eq('id', this.bebidaEditandoId)
+        : await this.supabase.cliente.from('bebidas').insert(datosBebida);
 
       this.guardando = false;
 
@@ -378,9 +379,9 @@ export class PlatoPage {
         return;
       }
 
-      this.mensaje = this.platoEditandoId ? 'Plato actualizado correctamente.' : 'Plato guardado correctamente.';
+      this.mensaje = this.bebidaEditandoId ? 'Bebida actualizada correctamente.' : 'Bebida guardada correctamente.';
       this.mensajeEsError = false;
-      await this.cargarPlatos();
+      await this.cargarBebidas();
       this.vista.set('lista');
     } catch (err: any) {
       this.guardando = false;

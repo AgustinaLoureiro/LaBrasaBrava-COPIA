@@ -1,5 +1,17 @@
-.error-campo {
-    color: var(--brasa-error, #C2352A);
-    font-size: 14px;
-    margin: 2px 0 8px 16px;
+/* La estructura de la pantalla (cabecera, tarjetas, botón de volver) sale
+   de la clase .pantalla-modulo de global.scss. Acá queda solamente lo
+   propio del alta de empleados. */
+
+/* Botón "Mostrar"/"Ocultar" que va dentro del campo de la contraseña. */
+.ver-clave {
+  flex: none;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--texto-destacado);
+  font: var(--texto-ayuda);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--espaciado-mayusculas);
+  cursor: pointer;
 }

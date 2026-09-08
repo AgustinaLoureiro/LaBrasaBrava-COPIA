@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
-import { sesionIniciadaGuarda } from './nucleo/guardas/sesion.guarda';
+import { perfilGuarda, sesionIniciadaGuarda } from './nucleo/guardas/sesion.guarda';
+import { PERFILES_ADMINISTRACION } from './nucleo/modulos';
 
 export const routes: Routes = [
   // --- Arranque -----------------------------------------------------------
@@ -28,22 +29,27 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/principal/principal.page').then((m) => m.PrincipalPage),
   },
-  
 
   // --- Clientes -----------------------------------------------------------
   {
+    // Sin guarda a propósito: el que se registra todavía no tiene cuenta,
+    // y el enunciado (punto 5) permite que lo haga el cliente mismo.
     path: 'registro-cliente',
     loadComponent: () =>
       import('./pages/registro-cliente/registro-cliente.page').then((m) => m.RegistroClientePage),
   },
   {
+    // Puntos 6, 7 y 8: solo el dueño o el supervisor aprueban o rechazan.
     path: 'aprobacion-clientes',
+    canActivate: [sesionIniciadaGuarda, perfilGuarda(PERFILES_ADMINISTRACION)],
     loadComponent: () =>
       import('./pages/aprobacion-clientes/aprobacion-clientes.page').then(
         (m) => m.AprobacionClientesPage,
       ),
   },
   {
+    // Sin guarda a propósito: el cliente anónimo llega escaneando el QR
+    // de entrada al local, sin haber iniciado sesión (punto 9).
     path: 'lista-espera',
     loadComponent: () =>
       import('./pages/lista-espera/lista-espera.page').then((m) => m.ListaEsperaPage),
@@ -51,12 +57,24 @@ export const routes: Routes = [
 
   // --- Altas y encuestas --------------------------------------------------
   {
+    // Punto 1: el alta de empleados es del dueño o del supervisor.
     path: 'empleado',
+    canActivate: [sesionIniciadaGuarda, perfilGuarda(PERFILES_ADMINISTRACION)],
     loadComponent: () => import('./pages/empleado/empleado.page').then((m) => m.EmpleadoPage),
   },
   {
+    // Punto 2: el plato lo carga el cocinero.
     path: 'plato',
+    canActivate: [sesionIniciadaGuarda, perfilGuarda(['cocinero'])],
     loadComponent: () => import('./pages/plato/plato.page').then((m) => m.PlatoPage),
+  },
+  {
+    path: 'bebida',
+    loadComponent: () => import('./pages/bebida/bebida.page').then((m) => m.BebidaPage),
+  },
+  {
+    path: 'mesa',
+    loadComponent: () => import('./pages/mesa/mesa.page').then((m) => m.MesaPage),
   },
   {
     path: 'encuesta',

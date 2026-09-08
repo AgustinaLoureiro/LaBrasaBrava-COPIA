@@ -353,7 +353,168 @@ ion-toast::part(button) {
 }
 
 /* =====================================================================
-   8. Accesibilidad
+   8. Estructura de una pantalla de módulo
+   =====================================================================
+   Todas las pantallas que cuelgan de la principal (alta de empleados,
+   alta de platos, lista de espera, encuesta) se arman igual: el botón
+   de volver, la cabecera con el imagotipo y abajo las tarjetas. Está
+   acá y no en cada pantalla para que ninguna se despegue del resto.
+   ===================================================================== */
+
+.pantalla-modulo {
+  min-height: 100%;
+  padding: calc(var(--espacio) + var(--ion-safe-area-top, 0px)) var(--espacio)
+    calc(var(--espacio-grande) + var(--ion-safe-area-bottom, 0px));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--espacio);
+  align-content: start;
+}
+
+/* Botón de volver: discreto, arriba de todo y siempre en español. */
+.pantalla-modulo .volver {
+  justify-self: start;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--texto-secundario);
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+  cursor: pointer;
+}
+
+/* Cabecera con el imagotipo sobre la barra de navegación. */
+.pantalla-modulo .cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-chico);
+  padding: var(--espacio-chico) var(--espacio);
+  border-radius: var(--radio);
+  background: var(--barra-navegacion);
+  border: 0.125rem solid var(--borde-fuerte);
+  color: var(--texto-sobre-color);
+}
+
+.pantalla-modulo .cabecera .lema {
+  margin: 0;
+  font: var(--texto-ayuda);
+  color: var(--ambar-ceniza);
+  text-align: right;
+}
+
+.pantalla-modulo form {
+  display: grid;
+  gap: var(--espacio);
+}
+
+.pantalla-modulo .tarjeta,
+.pantalla-modulo .tarjeta-destacada {
+  display: grid;
+  gap: var(--espacio-chico);
+}
+
+/* Dos campos cortos uno al lado del otro (documento y CUIL, por ejemplo). */
+.pantalla-modulo .campos-en-linea {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--espacio-chico);
+}
+
+.pantalla-modulo .pie {
+  display: grid;
+  gap: var(--espacio-chico);
+}
+
+/* Recuadro de aviso, en ámbar, para lo que hay que leer sí o sí. */
+.aviso {
+  border: 0.125rem solid var(--alerta);
+  border-left: 0.4rem solid var(--alerta);
+  background: rgba(224, 167, 46, 0.32);
+  border-radius: var(--radio-chico);
+  padding: var(--espacio-chico);
+}
+
+.aviso .texto-ayuda {
+  color: var(--texto-principal);
+}
+
+.aviso strong {
+  color: var(--brasa-profunda);
+  font-family: var(--tipografia-titulos);
+  font-weight: 800;
+}
+
+/* --- Foto tomada con la cámara --------------------------------------- */
+
+/* Recuadro donde se toma o se ve la foto de una persona o de un plato. */
+.marco-foto {
+  display: grid;
+  justify-items: center;
+  gap: var(--espacio-chico);
+}
+
+.marco-foto .vista-previa {
+  width: 11rem;
+  height: 11rem;
+  object-fit: cover;
+  object-position: center;
+  border-radius: var(--radio);
+  border: 0.15rem solid var(--borde-fuerte);
+  box-shadow: var(--sombra);
+}
+
+/* Mientras no hay foto, el hueco se marca en punteado sobre el crema
+   hundido: nunca queda un espacio neutro ni un rectángulo blanco. */
+.marco-foto .sin-foto {
+  display: grid;
+  place-items: center;
+  width: 11rem;
+  height: 11rem;
+  border-radius: var(--radio);
+  border: 0.15rem dashed var(--borde-fuerte);
+  background: var(--superficie-hundida);
+  color: var(--texto-secundario);
+  font: var(--texto-ayuda);
+  text-align: center;
+  padding: var(--espacio-chico);
+}
+
+/* --- Menú desplegable ------------------------------------------------- */
+
+/* Un `select` propio, para que no aparezca el gris del navegador. */
+.entrada select {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--texto-principal);
+  font: var(--texto-cuerpo);
+  font-weight: 600;
+  appearance: none;
+  cursor: pointer;
+}
+
+.entrada select option {
+  background: var(--superficie);
+  color: var(--texto-principal);
+}
+
+/* La flechita del desplegable, dibujada con bordes para no cargar íconos. */
+.entrada.desplegable::after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 0.35rem solid transparent;
+  border-right: 0.35rem solid transparent;
+  border-top: 0.4rem solid var(--terracota);
+  flex: none;
+}
+
+/* =====================================================================
+   9. Accesibilidad
    ===================================================================== */
 
 :focus-visible {

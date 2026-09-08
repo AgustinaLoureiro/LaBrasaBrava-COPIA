@@ -127,7 +127,13 @@ export class IngresoPage implements OnInit {
     this.claveVisible.update((visible) => !visible);
   }
 
-  /** Carga las credenciales del acceso rápido elegido y entra directamente. */
+  /**
+   * Carga las credenciales del acceso rápido elegido.
+   *
+   * Si la ficha trae la contraseña (los empleados), entra directamente.
+   * Si no la trae (los clientes registrados, cuya contraseña guarda
+   * Supabase Auth), completa el correo y avisa que falta escribirla.
+   */
   protected async usarAccesoRapido(acceso: AccesoRapido): Promise<void> {
     this.formulario.patchValue({ correo: acceso.correo, clave: acceso.clave_demo });
     await this.ingresar();

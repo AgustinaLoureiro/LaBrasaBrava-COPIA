@@ -12,15 +12,15 @@ import {
   NOMBRE_PERFIL,
   TEXTO_SOBRE_PERFIL,
 } from '../../nucleo/modelos/usuario';
+import { modulosDelPerfil } from '../../nucleo/modulos';
 import { PALETA } from '../../nucleo/diseno';
 import { RESTAURANTE } from '../../nucleo/marca';
 
 /**
  * Página principal posterior al ingreso.
  *
- * Por ahora muestra los datos de la sesión y el botón de cierre de sesión
- * que pide el enunciado. A medida que avancen los puntos funcionales, acá
- * van a aparecer los accesos a cada módulo según el perfil.
+ * Muestra los datos de la sesión, los módulos que le corresponden al
+ * perfil que entró y el botón de cierre de sesión que pide el enunciado.
  */
 @Component({
   selector: 'app-principal',
@@ -54,21 +54,33 @@ export class PrincipalPage {
     return actual ? TEXTO_SOBRE_PERFIL[actual.perfil] : PALETA.cremaTrigo;
   });
 
-  /** Módulos que va a ver este perfil. Se completan en las próximas entregas. */
+  modulosDelPerfil = computed(() => {
+    const actual = this.usuario();
+    return actual ? modulosDelPerfil(actual.perfil) : [];
+  });
+
+
   /**
-   * Módulos de la aplicación. Los que ya tienen pantalla llevan su ruta y
-   * se abren desde acá; el resto queda anunciado como pendiente hasta que
-   * el integrante que lo tiene asignado lo termine.
+   * Módulos que ve este perfil, y solamente los de este perfil.
+   *
+   * El reparto está en nucleo/modulos.ts, que es el mismo archivo que
+   * usan las guardas de las rutas: así lo que se muestra en pantalla y
+   * lo que deja entrar el router no se pueden contradecir.
+   *
+   * Los que llevan `ruta: null` son los que todavía no están hechos:
+   * aparecen igual, anunciados como en desarrollo, para que se vea qué
+   * le va a tocar a cada perfil cuando el módulo esté terminado.
    */
   protected readonly modulos: readonly { nombre: string; ruta: string | null }[] = [
     { nombre: 'Alta de empleados', ruta: '/empleado' },
     { nombre: 'Alta de platos', ruta: '/plato' },
+    { nombre: 'Carta / Menú', ruta: null },
     { nombre: 'Registro de clientes', ruta: '/registro-cliente' },
     { nombre: 'Aprobación de clientes', ruta: '/aprobacion-clientes' },
     { nombre: 'Lista de espera', ruta: '/lista-espera' },
     { nombre: 'Encuesta de satisfacción', ruta: '/encuesta' },
-    { nombre: 'Alta de bebidas', ruta: null },
-    { nombre: 'Gestión de mesas', ruta: null },
+    { nombre: 'Alta de bebidas', ruta: '/bebida' },
+    { nombre: 'Gestión de mesas', ruta: '/mesa' },
     { nombre: 'Pedidos y comanda', ruta: null },
   ];
 

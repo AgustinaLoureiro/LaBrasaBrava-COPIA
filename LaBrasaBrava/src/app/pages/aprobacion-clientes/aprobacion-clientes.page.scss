@@ -1,3 +1,4 @@
+
 /* ==========================================
    VARIABLES
 ========================================== */
@@ -934,4 +935,20 @@ ion-content {
 
   }
 
+}
+=======
+/* La estructura de la pantalla sale de la clase .pantalla-modulo de
+   global.scss. Acá queda solamente la lista de lo que falta hacer. */
+
+.pendientes {
+  margin: 0;
+  padding-left: var(--espacio-grande);
+  display: grid;
+  gap: var(--espacio-minimo);
+  font: var(--texto-cuerpo);
+  color: var(--texto-principal);
+}
+
+.pendientes li::marker {
+  color: var(--naranja-brasa);
 }

@@ -48,23 +48,32 @@
         </dl>
       </section>
 
-      <!-- Módulos que se van a construir en las próximas entregas -->
+      <!-- Módulos de este perfil: cada perfil ve solamente los suyos -->
       <section class="modulos">
-        <h2 class="titulo-seccion">Módulos</h2>
-        <ul>
-          @for (modulo of modulos; track modulo.nombre) {
-            <li>
-              <span class="punto" aria-hidden="true"></span>
-              @if (modulo.ruta) {
-                <a [routerLink]="modulo.ruta">{{ modulo.nombre }}</a>
-                <span class="estado estado-listo">Disponible</span>
-              } @else {
-                {{ modulo.nombre }}
-                <span class="estado">En desarrollo</span>
-              }
-            </li>
-          }
-        </ul>
+        <h2 class="titulo-seccion">Tus módulos</h2>
+        <p class="subtitulo-seccion">
+          Estas son las tareas que le corresponden a un {{ nombrePerfil().toLowerCase() }}.
+        </p>
+        @if (modulosDelPerfil().length > 0) {
+          <ul>
+            @for (modulo of modulosDelPerfil(); track modulo.nombre) {
+              <li>
+                <span class="punto" aria-hidden="true"></span>
+                @if (modulo.ruta) {
+                  <a [routerLink]="modulo.ruta">{{ modulo.nombre }}</a>
+                  <span class="estado estado-listo">Disponible</span>
+                } @else {
+                  {{ modulo.nombre }}
+                  <span class="estado">En desarrollo</span>
+                }
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="sin-modulos">
+            Todavía no hay ningún módulo asignado a este perfil.
+          </p>
+        }
       </section>
 
       <!-- Cierre de sesión -->

@@ -203,3 +203,12 @@
   letter-spacing: var(--espaciado-mayusculas);
   color: var(--texto-secundario);
 }
+
+/* Aclaración de la ficha de un cliente: su contraseña la guarda Auth, así
+   que la ficha completa el correo y la contraseña se escribe a mano. */
+.ficha .aclaracion {
+  font: var(--texto-ayuda);
+  font-size: 0.85rem;
+  color: var(--texto-perfil);
+  opacity: 0.85;
+}

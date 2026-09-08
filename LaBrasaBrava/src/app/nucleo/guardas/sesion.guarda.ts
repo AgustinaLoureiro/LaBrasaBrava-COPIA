@@ -23,15 +23,21 @@ export const sesionIniciadaGuarda: CanActivateFn = async () => {
 
 /**
  * Restringe una página a determinados perfiles.
- * Se usa así en las rutas:
+ *
+ * Va siempre después de `sesionIniciadaGuarda`, porque para saber el
+ * perfil primero tiene que haber alguien con sesión iniciada. Los grupos
+ * de perfiles salen de nucleo/modulos.ts, que es el mismo archivo del
+ * que lee la pantalla principal:
  *
  *   {
- *     path: 'alta-empleado',
- *     canActivate: [sesionIniciadaGuarda, perfilGuarda(['dueño', 'supervisor'])],
- *     loadComponent: () => import('...').then((m) => m.AltaEmpleadoPage),
+ *     path: 'empleado',
+ *     canActivate: [sesionIniciadaGuarda, perfilGuarda(PERFILES_ADMINISTRACION)],
+ *     loadComponent: () => import('...').then((m) => m.EmpleadoPage),
  *   }
+ *
+ * Al que no le corresponde se lo devuelve a la pantalla principal.
  */
-export function perfilGuarda(perfiles: Perfil[]): CanActivateFn {
+export function perfilGuarda(perfiles: readonly Perfil[]): CanActivateFn {
   return () => {
     const sesion = inject(SesionService);
     const router = inject(Router);
