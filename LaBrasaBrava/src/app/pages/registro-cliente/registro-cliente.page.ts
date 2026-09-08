@@ -6,7 +6,8 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
-import {IonContent,IonHeader,IonToolbar,IonTitle,IonCard,IonCardContent,IonItem,IonLabel,IonInput,IonNote,IonButton,IonIcon,IonSpinner
+import {
+  IonContent, IonHeader, IonToolbar, IonTitle, IonCard, IonCardContent, IonItem, IonLabel, IonInput, IonNote, IonButton, IonIcon, IonSpinner
 } from '@ionic/angular';
 import {
   Camera,

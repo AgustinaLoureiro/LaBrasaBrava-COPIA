@@ -65,10 +65,18 @@ export class PrincipalPage {
    * aparecen igual, anunciados como en desarrollo, para que se vea qué
    * le va a tocar a cada perfil cuando el módulo esté terminado.
    */
-  protected readonly modulos = computed(() => {
-    const actual = this.usuario();
-    return actual ? modulosDelPerfil(actual.perfil) : [];
-  });
+  protected readonly modulos: readonly { nombre: string; ruta: string | null }[] = [
+    { nombre: 'Alta de empleados', ruta: '/empleado' },
+    { nombre: 'Alta de platos', ruta: '/plato' },
+    { nombre: 'Carta / Menú', ruta: null },
+    { nombre: 'Registro de clientes', ruta: '/registro-cliente' },
+    { nombre: 'Aprobación de clientes', ruta: '/aprobacion-clientes' },
+    { nombre: 'Lista de espera', ruta: '/lista-espera' },
+    { nombre: 'Encuesta de satisfacción', ruta: '/encuesta' },
+    { nombre: 'Alta de bebidas', ruta: '/bebida' },
+    { nombre: 'Gestión de mesas', ruta: '/mesa' },
+    { nombre: 'Pedidos y comanda', ruta: null },
+  ];
 
   /**
    * Cierra la sesión, verifica que las credenciales se hayan borrado y

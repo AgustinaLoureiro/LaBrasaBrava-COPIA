@@ -1,0 +1,202 @@
+<ion-content [fullscreen]="true">
+  <div class="principal">
+
+    <button type="button" class="volver texto-ayuda" (click)="volver()">‹ Volver</button>
+
+    <header class="cabecera">
+      <app-logo-marca composicion="horizontal" variante="crema" [tamanio]="44" [nombre]="restaurante.nombre" />
+      <p class="lema">{{ restaurante.lema }}</p>
+    </header>
+
+    @if (vista() === 'lista') {
+
+    <div class="campo buscador">
+      <div class="entrada">
+        <input type="text" placeholder="Buscar mesa..." [value]="busqueda()" 
+        (input)="buscar($any($event.target).value)" />
+      </div>
+    </div>
+
+    @if (cargandoLista()) {
+    <p class="texto-ayuda ion-text-center">Cargando mesas...</p>
+    }
+
+    <button type="button" class="volver texto-ayuda" (click)="toggleVistaInactivos()">
+      {{ mostrarInactivos() ? 'Ver mesas activas' : 'Ver mesas inactivas' }}
+    </button>
+
+    @if (!cargandoLista() && mesas().length === 0) {
+    <section class="tarjeta">
+      <p class="texto-cuerpo">Todavía no hay mesas cargadas.</p>
+    </section>
+    }
+
+    @if (!cargandoLista() && mesasFiltradas().length > 0) {
+    <section class="lista-mesas">
+      @for (mesa of mesasFiltradas(); track mesa.id) {
+      <article class="tarjeta mesa-item">
+        <button type="button" class="foto-boton">
+          <img [src]="mesa.foto_url" [alt]="'Foto de la mesa ' + mesa.numero" class="foto-mesa" />
+        </button>
+
+        <div class="datos-mesa">
+          <h2 class="nombre-mesa">Mesa {{ mesa.numero }}</h2>
+          <span class="detalle-mesa">{{ etiquetaTipo[mesa.tipo] }} · {{ mesa.cantidad_comensales }} comensales</span>
+
+          <div class="chips-disponibilidad">
+            <button type="button" class="chip" [class.chip-activo-vacia]="mesa.disponibilidad === 'vacía'"
+              (click)="cambiarDisponibilidad(mesa, 'vacía')">
+              Vacía
+            </button>
+            <button type="button" class="chip" [class.chip-activo-ocupada]="mesa.disponibilidad === 'ocupada'"
+              (click)="cambiarDisponibilidad(mesa, 'ocupada')">
+              Ocupada
+            </button>
+          </div>
+        </div>
+
+        
+          <div class="acciones-mesa">
+            <button type="button" class="boton-accion boton-qr" (click)="verQr(mesa)">
+              ▦ Ver QR
+            </button>
+            <button type="button" class="boton-accion boton-editar" (click)="editarMesa(mesa)">
+              ✎ Editar
+            </button>
+            @if (!mostrarInactivos()) {
+            <button type="button" class="boton-accion boton-eliminar" (click)="pedirBaja(mesa)">
+              🗑 Eliminar
+            </button>
+            }
+            @if (mostrarInactivos()) {
+            <button type="button" class="boton-accion boton-editar" (click)="cambiarEstadoMesa(mesa)">
+              {{ mostrarInactivos() ? 'Mostrar mesa' : 'Desactivar' }}
+            
+            </button>
+            }
+          
+        </div>
+      </article>
+      }
+    </section>
+
+    @if (totalPaginas() > 1) {
+    <div class="paginado">
+      <button type="button" class="boton-contorno boton-chico" [disabled]="paginaActual() === 1"
+        (click)="paginaAnterior()">‹</button>
+      <span class="texto-ayuda">Página {{ paginaActual() }} de {{ totalPaginas() }}</span>
+      <button type="button" class="boton-contorno boton-chico" [disabled]="paginaActual() === totalPaginas()"
+        (click)="paginaSiguiente()">›</button>
+    </div>
+    }
+    }
+
+    @if (mensaje) {
+    <p class="etiqueta ion-text-center" [class.etiqueta-exito]="!mensajeEsError"
+      [class.etiqueta-error]="mensajeEsError">
+      {{ mensaje }}
+    </p>
+    }
+
+    <footer class="pie">
+      <button type="button" class="boton-principal" (click)="mostrarFormularioNuevo()">Crear Nueva Mesa</button>
+    </footer>
+    }
+
+    @if (vista() === 'formulario') {
+    <form [formGroup]="formulario">
+
+      <section class="tarjeta">
+        <h2 class="titulo-seccion">{{ mesaEditandoId ? 'Editar mesa' : 'Agregar mesa' }}</h2>
+        <p class="subtitulo-seccion">Foto de la mesa, tomada desde el dispositivo.</p>
+
+        <button type="button" class="contenedor-foto-mesa" (click)="tomarFoto()">
+          @if (foto) {
+          <img [src]="foto" alt="Foto de la mesa" class="imagen-foto-mesa" />
+          } @else {
+          <span class="subtitulo-seccion">+ Tomar foto</span>
+          }
+        </button>
+      </section>
+
+      <section class="tarjeta">
+        <h2 class="titulo-seccion">Datos de la mesa</h2>
+
+        <div class="campo" [class.campo-con-error]="invalido('numero')">
+          <label for="numero">Número de mesa</label>
+          <div class="entrada">
+            <input id="numero" formControlName="numero" type="text" inputmode="numeric"
+              (keydown)="soloNumerosEnteros($event)" />
+          </div>
+          @if (invalido('numero')) { <p class="mensaje-validacion">{{ mensajeError('numero') }}</p> }
+        </div>
+
+        <div class="campo" [class.campo-con-error]="invalido('cantidad_comensales')">
+          <label for="comensales">Cantidad de comensales</label>
+          <div class="entrada">
+            <input id="comensales" formControlName="cantidad_comensales" type="text" inputmode="numeric"
+              (keydown)="soloNumerosEnteros($event)" />
+          </div>
+          @if (invalido('cantidad_comensales')) { <p class="mensaje-validacion">{{ mensajeError('cantidad_comensales')
+            }}</p> }
+        </div>
+
+        <div class="campo">
+          <label>Tipo de mesa</label>
+          <div class="chips-tipo">
+            @for (tipo of tipos; track tipo) {
+            <button type="button" class="chip chip-tipo" [class.chip-activo]="tipoSeleccionado === tipo"
+              (click)="seleccionarTipo(tipo)">
+              {{ etiquetaTipo[tipo] }}
+            </button>
+            }
+          </div>
+        </div>
+      </section>
+
+      <footer class="pie pie-formulario">
+        <button type="button" class="boton-contorno" [disabled]="guardando"
+          (click)="cancelarFormulario()">Cancelar</button>
+        <button type="button" class="boton-principal" [disabled]="guardando" (click)="guardar()">
+          {{ guardando ? 'Guardando...' : (mesaEditandoId ? 'Guardar cambios' : 'Guardar mesa') }}
+        </button>
+
+        @if (mensaje) {
+        <p class="etiqueta ion-text-center" [class.etiqueta-exito]="!mensajeEsError"
+          [class.etiqueta-error]="mensajeEsError">
+          {{ mensaje }}
+        </p>
+        }
+      </footer>
+    </form>
+    }
+
+  </div>
+
+  @if (qrMostrado(); as q) {
+  <div class="overlay" (click)="cerrarQr()">
+    <div class="overlay-contenido overlay-qr" (click)="$event.stopPropagation()">
+      <button type="button" class="overlay-cerrar" (click)="cerrarQr()">✕</button>
+      <h2 class="titulo-seccion">Mesa {{ q.mesa.numero }}</h2>
+      <img [src]="q.dataUrl" alt="Código QR de la mesa" class="imagen-qr" />
+      <p class="texto-ayuda ion-text-center">Escaneable para gestionar esta mesa.</p>
+    </div>
+  </div>
+  }
+
+  @if (mesaABajar(); as mesa) {
+  <div class="overlay" (click)="cancelarBaja()">
+    <div class="overlay-contenido overlay-confirmacion" (click)="$event.stopPropagation()">
+      <h2 class="titulo-seccion">¿Dar de baja esta mesa?</h2>
+      <p class="texto-cuerpo">"Mesa {{ mesa.numero }}" dejará de estar disponible. No se elimina de la base de datos.
+      </p>
+      <div class="acciones-confirmacion">
+        <button type="button" class="boton-contorno" (click)="cancelarBaja()">Cancelar</button>
+        <button type="button" class="boton-principal boton-peligro-solido" (click)="confirmarBaja()">Dar de
+          baja</button>
+      </div>
+    </div>
+  </div>
+  }
+
+</ion-content>
