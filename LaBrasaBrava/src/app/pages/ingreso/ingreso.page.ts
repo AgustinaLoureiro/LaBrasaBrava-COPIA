@@ -135,6 +135,17 @@ export class IngresoPage implements OnInit {
    * Supabase Auth), completa el correo y avisa que falta escribirla.
    */
   protected async usarAccesoRapido(acceso: AccesoRapido): Promise<void> {
+    if (!acceso.clave_demo) {
+      this.formulario.patchValue({ correo: acceso.correo, clave: '' });
+      this.intentoDeEnvio.set(false);
+      this.campo('clave').markAsUntouched();
+      await this.mensajes.aviso(
+        'Falta la contraseña',
+        `Ya cargamos el correo de ${acceso.nombres}. Escribí su contraseña para entrar.`,
+      );
+      return;
+    }
+
     this.formulario.patchValue({ correo: acceso.correo, clave: acceso.clave_demo });
     await this.ingresar();
   }
