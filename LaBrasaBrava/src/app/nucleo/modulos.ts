@@ -42,6 +42,22 @@ export const PERFILES_SERVICIO: readonly Perfil[] = ['mozo', 'cocinero', 'cantin
  */
 export const PERFILES_CLIENTE: readonly Perfil[] = ['cliente_registrado', 'cliente_anonimo'];
 
+/**
+ * Nombre del dibujo que acompaña a cada módulo en la cuadrícula de la
+ * pantalla principal. El dibujo en sí lo hace el componente
+ * `componentes/icono-modulo`, que es el único que sabe de trazos.
+ */
+export type IconoModulo =
+  | 'empleados'
+  | 'mesas'
+  | 'aprobacion'
+  | 'platos'
+  | 'bebidas'
+  | 'clientes'
+  | 'espera'
+  | 'pedidos'
+  | 'encuesta';
+
 /** Un módulo de la aplicación, tal como se lo ofrece en la pantalla principal. */
 export interface Modulo {
   /** Nombre que se muestra, en español y sin abreviaturas. */
@@ -50,6 +66,8 @@ export interface Modulo {
   ruta: string | null;
   /** Perfiles que pueden verlo y entrar. */
   perfiles: readonly Perfil[];
+  /** Dibujo que lo identifica en la cuadrícula. */
+  icono: IconoModulo;
 }
 
 /**
@@ -64,18 +82,21 @@ export const MODULOS: readonly Modulo[] = [
     nombre: 'Alta de empleados',
     ruta: '/empleado',
     perfiles: PERFILES_ADMINISTRACION,
+    icono: 'empleados',
   },
   {
     // Punto 4: alta de una mesa nueva, con su código QR.
     nombre: 'Gestión de mesas',
-    ruta: null,
+    ruta: '/mesa',
     perfiles: PERFILES_ADMINISTRACION,
+    icono: 'mesas',
   },
   {
     // Puntos 6, 7 y 8: solo el dueño o el supervisor aprueban o rechazan.
     nombre: 'Aprobación de clientes',
     ruta: '/aprobacion-clientes',
     perfiles: PERFILES_ADMINISTRACION,
+    icono: 'aprobacion',
   },
 
   // --- Cocina y barra ---------------------------------------------------
@@ -84,12 +105,14 @@ export const MODULOS: readonly Modulo[] = [
     nombre: 'Alta de platos',
     ruta: '/plato',
     perfiles: ['cocinero'],
+    icono: 'platos',
   },
   {
     // Punto 3: la bebida la carga el cantinero.
     nombre: 'Alta de bebidas',
-    ruta: null,
+    ruta: '/bebida',
     perfiles: ['cantinero'],
+    icono: 'bebidas',
   },
 
   // --- Salón ------------------------------------------------------------
@@ -98,18 +121,21 @@ export const MODULOS: readonly Modulo[] = [
     nombre: 'Registro de clientes',
     ruta: '/registro-cliente',
     perfiles: [...PERFILES_SALON, 'cliente_anonimo'],
+    icono: 'clientes',
   },
   {
     // Puntos 9 y 10: el cliente se anota y el metre asigna la mesa.
     nombre: 'Lista de espera',
     ruta: '/lista-espera',
     perfiles: [...PERFILES_SALON, ...PERFILES_CLIENTE],
+    icono: 'espera',
   },
   {
     // Puntos 12 a 19: pedido, comanda y listados por sector.
     nombre: 'Pedidos y comanda',
     ruta: null,
     perfiles: [...PERFILES_SERVICIO, ...PERFILES_CLIENTE],
+    icono: 'pedidos',
   },
 
   // --- Cliente ----------------------------------------------------------
@@ -118,6 +144,7 @@ export const MODULOS: readonly Modulo[] = [
     nombre: 'Encuesta de satisfacción',
     ruta: '/encuesta',
     perfiles: PERFILES_CLIENTE,
+    icono: 'encuesta',
   },
 ];
 

@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { perfilGuarda, sesionIniciadaGuarda } from './nucleo/guardas/sesion.guarda';
-import { PERFILES_ADMINISTRACION } from './nucleo/modulos';
+import { PERFILES_ADMINISTRACION, PERFILES_CLIENTE } from './nucleo/modulos';
 
 export const routes: Routes = [
   // --- Arranque -----------------------------------------------------------
@@ -69,15 +69,22 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/plato/plato.page').then((m) => m.PlatoPage),
   },
   {
+    // Punto 3: la bebida la carga el cantinero.
     path: 'bebida',
+    canActivate: [sesionIniciadaGuarda, perfilGuarda(['cantinero'])],
     loadComponent: () => import('./pages/bebida/bebida.page').then((m) => m.BebidaPage),
   },
   {
+    // Punto 4: el alta de mesas, con su código QR, es del dueño o del
+    // supervisor.
     path: 'mesa',
+    canActivate: [sesionIniciadaGuarda, perfilGuarda(PERFILES_ADMINISTRACION)],
     loadComponent: () => import('./pages/mesa/mesa.page').then((m) => m.MesaPage),
   },
   {
+    // Punto 20: la encuesta la contesta el cliente.
     path: 'encuesta',
+    canActivate: [sesionIniciadaGuarda, perfilGuarda(PERFILES_CLIENTE)],
     loadComponent: () => import('./pages/encuesta/encuesta.page').then((m) => m.EncuestaPage),
   },
 
