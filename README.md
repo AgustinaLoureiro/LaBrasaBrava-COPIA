@@ -167,14 +167,16 @@ Todas las capturas de pantalla del proyecto viven en [`docs/screenshots/`](./doc
 
 | Pantalla | Imagen |
 |---|---|
-| Splash / Selección de perfil | ![Selección de perfil](./docs/screenshots/seleccion-perfil.png) |
-| Alta de empleado | ![Alta de empleado](./docs/screenshots/alta-empleado.png) |
-| Listado de platos | ![Listado de platos](./docs/screenshots/listado-platos.png) |
-| Formulario de plato | ![Formulario de plato](./docs/screenshots/formulario-plato.png) |
-| Carrusel de fotos del plato | ![Carrusel de fotos](./docs/screenshots/carrusel-plato.png) |
-| Listado de mesas | ![Listado de mesas](./docs/screenshots/listado-mesas.png) |
-| QR de mesa | ![QR de mesa](./docs/screenshots/qr-mesa.png) |
-| Íconos de la app (launcher) | ![Ícono launcher](./docs/screenshots/icono-launcher.png) |
+| Presentacion | <img src="./docs/screenshots/presentacion.jpeg" width="200" alt="Presentacion"> |
+| Spiner APP | <img src="./docs/screenshots/spiner.jpeg" width="120" alt="Spiner APP"> |
+| Login | <img src="./docs/screenshots/login.jpeg" width="200" alt="Selección de perfil"> |
+| Alta de empleado | <img src="./docs/screenshots/alta_de_empleado.jpeg" width="200" alt="Alta de empleado"> |
+| Listado de platos | <img src="./docs/screenshots/lista_de_platos.jpeg" width="200" alt="Listado de platos"> |
+| Formulario de plato | <img src="./docs/screenshots/alta_de_plato.jpeg" width="200" alt="Formulario de plato"> |
+| Listado de bebidas | <img src="./docs/screenshots/lista_bebidas.jpeg" width="200" alt="Listado de bebidas"> |
+| Carrusel de fotos del plato | <img src="./docs/screenshots/carrusel_plato.jpeg" width="200" alt="Carrusel de fotos"> |
+| Listado de mesas | <img src="./docs/screenshots/listado-mesas.png" width="200" alt="Listado de mesas"> |
+| QR de mesa | <img src="./docs/screenshots/qr-mesa.png" width="200" alt="QR de mesa"> |
 
 *(agregar una fila por cada pantalla nueva a medida que se completen los puntos funcionales — la consigna pide TODAS las imágenes asociadas al proyecto, incluyendo íconos y formularios)*
 
