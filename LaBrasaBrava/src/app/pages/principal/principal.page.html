@@ -55,16 +55,25 @@
           Estas son las tareas que le corresponden a un {{ nombrePerfil().toLowerCase() }}.
         </p>
         @if (modulosDelPerfil().length > 0) {
-          <ul>
+          <ul class="cuadricula">
             @for (modulo of modulosDelPerfil(); track modulo.nombre) {
               <li>
-                <span class="punto" aria-hidden="true"></span>
                 @if (modulo.ruta) {
-                  <a [routerLink]="modulo.ruta">{{ modulo.nombre }}</a>
-                  <span class="estado estado-listo">Disponible</span>
+                  <a class="cuadro" [routerLink]="modulo.ruta">
+                    <span class="dibujo">
+                      <app-icono-modulo [icono]="modulo.icono" />
+                    </span>
+                    <span class="nombre-modulo">{{ modulo.nombre }}</span>
+                    <span class="estado estado-listo">Disponible</span>
+                  </a>
                 } @else {
-                  {{ modulo.nombre }}
-                  <span class="estado">En desarrollo</span>
+                  <div class="cuadro cuadro-pendiente">
+                    <span class="dibujo">
+                      <app-icono-modulo [icono]="modulo.icono" />
+                    </span>
+                    <span class="nombre-modulo">{{ modulo.nombre }}</span>
+                    <span class="estado">En desarrollo</span>
+                  </div>
                 }
               </li>
             }
