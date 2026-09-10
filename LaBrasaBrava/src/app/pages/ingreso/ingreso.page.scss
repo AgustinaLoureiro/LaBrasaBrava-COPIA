@@ -73,10 +73,49 @@
 
 /* --- Accesos rápidos --------------------------------------------------- */
 
+/* En la pantalla de ingreso el acceso rápido es apenas un botón: las
+   fichas viven en el panel que ese botón abre, así el formulario queda
+   arriba de todo y no hay que bajar para escribir el correo. */
 .accesos {
   display: grid;
-  gap: var(--espacio-chico);
+  gap: var(--espacio-minimo);
   align-content: start;
+  justify-items: center;
+  text-align: center;
+}
+
+.accesos .boton-contorno {
+  width: 100%;
+}
+
+/* Panel de acceso rápido.
+   La barra va en brasa profunda, así que el título y el botón de cerrar
+   tienen que ir en crema: el carbón sobre ese marrón no se lee. */
+.toolbar-accesos {
+  --background: var(--barra-navegacion);
+  --color: var(--texto-sobre-color);
+}
+
+.toolbar-accesos ion-title {
+  font: var(--texto-subtitulo);
+  color: var(--texto-sobre-color);
+}
+
+.toolbar-accesos ion-button {
+  --color: var(--texto-sobre-color);
+  font: var(--texto-boton);
+}
+
+.panel-accesos {
+  --background: var(--fondo-app);
+  --padding-start: var(--espacio);
+  --padding-end: var(--espacio);
+  --padding-top: var(--espacio);
+  --padding-bottom: var(--espacio-grande);
+}
+
+.panel-accesos .subtitulo-seccion {
+  margin: 0 0 var(--espacio) 0;
 }
 
 .fichas {

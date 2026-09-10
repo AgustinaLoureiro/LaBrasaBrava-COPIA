@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { IonContent } from '@ionic/angular';
 
 import { LogoMarcaComponent } from '../../componentes/logo-marca/logo-marca.component';
+import { IconoModuloComponent } from '../../componentes/icono-modulo/icono-modulo.component';
 import { SesionService } from '../../nucleo/servicios/sesion.service';
 import { MensajesService } from '../../nucleo/servicios/mensajes.service';
 import { CargandoService } from '../../nucleo/servicios/cargando.service';
@@ -25,7 +26,7 @@ import { RESTAURANTE } from '../../nucleo/marca';
 @Component({
   selector: 'app-principal',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonContent, LogoMarcaComponent, RouterLink],
+  imports: [IonContent, LogoMarcaComponent, IconoModuloComponent, RouterLink],
   templateUrl: './principal.page.html',
   styleUrl: './principal.page.scss',
 })
@@ -54,35 +55,23 @@ export class PrincipalPage {
     return actual ? TEXTO_SOBRE_PERFIL[actual.perfil] : PALETA.cremaTrigo;
   });
 
-  modulosDelPerfil = computed(() => {
-    const actual = this.usuario();
-    return actual ? modulosDelPerfil(actual.perfil) : [];
-  });
-
-
   /**
    * Módulos que ve este perfil, y solamente los de este perfil.
    *
    * El reparto está en nucleo/modulos.ts, que es el mismo archivo que
    * usan las guardas de las rutas: así lo que se muestra en pantalla y
-   * lo que deja entrar el router no se pueden contradecir.
+   * lo que deja entrar el router no se pueden contradecir. Por eso acá
+   * no hay ninguna lista escrita a mano: si un módulo cambia de ruta o
+   * de dueño, se toca nucleo/modulos.ts y esta pantalla se entera sola.
    *
    * Los que llevan `ruta: null` son los que todavía no están hechos:
    * aparecen igual, anunciados como en desarrollo, para que se vea qué
    * le va a tocar a cada perfil cuando el módulo esté terminado.
    */
-  protected readonly modulos: readonly { nombre: string; ruta: string | null }[] = [
-    { nombre: 'Alta de empleados', ruta: '/empleado' },
-    { nombre: 'Alta de platos', ruta: '/plato' },
-    { nombre: 'Carta / Menú', ruta: null },
-    { nombre: 'Registro de clientes', ruta: '/registro-cliente' },
-    { nombre: 'Aprobación de clientes', ruta: '/aprobacion-clientes' },
-    { nombre: 'Lista de espera', ruta: '/lista-espera' },
-    { nombre: 'Encuesta de satisfacción', ruta: '/encuesta' },
-    { nombre: 'Alta de bebidas', ruta: '/bebida' },
-    { nombre: 'Gestión de mesas', ruta: '/mesa' },
-    { nombre: 'Pedidos y comanda', ruta: null },
-  ];
+  protected readonly modulosDelPerfil = computed(() => {
+    const actual = this.usuario();
+    return actual ? modulosDelPerfil(actual.perfil) : [];
+  });
 
   /**
    * Cierra la sesión, verifica que las credenciales se hayan borrado y

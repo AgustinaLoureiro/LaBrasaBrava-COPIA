@@ -75,71 +75,91 @@
       <button type="submit" class="boton-principal">Ingresar</button>
     </form>
 
-    <!-- Accesos rápidos: se leen de la base, no son botones fijos -->
+    <!-- Acceso rápido: se abre en un panel para no tapar el formulario -->
     <section class="accesos">
-      <div class="encabezado-tarjeta">
-        <h2 class="titulo-seccion">Acceso rápido</h2>
-        <p class="subtitulo-seccion">Tocá una ficha para entrar con ese perfil.</p>
-      </div>
-
-      @if (accesos().length === 0) {
-        <div class="tarjeta sin-accesos">
-          <p class="texto-cuerpo">
-            Todavía no hay empleados cargados en la base de datos. En cuanto el supervisor
-            dé de alta al primero, su ficha va a aparecer acá sola.
-          </p>
-        </div>
-      } @else {
-        <ul class="fichas">
-          @for (acceso of accesos(); track acceso.usuario_id) {
-            <li>
-              <button
-                type="button"
-                class="ficha"
-                [style.--color-perfil]="COLOR_PERFIL[acceso.perfil]"
-                [style.--texto-perfil]="TEXTO_SOBRE_PERFIL[acceso.perfil]"
-                (click)="usarAccesoRapido(acceso)"
-              >
-                <span class="avatar">
-                  @if (acceso.foto_url) {
-                    <img [src]="acceso.foto_url" [alt]="'Foto de ' + acceso.nombres" />
-                  } @else {
-                    <span class="avatar-letra">
-                      {{ acceso.nombres.charAt(0) }}{{ acceso.apellidos.charAt(0) }}
-                    </span>
-                  }
-                </span>
-                <span class="datos">
-                  <span class="perfil">{{ NOMBRE_PERFIL[acceso.perfil] }}</span>
-                  <span class="persona">{{ acceso.apellidos }}, {{ acceso.nombres }}</span>
-                  <!-- Los clientes que todavía no fueron aprobados, o que
-                       fueron rechazados, avisan su estado antes de que se
-                       toque la ficha (puntos 6, 7 y 8 del enunciado). -->
-                  <!-- La contraseña de un cliente la guarda Supabase Auth, asi
-                       que la ficha completa el correo y nada más. -->
-                  @if (acceso.estado_aprobacion === 'aprobado' && !acceso.clave_demo) {
-                    <span class="aclaracion">Completa el correo, la contraseña se escribe</span>
-                  }
-                  @if (acceso.estado_aprobacion !== 'aprobado') {
-                    <span
-                      [class]="
-                        'etiqueta estado ' + ETIQUETA_ESTADO_APROBACION[acceso.estado_aprobacion]
-                      "
-                    >
-                      {{ NOMBRE_ESTADO_APROBACION[acceso.estado_aprobacion] }}
-                    </span>
-                  }
-                </span>
-                <span class="flecha" aria-hidden="true">&#10132;</span>
-              </button>
-            </li>
-          }
-        </ul>
-      }
+      <button type="button" class="boton-contorno" (click)="abrirAccesosRapidos()">
+        Acceso rápido
+      </button>
+      <p class="subtitulo-seccion">
+        Abrí el listado de perfiles y entrá tocando una ficha.
+      </p>
     </section>
 
     <footer class="pie">
       <p>{{ grupo.nombre }} · {{ grupo.materia }} {{ grupo.anio }}</p>
     </footer>
   </div>
+
+  <!-- Panel con todas las fichas de acceso rápido, una por perfil -->
+  <ion-modal [isOpen]="panelDeAccesosAbierto()" (didDismiss)="cerrarAccesosRapidos()">
+    <ng-template>
+      <ion-header class="ion-no-border">
+        <ion-toolbar class="toolbar-accesos">
+          <ion-title>Acceso rápido</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="cerrarAccesosRapidos()">Cerrar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="panel-accesos">
+        <p class="subtitulo-seccion">Tocá una ficha para entrar con ese perfil.</p>
+
+        @if (accesos().length === 0) {
+          <div class="tarjeta sin-accesos">
+            <p class="texto-cuerpo">
+              Todavía no hay empleados cargados en la base de datos. En cuanto el supervisor
+              dé de alta al primero, su ficha va a aparecer acá sola.
+            </p>
+          </div>
+        } @else {
+          <ul class="fichas">
+            @for (acceso of accesos(); track acceso.usuario_id) {
+              <li>
+                <button
+                  type="button"
+                  class="ficha"
+                  [style.--color-perfil]="COLOR_PERFIL[acceso.perfil]"
+                  [style.--texto-perfil]="TEXTO_SOBRE_PERFIL[acceso.perfil]"
+                  (click)="usarAccesoRapido(acceso)"
+                >
+                  <span class="avatar">
+                    @if (acceso.foto_url) {
+                      <img [src]="acceso.foto_url" [alt]="'Foto de ' + acceso.nombres" />
+                    } @else {
+                      <span class="avatar-letra">
+                        {{ acceso.nombres.charAt(0) }}{{ acceso.apellidos.charAt(0) }}
+                      </span>
+                    }
+                  </span>
+                  <span class="datos">
+                    <span class="perfil">{{ NOMBRE_PERFIL[acceso.perfil] }}</span>
+                    <span class="persona">{{ acceso.apellidos }}, {{ acceso.nombres }}</span>
+                    <!-- Los clientes que todavía no fueron aprobados, o que
+                         fueron rechazados, avisan su estado antes de que se
+                         toque la ficha (puntos 6, 7 y 8 del enunciado). -->
+                    <!-- La contraseña de un cliente la guarda Supabase Auth, así
+                         que la ficha completa el correo y nada más. -->
+                    @if (acceso.estado_aprobacion === 'aprobado' && !acceso.clave_demo) {
+                      <span class="aclaracion">Completa el correo, la contraseña se escribe</span>
+                    }
+                    @if (acceso.estado_aprobacion !== 'aprobado') {
+                      <span
+                        [class]="
+                          'etiqueta estado ' + ETIQUETA_ESTADO_APROBACION[acceso.estado_aprobacion]
+                        "
+                      >
+                        {{ NOMBRE_ESTADO_APROBACION[acceso.estado_aprobacion] }}
+                      </span>
+                    }
+                  </span>
+                  <span class="flecha" aria-hidden="true">&#10132;</span>
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>

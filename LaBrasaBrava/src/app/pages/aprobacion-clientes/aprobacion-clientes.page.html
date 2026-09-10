@@ -9,11 +9,11 @@
         composicion="horizontal"
         variante="crema"
         [tamanio]="44"
-        [nombre]="'BRASA BRAVA'">
+        [nombre]="restaurante.nombre">
       </app-logo-marca>
 
       <p class="lema">
-        Parrilla y cocina de autor
+        {{ restaurante.lema }}
       </p>
 
     </header>
@@ -41,183 +41,188 @@
 
 
     <!-- CARGANDO -->
-    <div
-      *ngIf="cargando"
-      class="texto-ayuda ion-text-center">
+    @if (cargando) {
 
-      <p>Cargando clientes...</p>
+      <div class="texto-ayuda ion-text-center">
 
-    </div>
+        <p>Cargando clientes...</p>
+
+      </div>
+
+    }
 
 
     <!-- ERROR -->
-    <div
-      *ngIf="!cargando && errorGeneral"
-      class="texto-ayuda ion-text-center">
+    @if (!cargando && errorGeneral) {
 
-      <p>{{ errorGeneral }}</p>
+      <div class="texto-ayuda ion-text-center">
 
-      <button
-        type="button"
-        class="boton-contorno boton-chico"
-        (click)="cargarPendientes()">
+        <p>{{ errorGeneral }}</p>
 
-        Intentar nuevamente
-
-      </button>
-
-    </div>
-
-
-    <!-- SIN CLIENTES -->
-    <section
-      class="sin-clientes"
-      *ngIf="
-        !cargando &&
-        !errorGeneral &&
-        pendientes.length === 0
-      ">
-
-      <p>
-        Todavía no hay clientes cargados o pendientes.
-      </p>
-
-    </section>
-
-
-    <!-- LISTADO -->
-    <section
-      class="lista-clientes"
-      *ngIf="
-        !cargando &&
-        !errorGeneral &&
-        pendientes.length > 0
-      ">
-
-
-      <!-- TARJETA -->
-      <article
-        class="cliente-card"
-        *ngFor="let cliente of pendientes">
-
-
-        <!-- CONTENIDO SUPERIOR -->
-        <div class="cliente-principal">
-
-
-          <!-- FOTO -->
-          <div class="foto-container">
-
-            <img
-              *ngIf="cliente.foto_url"
-              [src]="cliente.foto_url"
-              [alt]="cliente.nombres + ' ' + cliente.apellidos"
-            />
-
-            <div
-              *ngIf="!cliente.foto_url"
-              class="foto-fallback">
-
-              <ion-icon name="person-outline"></ion-icon>
-
-            </div>
-
-          </div>
-
-
-          <!-- DATOS -->
-          <div class="datos-principales">
-
-            <h2
-              [title]="cliente.nombres + ' ' + cliente.apellidos">
-
-              {{ cliente.nombres }}
-              {{ cliente.apellidos }}
-
-            </h2>
-
-            <p
-              class="email"
-              [title]="cliente.email">
-
-              {{ cliente.email }}
-
-            </p>
-
-            <p class="dni">
-
-              DNI: {{ cliente.dni }}
-
-            </p>
-
-            <span class="estado-pendiente">
-
-              Pendiente de aprobación
-
-            </span>
-
-          </div>
-
-
-          <!-- BOTONES A LA DERECHA -->
-          <div class="acciones-cliente">
-
-
-            <!-- ACEPTAR -->
-            <button
-              type="button"
-              class="boton-aceptar"
-              [disabled]="procesandoId === cliente.id"
-              (click)="confirmarAprobacion(cliente)">
-
-              <span class="icono-boton">
-                ✓
-              </span>
-
-              <span>
-                Aceptar
-              </span>
-
-            </button>
-
-
-            <!-- RECHAZAR -->
-            <button
-              type="button"
-              class="boton-rechazar"
-              [disabled]="procesandoId === cliente.id"
-              (click)="confirmarRechazo(cliente)">
-
-              <span class="icono-boton">
-                ✕
-              </span>
-
-              <span>
-                Rechazar
-              </span>
-
-            </button>
-
-
-          </div>
-
-        </div>
-
-
-        <!-- INFORMACIÓN COMPLETA -->
         <button
           type="button"
-          class="boton-detalle"
-          (click)="verDetalle(cliente)">
+          class="boton-contorno boton-chico"
+          (click)="cargarPendientes()">
 
-          Ver información completa
+          Intentar nuevamente
 
         </button>
 
+      </div>
 
-      </article>
+    }
 
-    </section>
+
+    <!-- SIN CLIENTES -->
+    @if (!cargando && !errorGeneral && pendientes.length === 0) {
+
+      <section class="sin-clientes">
+
+        <p>
+          Todavía no hay clientes cargados o pendientes.
+        </p>
+
+      </section>
+
+    }
+
+
+    <!-- LISTADO -->
+    @if (!cargando && !errorGeneral && pendientes.length > 0) {
+
+      <section class="lista-clientes">
+
+
+        <!-- TARJETA -->
+        @for (cliente of pendientes; track cliente.id) {
+
+          <article class="cliente-card">
+
+
+            <!-- CONTENIDO SUPERIOR -->
+            <div class="cliente-principal">
+
+
+              <!-- FOTO -->
+              <div class="foto-container">
+
+                @if (cliente.foto_url) {
+
+                  <img
+                    [src]="cliente.foto_url"
+                    [alt]="cliente.nombres + ' ' + cliente.apellidos"
+                  />
+
+                } @else {
+
+                  <div class="foto-fallback">
+
+                    <ion-icon name="person-outline"></ion-icon>
+
+                  </div>
+
+                }
+
+              </div>
+
+
+              <!-- DATOS -->
+              <div class="datos-principales">
+
+                <h2
+                  [title]="cliente.nombres + ' ' + cliente.apellidos">
+
+                  {{ cliente.nombres }}
+                  {{ cliente.apellidos }}
+
+                </h2>
+
+                <p
+                  class="email"
+                  [title]="cliente.email">
+
+                  {{ cliente.email }}
+
+                </p>
+
+                <p class="dni">
+
+                  DNI: {{ cliente.dni }}
+
+                </p>
+
+                <span class="estado-pendiente">
+
+                  Pendiente de aprobación
+
+                </span>
+
+              </div>
+
+
+              <!-- BOTONES A LA DERECHA -->
+              <div class="acciones-cliente">
+
+
+                <!-- ACEPTAR -->
+                <button
+                  type="button"
+                  class="boton-aceptar"
+                  [disabled]="procesandoId === cliente.id"
+                  (click)="confirmarAprobacion(cliente)">
+
+                  <span class="icono-boton">
+                    ✓
+                  </span>
+
+                  <span>
+                    Aceptar
+                  </span>
+
+                </button>
+
+
+                <!-- RECHAZAR -->
+                <button
+                  type="button"
+                  class="boton-rechazar"
+                  [disabled]="procesandoId === cliente.id"
+                  (click)="confirmarRechazo(cliente)">
+
+                  <span class="icono-boton">
+                    ✕
+                  </span>
+
+                  <span>
+                    Rechazar
+                  </span>
+
+                </button>
+
+
+              </div>
+
+            </div>
+
+
+            <!-- INFORMACIÓN COMPLETA -->
+            <button
+              type="button"
+              class="boton-detalle"
+              (click)="verDetalle(cliente)">
+
+              Ver información completa
+
+            </button>
+
+
+          </article>
+
+        }
+
+      </section>
+
+    }
 
   </div>
 
@@ -260,26 +265,28 @@
 
       <ion-content class="modal-contenido">
 
-        <ng-container *ngIf="clienteSeleccionado">
+        @if (clienteSeleccionado; as seleccionado) {
 
 
           <!-- FOTO -->
           <div class="detalle-foto">
 
-            <img
-              *ngIf="clienteSeleccionado.foto_url"
-              [src]="clienteSeleccionado.foto_url"
-              [alt]="
-                clienteSeleccionado.nombres +
-                ' ' +
-                clienteSeleccionado.apellidos
-              "
-            />
+            @if (seleccionado.foto_url) {
 
-            <ion-icon
-              *ngIf="!clienteSeleccionado.foto_url"
-              name="person-circle-outline">
-            </ion-icon>
+              <img
+                [src]="seleccionado.foto_url"
+                [alt]="
+                  seleccionado.nombres +
+                  ' ' +
+                  seleccionado.apellidos
+                "
+              />
+
+            } @else {
+
+              <ion-icon name="person-circle-outline"></ion-icon>
+
+            }
 
           </div>
 
@@ -288,8 +295,8 @@
           <div class="detalle-nombre">
 
             <h2>
-              {{ clienteSeleccionado.nombres }}
-              {{ clienteSeleccionado.apellidos }}
+              {{ seleccionado.nombres }}
+              {{ seleccionado.apellidos }}
             </h2>
 
             <span class="estado-pendiente">
@@ -309,7 +316,7 @@
               </span>
 
               <strong>
-                {{ clienteSeleccionado.dni }}
+                {{ seleccionado.dni }}
               </strong>
 
             </div>
@@ -322,7 +329,7 @@
               </span>
 
               <strong>
-                {{ clienteSeleccionado.email }}
+                {{ seleccionado.email }}
               </strong>
 
             </div>
@@ -336,7 +343,7 @@
 
               <strong>
                 {{
-                  clienteSeleccionado.created_at
+                  seleccionado.created_at
                     | date:'dd/MM/yyyy HH:mm'
                 }}
               </strong>
@@ -353,10 +360,10 @@
               type="button"
               class="boton-aceptar boton-modal"
               [disabled]="
-                procesandoId === clienteSeleccionado.id
+                procesandoId === seleccionado.id
               "
               (click)="
-                confirmarAprobacion(clienteSeleccionado)
+                confirmarAprobacion(seleccionado)
               ">
 
               ✓ Aceptar
@@ -368,10 +375,10 @@
               type="button"
               class="boton-rechazar boton-modal"
               [disabled]="
-                procesandoId === clienteSeleccionado.id
+                procesandoId === seleccionado.id
               "
               (click)="
-                confirmarRechazo(clienteSeleccionado)
+                confirmarRechazo(seleccionado)
               ">
 
               ✕ Rechazar
@@ -381,7 +388,7 @@
           </div>
 
 
-        </ng-container>
+        }
 
       </ion-content>
 
