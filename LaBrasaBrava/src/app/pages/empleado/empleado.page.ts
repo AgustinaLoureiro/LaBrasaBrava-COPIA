@@ -1,34 +1,37 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import {
-  IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel,
-  IonInput, IonSelect, IonSelectOption, IonButton, IonImg
-} from '@ionic/angular';
+import { IonContent } from '@ionic/angular';
 import { Camara } from '../../services/camara';
 import { Almacenamiento } from '../../services/almacenamiento';
-import { Supabase } from '../../services/supabase';
+import { SupabaseService } from '../../nucleo/servicios/supabase.service';
+import { LogoMarcaComponent } from '../../componentes/logo-marca/logo-marca.component';
+import { NOMBRE_PERFIL, Perfil } from '../../nucleo/modelos/usuario';
+import { RESTAURANTE } from '../../nucleo/marca';
 import { Preferences } from '@capacitor/preferences';
 
 @Component({
   selector: 'app-empleado',
   templateUrl: './empleado.page.html',
   styleUrls: ['./empleado.page.scss'],
-  imports: [
-    CommonModule, ReactiveFormsModule,
-    IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel,
-    IonInput, IonSelect, IonSelectOption, IonButton, IonImg
-  ]
+  imports: [CommonModule, ReactiveFormsModule, IonContent, LogoMarcaComponent]
 })
 export class EmpleadoPage implements OnInit {
   private constructorFormulario = inject(FormBuilder);
   private camara = inject(Camara);
   private almacenamiento = inject(Almacenamiento);
-  private supabase = inject(Supabase);
+  private supabase = inject(SupabaseService);
+  private location = inject(Location);
+
+  protected readonly restaurante = RESTAURANTE;
+  protected readonly NOMBRE_PERFIL = NOMBRE_PERFIL;
 
   fotoPrevia: string | null = null;
   guardando = false;
+  claveVisible = false;
   mensaje = '';
+  /** Pinta el mensaje final en rojo o en verde según cómo haya salido. */
+  mensajeEsError = false;
 
   formulario = this.constructorFormulario.group({
     nombres: ['', [Validators.required, Validators.minLength(2)]],
@@ -40,8 +43,16 @@ export class EmpleadoPage implements OnInit {
     perfil: ['', Validators.required]
   });
 
-  perfiles = ['dueño', 'supervisor', 'metre', 'mozo', 'cocinero', 'cantinero'];
-  
+  /** Perfiles que se pueden dar de alta: los del personal del local. */
+  perfiles: Perfil[] = ['dueño', 'supervisor', 'metre', 'mozo', 'cocinero', 'cantinero'];
+
+  volver() {
+    this.location.back();
+  }
+
+  alternarClave() {
+    this.claveVisible = !this.claveVisible;
+  }
 
   async ngOnInit() {
     // Restaurar borrador si existe
@@ -66,11 +77,13 @@ export class EmpleadoPage implements OnInit {
   async guardar() {
     if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
+      this.mensajeEsError = true;
       this.mensaje = 'Revisá los campos marcados.';
       return;
     }
     if (!this.fotoPrevia) {
-      this.mensaje = 'Falta sacar la foto.';
+      this.mensajeEsError = true;
+      this.mensaje = 'Falta sacar la foto del empleado.';
       return;
     }
 
@@ -79,11 +92,12 @@ export class EmpleadoPage implements OnInit {
 
     if (!urlFoto) {
       this.guardando = false;
+      this.mensajeEsError = true;
       this.mensaje = 'No se pudo subir la foto, intentá nuevamente.';
       return;
     }
 
-    const { error } = await this.supabase.client
+    const { error } = await this.supabase.cliente
       .from('empleados')
       .insert({
         ...this.formulario.value,
@@ -93,9 +107,11 @@ export class EmpleadoPage implements OnInit {
     this.guardando = false;
 
     if (error) {
-      this.mensaje = 'Error al guardar: ' + error.message;
+      this.mensajeEsError = true;
+      this.mensaje = 'No se pudo guardar el empleado: ' + error.message;
     } else {
-      this.mensaje = 'Empleado guardado correctamente.';
+      this.mensajeEsError = false;
+      this.mensaje = 'El empleado se guardó correctamente.';
       this.formulario.reset();
       this.fotoPrevia = null;
       await Preferences.remove({ key: 'borrador-alta-empleado' });

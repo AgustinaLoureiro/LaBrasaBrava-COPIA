@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-
 import { CONFIGURACION_SUPABASE } from '../configuracion';
 
 /**
@@ -26,3 +25,4 @@ export class SupabaseService {
     );
   }
 }
+

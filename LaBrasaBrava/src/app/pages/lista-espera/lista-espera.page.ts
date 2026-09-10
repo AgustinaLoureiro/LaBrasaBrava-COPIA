@@ -1,37 +1,55 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import {
-  IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel,
-  IonInput, IonButton, IonImg
-} from '@ionic/angular';
+import { IonContent } from '@ionic/angular';
 import { Camara } from '../../services/camara';
 import { Almacenamiento } from '../../services/almacenamiento';
-import { Supabase } from '../../services/supabase';
+import { SupabaseService } from '../../nucleo/servicios/supabase.service';
+import { LogoMarcaComponent } from '../../componentes/logo-marca/logo-marca.component';
+import { RESTAURANTE } from '../../nucleo/marca';
 
 @Component({
   selector: 'app-lista-espera',
   templateUrl: './lista-espera.page.html',
   styleUrls: ['./lista-espera.page.scss'],
-  imports: [
-    CommonModule, ReactiveFormsModule,
-    IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel,
-    IonInput, IonButton, IonImg
-  ]
+  imports: [CommonModule, ReactiveFormsModule, IonContent, LogoMarcaComponent]
 })
 export class ListaEsperaPage {
   private constructorFormulario = inject(FormBuilder);
   private camara = inject(Camara);
   private almacenamiento = inject(Almacenamiento);
-  private supabase = inject(Supabase);
+  private supabase = inject(SupabaseService);
+  private location = inject(Location);
+
+  protected readonly restaurante = RESTAURANTE;
 
   fotoPrevia: string | null = null;
   enviando = false;
   mensaje = '';
+  /** Pinta el mensaje final en rojo o en verde según cómo haya salido. */
+  mensajeEsError = false;
 
   formulario = this.constructorFormulario.group({
     nombre: ['', [Validators.required, Validators.minLength(2)]]
   });
+
+  volver() {
+    this.location.back();
+  }
+
+  invalido(campo: string): boolean {
+    const control = this.formulario.get(campo);
+    return !!control && control.invalid && (control.dirty || control.touched);
+  }
+
+  mensajeError(campo: string): string {
+    const errores = this.formulario.get(campo)?.errors;
+    if (!errores) return '';
+
+    if (errores['required']) return 'Escribí tu nombre.';
+    if (errores['minlength']) return 'El nombre debe tener al menos 2 letras.';
+    return 'Revisá este dato.';
+  }
 
   async sacarFoto() {
     const foto = await this.camara.tomarFoto();
@@ -43,11 +61,13 @@ export class ListaEsperaPage {
   async solicitarMesa() {
     if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
-      this.mensaje = 'Revisá el nombre ingresado.';
+      this.mensajeEsError = true;
+      this.mensaje = 'Revisá el nombre que ingresaste.';
       return;
     }
     if (!this.fotoPrevia) {
-      this.mensaje = 'Falta sacar la foto.';
+      this.mensajeEsError = true;
+      this.mensaje = 'Falta sacar tu foto.';
       return;
     }
 
@@ -56,11 +76,12 @@ export class ListaEsperaPage {
 
     if (!urlFoto) {
       this.enviando = false;
+      this.mensajeEsError = true;
       this.mensaje = 'No se pudo subir la foto, intentá nuevamente.';
       return;
     }
 
-    const { error } = await this.supabase.client
+    const { error } = await this.supabase.cliente
       .from('lista_espera')
       .insert({
         nombre: this.formulario.value.nombre,
@@ -71,9 +92,11 @@ export class ListaEsperaPage {
     this.enviando = false;
 
     if (error) {
-      this.mensaje = 'Error al solicitar la mesa: ' + error.message;
+      this.mensajeEsError = true;
+      this.mensaje = 'No se pudo solicitar la mesa: ' + error.message;
     } else {
-      this.mensaje = 'Solicitud enviada, esperá a que te asignen una mesa.';
+      this.mensajeEsError = false;
+      this.mensaje = 'Listo, ya estás en la lista de espera.';
       this.formulario.reset();
       this.fotoPrevia = null;
     }

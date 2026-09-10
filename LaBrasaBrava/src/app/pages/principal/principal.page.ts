@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { IonContent } from '@ionic/angular';
 
 import { LogoMarcaComponent } from '../../componentes/logo-marca/logo-marca.component';
+import { IconoModuloComponent } from '../../componentes/icono-modulo/icono-modulo.component';
 import { SesionService } from '../../nucleo/servicios/sesion.service';
 import { MensajesService } from '../../nucleo/servicios/mensajes.service';
 import { CargandoService } from '../../nucleo/servicios/cargando.service';
@@ -12,20 +13,20 @@ import {
   NOMBRE_PERFIL,
   TEXTO_SOBRE_PERFIL,
 } from '../../nucleo/modelos/usuario';
+import { modulosDelPerfil } from '../../nucleo/modulos';
 import { PALETA } from '../../nucleo/diseno';
 import { RESTAURANTE } from '../../nucleo/marca';
 
 /**
  * Página principal posterior al ingreso.
  *
- * Por ahora muestra los datos de la sesión y el botón de cierre de sesión
- * que pide el enunciado. A medida que avancen los puntos funcionales, acá
- * van a aparecer los accesos a cada módulo según el perfil.
+ * Muestra los datos de la sesión, los módulos que le corresponden al
+ * perfil que entró y el botón de cierre de sesión que pide el enunciado.
  */
 @Component({
   selector: 'app-principal',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonContent, LogoMarcaComponent, RouterLink],
+  imports: [IonContent, LogoMarcaComponent, IconoModuloComponent, RouterLink],
   templateUrl: './principal.page.html',
   styleUrl: './principal.page.scss',
 })
@@ -54,23 +55,23 @@ export class PrincipalPage {
     return actual ? TEXTO_SOBRE_PERFIL[actual.perfil] : PALETA.cremaTrigo;
   });
 
-  /** Módulos que va a ver este perfil. Se completan en las próximas entregas. */
   /**
-   * Módulos de la aplicación. Los que ya tienen pantalla llevan su ruta y
-   * se abren desde acá; el resto queda anunciado como pendiente hasta que
-   * el integrante que lo tiene asignado lo termine.
+   * Módulos que ve este perfil, y solamente los de este perfil.
+   *
+   * El reparto está en nucleo/modulos.ts, que es el mismo archivo que
+   * usan las guardas de las rutas: así lo que se muestra en pantalla y
+   * lo que deja entrar el router no se pueden contradecir. Por eso acá
+   * no hay ninguna lista escrita a mano: si un módulo cambia de ruta o
+   * de dueño, se toca nucleo/modulos.ts y esta pantalla se entera sola.
+   *
+   * Los que llevan `ruta: null` son los que todavía no están hechos:
+   * aparecen igual, anunciados como en desarrollo, para que se vea qué
+   * le va a tocar a cada perfil cuando el módulo esté terminado.
    */
-  protected readonly modulos: readonly { nombre: string; ruta: string | null }[] = [
-    { nombre: 'Alta de empleados', ruta: '/empleado' },
-    { nombre: 'Alta de platos', ruta: '/plato' },
-    { nombre: 'Registro de clientes', ruta: '/registro-cliente' },
-    { nombre: 'Aprobación de clientes', ruta: '/aprobacion-clientes' },
-    { nombre: 'Lista de espera', ruta: '/lista-espera' },
-    { nombre: 'Encuesta de satisfacción', ruta: '/encuesta' },
-    { nombre: 'Alta de bebidas', ruta: null },
-    { nombre: 'Gestión de mesas', ruta: null },
-    { nombre: 'Pedidos y comanda', ruta: null },
-  ];
+  protected readonly modulosDelPerfil = computed(() => {
+    const actual = this.usuario();
+    return actual ? modulosDelPerfil(actual.perfil) : [];
+  });
 
   /**
    * Cierra la sesión, verifica que las credenciales se hayan borrado y

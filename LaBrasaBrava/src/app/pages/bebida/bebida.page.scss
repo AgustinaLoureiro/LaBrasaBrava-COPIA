@@ -1,0 +1,390 @@
+/* ---- Buscador ---- */
+.buscador {
+    margin: 0;
+}
+
+/* ---- Listado ---- */
+.lista-bebidas {
+    display: grid;
+    gap: var(--espacio-chico);
+}
+
+.bebida-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 0.75rem;
+}
+
+.foto-boton {
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    width: 4.25rem;
+    height: 4.25rem;
+    border-radius: var(--radio-chico);
+    overflow: hidden;
+    background: var(--superficie-hundida);
+    flex-shrink: 0;
+}
+
+.foto-bebida {
+    width: 100%;
+    height: 100%;
+    object-fit: center;
+    object-position: center;
+}
+
+.datos-bebida {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+    
+}
+
+.nombre-bebida {
+    margin: 0;
+    font-family: var(--tipografia-cuerpo);
+    color: var(--texto-secundario);
+    font-weight: 800;
+    font-size: 0.8125rem; // 13px
+    line-height: 0.875rem; // 14px — piso del manual, respetado acá
+    
+}
+
+.precio-bebida {
+    font-family: var(--tipografia-titulos);
+    font-weight: 800;
+    font-size: 0.8125rem; // 13px
+    color: var(--texto-secundario);
+}
+
+.minutos-bebida {
+    font-family: var(--tipografia-cuerpo);
+    font-size: 0.8125rem; // 13px
+    color: var(--texto-secundario);
+}
+
+.acciones-bebida {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    justify-self: end;
+}
+
+.boton-accion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    width: auto;
+    min-height: 0;
+    padding: 0.35rem 0.65rem;
+    border-radius: 999px;
+    font-family: var(--tipografia-cuerpo);
+    font-weight: 500;
+    font-size: 0.8125rem;
+    letter-spacing: normal;
+    text-transform: none;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.boton-editar {
+    border: 0.1rem solid var(--ambar-ceniza);
+    background: rgba(242, 166, 59, 0.18);
+    color: var(--texto-principal);
+}
+
+.boton-editar:active {
+    border: 0.1rem solid var(--ambar-ceniza);
+    background: rgba(242, 166, 59, 0.18);
+    color: var(--texto-principal);
+}
+
+.boton-eliminar {
+    border: 0.1rem solid var(--error);
+    background: rgba(242, 166, 59, 0.18);
+    color: var(--error);
+}
+
+.boton-eliminar:active {
+    background: var(--error);
+    color: var(--texto-sobre-color);
+}
+
+/* --- Fotos --- */
+.grilla-fotos {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--espacio-chico);
+
+}
+
+.contenedor-foto {
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radio-chico);
+    overflow: hidden;
+    background: var(--superficie-hundida);
+    border: 0.15rem dashed var(--borde-fuerte);
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s ease;
+}
+
+.contenedor-foto:active {
+    transform: scale(0.96);
+}
+
+.imagen-foto {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radio-chico);
+    border: 0.125rem solid var(--borde-fuerte);
+    object-fit: cover;
+    object-position: center;
+}
+
+.placeholder-foto {
+    font-family: var(--tipografia-titulos);
+    font-weight: 800;
+    font-size: 0.8rem;
+    color: var(--texto-sobre-color);
+}
+
+.foto-ampliada {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: var(--radio-chico);
+}
+
+.foto-boton {
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    width: 5.5rem;
+    height: 5.5rem;
+    border-radius: var(--radio-chico);
+    overflow: hidden;
+    background: var(--superficie-hundida);
+}
+
+.foto-bebida {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* --- FIN Fotos --- */
+
+.datos-bebida {
+    display: grid;
+    gap: 0.3rem;
+    min-width: 0;
+}
+
+.fila-info {
+    display: flex;
+    align-items: center;
+    gap: var(--espacio-chico);
+}
+
+.precio {
+    font-family: var(--tipografia-titulos);
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--naranja-brasa);
+}
+
+.acciones-bebida {
+    display: flex;
+    gap: var(--espacio-minimo);
+    margin-top: 0.2rem;
+}
+
+.boton-chico {
+    min-height: 2.2rem;
+    padding: 0 var(--espacio-chico);
+    font-size: 0.85rem;
+    width: auto;
+}
+
+.boton-peligro {
+    border-color: var(--error);
+    color: var(--error);
+}
+
+.boton-peligro:active {
+    background: var(--error);
+    color: var(--texto-sobre-color);
+}
+
+.boton-peligro-solido {
+    background: var(--error);
+    box-shadow: 0 0.25rem 0 #8f2620;
+}
+
+/* ---- Paginado ---- */
+.paginado {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--espacio-chico);
+}
+
+/* ---- Formulario: pie con dos botones ---- */
+.pie-formulario {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: var(--espacio-chico);
+}
+
+.pie-formulario>.etiqueta {
+    grid-column: 1 / -1;
+}
+
+/* ---- Overlays (carrusel y confirmación) ---- */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(46, 42, 40, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: var(--espacio);
+}
+
+.overlay-contenido {
+    position: relative;
+    background: var(--superficie);
+    border-radius: var(--radio);
+    border: 0.125rem solid var(--borde-fuerte);
+    padding: var(--espacio);
+    max-width: 30rem;
+    width: 100%;
+}
+
+.overlay-cerrar {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    border: none;
+    background: var(--brasa-profunda);
+    color: var(--texto-sobre-color);
+    font-size: 1.1rem;
+    cursor: pointer;
+    z-index: 1;
+}
+
+
+.carrusel-flecha {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    border: none;
+    background: rgba(46, 42, 40, 0.6);
+    color: var(--texto-sobre-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.carrusel-anterior {
+    left: 0.75rem;
+}
+
+.carrusel-siguiente {
+    right: 0.75rem;
+}
+
+.carrusel-contador {
+    text-align: center;
+    margin-top: var(--espacio-chico);
+}
+
+.overlay-confirmacion {
+    max-width: 24rem;
+    display: grid;
+    gap: var(--espacio-chico);
+}
+
+.acciones-confirmacion {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--espacio-chico);
+}
+
+/* Reutiliza el layout en grilla de la página principal */
+.principal {
+    min-height: 100%;
+    padding: calc(var(--espacio) + var(--ion-safe-area-top, 0px)) var(--espacio) calc(var(--espacio) + var(--ion-safe-area-bottom, 0px));
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--espacio);
+    align-content: start;
+}
+
+.volver {
+    justify-self: start;
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--texto-secundario);
+    text-decoration: underline;
+    text-underline-offset: 0.2rem;
+    cursor: pointer;
+}
+
+/* --- Cabecera ----------------------------------------------------------- */
+
+.cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espacio-chico);
+    padding: var(--espacio-chico) var(--espacio);
+    border-radius: var(--radio);
+    background: var(--barra-navegacion);
+    border: 0.125rem solid var(--borde-fuerte);
+    color: var(--texto-sobre-color);
+}
+
+.cabecera .lema {
+    margin: 0;
+    font: var(--texto-ayuda);
+    color: var(--ambar-ceniza);
+    text-align: right;
+}
+
+form {
+    display: grid;
+    gap: var(--espacio);
+}
+
+.tarjeta,
+.tarjeta-destacada {
+    display: grid;
+    gap: var(--espacio-chico);
+}
+
+.campos-secundarios {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--espacio-chico);
+}
+

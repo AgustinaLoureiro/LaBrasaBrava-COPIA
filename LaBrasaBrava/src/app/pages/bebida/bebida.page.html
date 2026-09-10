@@ -1,0 +1,223 @@
+<ion-content [fullscreen]="true">
+  <div class="principal">
+
+    <button type="button" class="volver texto-ayuda" (click)="volver()">‹ Volver</button>
+    
+    <header class="cabecera">
+      <app-logo-marca composicion="horizontal" variante="crema" [tamanio]="44" [nombre]="restaurante.nombre" />
+      <p class="lema">{{ restaurante.lema }}</p>
+    </header>
+
+    <!-- ============ VISTA: LISTADO ============ -->
+    @if (vista() === 'lista') {
+
+    <div class="campo buscador">
+      <div class="entrada">
+        <input type="text" placeholder="Buscar bebida..." [value]="busqueda()"
+          (input)="buscar($any($event.target).value)" />
+      </div>
+    </div>
+
+    @if (cargandoLista()) {
+    <p class="texto-ayuda ion-text-center">Cargando bebidas...</p>
+    }
+
+    <button type="button" class="volver texto-ayuda" (click)="toggleVistaInactivos()">
+      {{ mostrarInactivos() ? 'Ver bebidas activas' : 'Ver bebidas inactivas' }}
+    </button>
+
+    @if (!cargandoLista() && bebidasFiltradas().length === 0) {
+    <section class="tarjeta">
+      <p class="texto-cuerpo">No se encontraron bebidas.</p>
+    </section>
+    }
+
+    @if (!cargandoLista() && bebidasPagina().length > 0) {
+    <section class="lista-bebidas">
+      @for (bebida of bebidasPagina(); track bebida.id) {
+      <article class="tarjeta bebida-item">
+        <button type="button" class="foto-boton" (click)="abrirCarrusel(bebida)">
+          @if (bebida.fotos?.[0]) {
+          <img [src]="bebida.fotos[0]" [alt]="'Foto de ' + bebida.nombre" class="foto-bebida" />
+          }
+        </button>
+
+        <div class="datos-bebida">
+          <h2 class="titulo-seccion">{{ bebida.nombre }}</h2>
+          <h2 class="nombre-bebida">{{ bebida.nombre }}</h2>
+          <span class="precio-bebida">$ {{ bebida.precio }}</span>
+          <span class="minutos-bebida">{{ bebida.tiempo_elaboracion }} min</span>
+          </div>
+          <div class="acciones-bebida">
+            <button type="button" class="boton-accion boton-editar" (click)="editarBebida(bebida)">
+              ✎ Editar
+            </button>
+            @if (!mostrarInactivos()) {
+            <button type="button" class="boton-accion boton-chico boton-peligro" (click)="pedirEliminar(bebida)">
+              🗑 Eliminar
+            </button>
+            }
+            @if (mostrarInactivos()) {
+            <button type="button" class="boton-accion boton-editar" (click)="cambiarEstadoBebida(bebida)">
+              {{ mostrarInactivos() ? 'Mostrar en el menú' : 'Desactivar' }}
+              
+            </button>
+            }
+          
+        </div>
+      </article>
+      }
+    </section>
+
+    @if (totalPaginas() > 1) {
+    <div class="paginado">
+      <button type="button" class="boton-contorno boton-chico" [disabled]="paginaActual() === 1"
+        (click)="paginaAnterior()">‹</button>
+      <span class="texto-ayuda">Página {{ paginaActual() }} de {{ totalPaginas() }}</span>
+      <button type="button" class="boton-contorno boton-chico" [disabled]="paginaActual() === totalPaginas()"
+        (click)="paginaSiguiente()">›</button>
+    </div>
+    }
+    }
+
+    @if (mensaje) {
+    <p class="etiqueta ion-text-center" [class.etiqueta-exito]="!mensajeEsError"
+      [class.etiqueta-error]="mensajeEsError">
+      {{ mensaje }}
+    </p>
+    }
+
+    <footer class="pie">
+      <button type="button" class="boton-principal" (click)="mostrarFormularioNuevo()">
+        Crear Nueva Bebida
+      </button>
+    </footer>
+    }
+
+    <!-- ============ VISTA: FORMULARIO (alta/edición) ============ -->
+    @if (vista() === 'formulario') {
+    <form [formGroup]="formulario">
+
+      <section class="tarjeta">
+        <h2 class="titulo-seccion">{{ bebidaEditandoId ? 'Editar bebida' : 'Agregar bebida' }}</h2>
+        <p class="subtitulo-seccion">Agregá al menos 3 fotos claras del bebida.</p>
+
+        <div class="grilla-fotos">
+          @for (foto of fotos; track $index) {
+          <button type="button" class="contenedor-foto" (click)="elegirFoto($index)">
+            @if (foto) {
+            <img [src]="foto" [alt]="'Foto ' + ($index + 1) + ' del bebida'" class="imagen-foto" />
+            } @else {
+            <span class="subtitulo-seccion">+ Foto</span>
+            }
+          </button>
+          }
+        </div>
+
+        @if (!fotosCompletas()) {
+        <p class="mensaje-validacion">Faltan cargar {{ fotosFaltantes() }} foto(s).</p>
+        }
+
+        <div class="aviso">
+          <p class="texto-ayuda"><strong>Importante:</strong> las fotos deben ser nítidas y representar fielmente el
+            bebida.</p>
+        </div>
+      </section>
+
+      <section class="tarjeta">
+        <h2 class="titulo-seccion">Detalles</h2>
+        <p class="subtitulo-seccion">El bebida quedará disponible en el menú.</p>
+
+        <div class="campo" [class.campo-con-error]="invalido('nombre')">
+          <label for="nombre">Nombre del bebida</label>
+          <div class="entrada">
+            <input id="nombre" formControlName="nombre" maxlength="40" type="text" />
+          </div>
+          @if (invalido('nombre')) { <p class="mensaje-validacion">{{ mensajeError('nombre') }}</p> }
+        </div>
+
+        <div class="campo" [class.campo-con-error]="invalido('descripcion')">
+          <label for="descripcion">Descripción</label>
+          <div class="entrada">
+            <input id="descripcion" formControlName="descripcion" maxlength="150" type="text" />
+          </div>
+          @if (invalido('descripcion')) { <p class="mensaje-validacion">{{ mensajeError('descripcion') }}</p> }
+        </div>
+
+        <div class="campos-secundarios">
+          <div class="campo" [class.campo-con-error]="invalido('tiempo_elaboracion')">
+            <label for="tiempo">Tiempo (min)</label>
+            <div class="entrada">
+              <input id="tiempo" formControlName="tiempo_elaboracion" type="text" inputmode="numeric"
+                (keydown)="soloNumerosEnteros($event)" />
+            </div>
+            @if (invalido('tiempo_elaboracion')) { <p class="mensaje-validacion">{{ mensajeError('tiempo_elaboracion')
+              }}</p> }
+          </div>
+
+          <div class="campo" [class.campo-con-error]="invalido('precio')">
+            <label for="precio">Precio</label>
+            <div class="entrada">
+              <input id="precio" formControlName="precio" type="text" inputmode="decimal"
+                (keydown)="soloNumerosConPunto($event)" />
+            </div>
+            @if (invalido('precio')) { <p class="mensaje-validacion">{{ mensajeError('precio') }}</p> }
+          </div>
+        </div>
+      </section>
+
+      <footer class="pie pie-formulario">
+        <button type="button" class="boton-contorno" [disabled]="guardando" (click)="cancelarFormulario()">
+          Cancelar
+        </button>
+        <button type="button" class="boton-principal" [disabled]="guardando" (click)="guardar()">
+          {{ guardando ? 'Guardando...' : (bebidaEditandoId ? 'Guardar cambios' : 'Guardar bebida') }}
+        </button>
+
+        @if (mensaje) {
+        <p class="etiqueta ion-text-center" [class.etiqueta-exito]="!mensajeEsError"
+          [class.etiqueta-error]="mensajeEsError">
+          {{ mensaje }}
+        </p>
+        }
+      </footer>
+    </form>
+    }
+
+  </div>
+
+  <!-- ============ CARRUSEL FLOTANTE ============ -->
+  @if (carrusel(); as c) {
+  <div class="overlay" (click)="cerrarCarrusel()">
+    <div class="overlay-contenido" (click)="$event.stopPropagation()">
+      <button type="button" class="overlay-cerrar" (click)="cerrarCarrusel()">✕</button>
+
+      @if (c.fotos.length > 0) {
+      <img [src]="c.fotos[c.indice]" alt="Foto del bebida ampliada" class="foto-ampliada" />
+
+      @if (c.fotos.length > 1) {
+      <button type="button" class="carrusel-flecha carrusel-anterior" (click)="fotoAnterior()">‹</button>
+      <button type="button" class="carrusel-flecha carrusel-siguiente" (click)="fotoSiguiente()">›</button>
+      <p class="texto-ayuda carrusel-contador">{{ c.indice + 1 }} / {{ c.fotos.length }}</p>
+      }
+      }
+    </div>
+  </div>
+  }
+
+  <!-- ============ CONFIRMACIÓN DE BORRADO ============ -->
+  @if (bebidaAEliminar(); as bebida) {
+  <div class="overlay" (click)="cancelarEliminar()">
+    <div class="overlay-contenido overlay-confirmacion" (click)="$event.stopPropagation()">
+      <h2 class="titulo-seccion">¿Eliminar bebida del menú?</h2>
+      <p class="texto-cuerpo">Desea eliminar "{{ bebida.nombre }}" del menú del cliente.</p>
+      <div class="acciones-confirmacion">
+        <button type="button" class="boton-contorno" (click)="cancelarEliminar()">Cancelar</button>
+        <button type="button" class="boton-principal boton-peligro-solido"
+          (click)="confirmarEliminar()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+  }
+
+</ion-content>

@@ -6,7 +6,15 @@ import {
   Validators,
   AbstractControl,
 } from '@angular/forms';
-import { IonContent } from '@ionic/angular';
+import {
+  IonContent,
+  IonModal,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButtons,
+  IonButton,
+} from '@ionic/angular';
 
 import { LogoMarcaComponent } from '../../componentes/logo-marca/logo-marca.component';
 import { SesionService } from '../../nucleo/servicios/sesion.service';
@@ -35,7 +43,17 @@ import { faltaConfigurarSupabase } from '../../nucleo/configuracion';
 @Component({
   selector: 'app-ingreso',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonContent, ReactiveFormsModule, LogoMarcaComponent],
+  imports: [
+    IonContent,
+    IonModal,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonButtons,
+    IonButton,
+    ReactiveFormsModule,
+    LogoMarcaComponent,
+  ],
   templateUrl: './ingreso.page.html',
   styleUrl: './ingreso.page.scss',
 })
@@ -57,6 +75,15 @@ export class IngresoPage implements OnInit {
   protected readonly accesos = signal<AccesoRapido[]>([]);
   protected readonly claveVisible = signal(false);
   protected readonly intentoDeEnvio = signal(false);
+
+  /**
+   * Si está abierto el panel con las fichas de acceso rápido.
+   *
+   * El panel arranca cerrado para que la pantalla de ingreso muestre
+   * primero el formulario, que es lo que se usa de verdad; las fichas se
+   * abren desde el botón «Acceso rápido» cuando hacen falta.
+   */
+  protected readonly panelDeAccesosAbierto = signal(false);
 
   /**
    * Expresión para validar el correo.
@@ -123,13 +150,42 @@ export class IngresoPage implements OnInit {
 
   // --- Acciones ------------------------------------------------------
 
+  /** Abre el panel con todas las fichas de acceso rápido. */
+  protected abrirAccesosRapidos(): void {
+    this.panelDeAccesosAbierto.set(true);
+  }
+
+  /** Cierra el panel de acceso rápido. */
+  protected cerrarAccesosRapidos(): void {
+    this.panelDeAccesosAbierto.set(false);
+  }
+
   protected alternarClave(): void {
     this.claveVisible.update((visible) => !visible);
   }
 
-  /** Carga las credenciales del acceso rápido elegido y entra directamente. */
+  /**
+   * Carga las credenciales del acceso rápido elegido.
+   *
+   * Si la ficha trae la contraseña (los empleados), entra directamente.
+   * Si no la trae (los clientes registrados, cuya contraseña guarda
+   * Supabase Auth), completa el correo y avisa que falta escribirla.
+   */
   protected async usarAccesoRapido(acceso: AccesoRapido): Promise<void> {
-    this.formulario.setValue({ correo: acceso.correo, clave: acceso.clave_demo });
+    this.cerrarAccesosRapidos();
+
+    if (!acceso.clave_demo) {
+      this.formulario.patchValue({ correo: acceso.correo, clave: '' });
+      this.intentoDeEnvio.set(false);
+      this.campo('clave').markAsUntouched();
+      await this.mensajes.aviso(
+        'Falta la contraseña',
+        `Ya cargamos el correo de ${acceso.nombres}. Escribí su contraseña para entrar.`,
+      );
+      return;
+    }
+
+    this.formulario.patchValue({ correo: acceso.correo, clave: acceso.clave_demo });
     await this.ingresar();
   }
 

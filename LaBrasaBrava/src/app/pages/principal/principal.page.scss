@@ -144,44 +144,144 @@
   color: var(--texto-sobre-color);
 }
 
-.modulos ul {
+/* Los módulos se ofrecen como cuadrícula.
+   No se fija una cantidad de columnas ni puntos de corte por resolución:
+   se declara el ancho mínimo de un cuadro y la cuadrícula acomoda las
+   que entren. Así da una columna en un teléfono muy angosto, dos en uno
+   común y cuatro o más en una tableta, sin que haya un ancho intermedio
+   en el que se rompa.
+
+   Las dos defensas contra el desborde:
+     · minmax(min(8rem, 100%), 1fr) — el `min()` deja que la columna baje
+       de 8rem cuando la pantalla es más angosta que eso, en vez de
+       forzar un ancho que no entra.
+     · el `minmax(0, ...)` implícito del `1fr` se escribe explícito abajo
+       en el cuadro, para que un nombre largo no estire la columna. */
+.cuadricula {
   list-style: none;
   margin: var(--espacio-chico) 0 0;
   padding: 0;
   display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(7rem, 100%), 1fr));
   gap: var(--espacio-chico);
 }
 
-.modulos li {
+/* Lo único que cambia por resolución es cuánto mide como mínimo un
+   cuadro; la cantidad de columnas la sigue resolviendo la cuadrícula.
+   Sin estos dos escalones, el mínimo del teléfono dejaba siete columnas
+   de 128 píxeles en una tableta de 1024: no se desbordaba, pero quedaba
+   ilegible. Medido en 320, 360, 390, 430, 540, 600, 768, 834, 1024 y
+   1280 píxeles: nunca hay desborde ni cuadros cortados. */
+@media (min-width: 34rem) {
+  .cuadricula {
+    grid-template-columns: repeat(auto-fill, minmax(min(9rem, 100%), 1fr));
+  }
+}
+
+@media (min-width: 48rem) {
+  .cuadricula {
+    grid-template-columns: repeat(auto-fill, minmax(min(12rem, 100%), 1fr));
+    /* Tope para que en una pantalla muy ancha no se siga estirando. */
+    max-width: 60rem;
+  }
+}
+
+.cuadricula li {
   display: flex;
+  /* Sin esto, un nombre largo empuja la columna y se desborda la fila. */
+  min-width: 0;
+}
+
+.cuadro {
+  flex: 1;
+  /* `flex: 1` sin esto usa min-width auto y no deja encoger el cuadro. */
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: var(--espacio-chico);
+  justify-content: flex-start;
+  gap: var(--espacio-minimo);
   padding: var(--espacio-chico);
+  min-height: 8.5rem;
   border-radius: var(--radio-chico);
-  background: rgba(240, 223, 198, 0.18);
+  border: 0.125rem solid transparent;
+  /* Velo oscuro, no claro: sobre el oliva del módulo, aclarar el fondo
+     acerca el crema del texto al fondo y baja el contraste. Oscureciendo
+     se llega a 5.3:1, que cumple el mínimo para texto normal. */
+  background: rgba(46, 42, 40, 0.22);
   font: var(--texto-cuerpo);
   font-weight: 600;
   color: var(--texto-sobre-color);
+  text-align: center;
+  text-decoration: none;
 }
 
-.punto {
+/* El dibujo va en ámbar, el color que el manual reserva para destacar.
+   El círculo que lo sostiene es oscuro, no ámbar translúcido: teñir el
+   fondo con el mismo color del trazo dejaba el dibujo en 2,2:1 y casi no
+   se distinguía. Con el círculo oscuro queda en 4,3:1. */
+.dibujo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex: 0 0 auto;
-  width: 0.6rem;
-  height: 0.6rem;
+  width: 3.1rem;
+  height: 3.1rem;
   border-radius: 50%;
-  background: var(--ambar-ceniza);
+  background: rgba(46, 42, 40, 0.28);
+  border: 0.125rem solid var(--ambar-ceniza);
+  color: var(--ambar-ceniza);
+  padding: 0.6rem;
 }
 
-/* «En desarrollo» es un estado de espera: color información del manual. */
+.nombre-modulo {
+  display: block;
+  max-width: 100%;
+  line-height: 1.2;
+  /* «Aprobación» y «satisfacción» son más anchas que una columna chica:
+     que corten antes de empujar el cuadro. */
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Los módulos ya terminados se abren tocando el cuadro entero. */
+a.cuadro {
+  border-color: var(--ambar-ceniza);
+}
+
+a.cuadro:active {
+  background: rgba(46, 42, 40, 0.38);
+}
+
+/* El que todavía no está hecho se muestra apagado y no se puede tocar. */
+/* El pendiente se distingue por el borde punteado, no por transparencia:
+   bajarle la opacidad al cuadro entero le bajaba también el contraste al
+   texto. */
+.cuadro-pendiente {
+  border-style: dashed;
+  border-color: rgba(240, 223, 198, 0.55);
+}
+
+.cuadro-pendiente .dibujo {
+  background: rgba(46, 42, 40, 0.28);
+  border-color: rgba(240, 223, 198, 0.55);
+  color: var(--texto-sobre-color);
+}
+
+/* «En desarrollo» es un estado de espera: color información del manual.
+   La etiqueta no lleva `nowrap`: el manual no deja bajar de 16 píxeles,
+   así que en una columna angosta tiene que poder pasar a dos renglones
+   en vez de salirse del cuadro. */
 .estado {
-  margin-left: auto;
-  padding: 0.2rem 0.6rem;
+  margin-top: auto;
+  max-width: 100%;
+  padding: 0.2rem 0.5rem;
   border-radius: 999px;
   background: var(--informacion);
   font: var(--texto-ayuda);
   font-weight: 700;
   color: var(--texto-sobre-color);
-  white-space: nowrap;
+  text-align: center;
 }
 
 /* «Disponible» es una confirmación: color éxito del manual. */
@@ -189,15 +289,20 @@
   background: var(--exito);
 }
 
-/* Los módulos ya terminados se abren desde acá. */
-.modulos a {
-  color: var(--texto-sobre-color);
-  text-decoration: underline;
-  text-underline-offset: 0.2rem;
-}
-
 /* --- Cierre de sesión ----------------------------------------------------- */
 
 .pie {
   align-self: end;
+}
+
+/* Cuando a un perfil todavía no le toca ningún módulo, se lo dice con
+   todas las letras en vez de dejar la lista vacía. */
+.modulos .sin-modulos {
+  margin: 0;
+  padding: var(--espacio-chico);
+  border-radius: var(--radio-chico);
+  background: var(--superficie-hundida);
+  border: 0.125rem dashed var(--borde-fuerte);
+  font: var(--texto-ayuda);
+  color: var(--texto-secundario);
 }

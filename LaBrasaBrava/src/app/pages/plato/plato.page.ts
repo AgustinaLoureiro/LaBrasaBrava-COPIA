@@ -1,13 +1,25 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonInput, IonButton, IonIcon, IonButtons, IonBackButton} from '@ionic/angular';
+import { Component, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { CommonModule, Location } from '@angular/common';
+import {
+  FormBuilder, ReactiveFormsModule,
+  Validators, AbstractControl, ValidationErrors, ValidatorFn,
+} from '@angular/forms';
+import { IonContent, ActionSheetController } from '@ionic/angular';
 import { Camera } from '@capacitor/camera';
-import { ActionSheetController } from '@ionic/angular';
-import { Supabase } from '../../services/supabase';
+import { SupabaseService } from '../../nucleo/servicios/supabase.service';
 import { Almacenamiento } from '../../services/almacenamiento';
+import { LogoMarcaComponent } from '../../componentes/logo-marca/logo-marca.component';
+import { RESTAURANTE } from '../../nucleo/marca';
 
-//import { IonButton } from "@ionic/angular/standalone";
+interface Plato {
+  id: string;
+  nombre: string;
+  descripcion: string;
+  tiempo_elaboracion: string;
+  precio: string;
+  fotos: string[] | null;
+  activo: boolean;
+}
 
 function numeroPositivo(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -17,30 +29,57 @@ function numeroPositivo(): ValidatorFn {
   };
 }
 
-// Componente que representa la página de creación de un plato
+const POR_PAGINA = 5;
 
 @Component({
   selector: 'app-plato',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './plato.page.html',
   styleUrls: ['./plato.page.scss'],
-  imports: [IonBackButton, IonButtons, IonIcon, IonButton, 
-    CommonModule, ReactiveFormsModule,
-    IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonInput
-  ]
+  imports: [CommonModule, ReactiveFormsModule, IonContent, LogoMarcaComponent],
 })
-
-// Clase que representa la página de creación de un plato
-
-export class PlatoPage{
+export class PlatoPage {
   private constructorFormulario = inject(FormBuilder);
   private actionSheetCtrl = inject(ActionSheetController);
-  private supabase = inject(Supabase);
+  private supabase = inject(SupabaseService);
   private almacenamiento = inject(Almacenamiento);
+  private location = inject(Location);
 
+  protected readonly restaurante = RESTAURANTE;
+
+  // ---- Vista: lista o formulario ----
+  vista = signal<'lista' | 'formulario'>('lista');
+
+  // ---- Listado ----
+  platos = signal<Plato[]>([]);
+  cargandoLista = signal(true);
+  busqueda = signal('');
+  paginaActual = signal(1);
+
+  platosFiltrados = computed(() => {
+    const termino = this.busqueda().trim().toLowerCase();
+    if (!termino) return this.platos();
+    return this.platos().filter(p => p.nombre.toLowerCase().includes(termino));
+  });
+
+  totalPaginas = computed(() => Math.max(1, Math.ceil(this.platosFiltrados().length / POR_PAGINA)));
+
+  platosPagina = computed(() => {
+    const inicio = (this.paginaActual() - 1) * POR_PAGINA;
+    return this.platosFiltrados().slice(inicio, inicio + POR_PAGINA);
+  });
+
+  // ---- Carrusel flotante ----
+  carrusel = signal<{ fotos: string[]; indice: number } | null>(null);
+
+  // ---- Confirmación de borrado ----
+  platoAEliminar = signal<Plato | null>(null);
+
+  // ---- Formulario (alta/edición) ----
+  platoEditandoId: string | null = null;
   guardando = false;
   mensaje = '';
-
-  // Formulario reactivo para la creación de un plato, con validaciones para cada campo
+  mensajeEsError = false;
 
   formulario = this.constructorFormulario.group({
     nombre: ['', [
@@ -64,15 +103,154 @@ export class PlatoPage{
       Validators.pattern(/^\d+(\.\d{1,2})?$/),
       numeroPositivo(),
     ]],
-    
   });
-
-  // Array para almacenar las fotos del plato, inicializado con valores nulos
 
   fotos: (string | null)[] = [null, null, null];
 
-  // Método para mostrar un ActionSheet que permite al usuario elegir entre tomar una foto con la cámara o seleccionar una de la galería
+  constructor() {
+    this.cargarPlatos();
+  }
 
+  volver() {
+    this.location.back();
+  }
+
+  mostrarInactivos = signal(false);
+
+  // ---- Cargar listado ----
+  async cargarPlatos() {
+    this.cargandoLista.set(true);
+    this.mensaje = '';
+
+    const { data, error } = await this.supabase.cliente
+      .from('platos')
+      .select('id, nombre, descripcion, tiempo_elaboracion, precio, fotos, activo')
+      .eq('activo', !this.mostrarInactivos())
+      .order('id', { ascending: false });
+
+    if (error) {
+      this.mensaje = 'No se pudieron cargar los platos: ' + error.message;
+      this.mensajeEsError = true;
+      return;
+    } else {
+      this.platos.set(data ?? []);
+    }
+
+    this.cargandoLista.set(false);
+
+  }
+
+  toggleVistaInactivos() {
+    this.mostrarInactivos.update(v => !v);
+    this.cargarPlatos();
+  }
+
+  async cambiarEstadoPlato(plato: any) {
+    const { error } = await this.supabase.cliente
+      .from('platos')
+      .update({ activo: !plato.activo })
+      .eq('id', plato.id);
+
+    if (!error) {
+      this.cargarPlatos(); // refresca la lista
+    }
+  }
+
+  buscar(texto: string) {
+    this.busqueda.set(texto);
+    this.paginaActual.set(1); // vuelve a la primera página al filtrar
+  }
+
+  irPagina(n: number) {
+    this.paginaActual.set(n);
+  }
+  paginaAnterior() {
+    if (this.paginaActual() > 1) this.paginaActual.update(p => p - 1);
+  }
+  paginaSiguiente() {
+    if (this.paginaActual() < this.totalPaginas()) this.paginaActual.update(p => p + 1);
+  }
+
+  // ---- Carrusel ----
+  abrirCarrusel(plato: Plato) {
+    this.carrusel.set({ fotos: plato.fotos ?? [], indice: 0 });
+  }
+  cerrarCarrusel() {
+    this.carrusel.set(null);
+  }
+  fotoAnterior() {
+    this.carrusel.update(c => {
+      if (!c) return c;
+      const total = c.fotos.length;
+      return { ...c, indice: (c.indice - 1 + total) % total };
+    });
+  }
+  fotoSiguiente() {
+    this.carrusel.update(c => {
+      if (!c) return c;
+      const total = c.fotos.length;
+      return { ...c, indice: (c.indice + 1) % total };
+    });
+  }
+
+  // ---- Alta / edición ----
+  mostrarFormularioNuevo() {
+    this.platoEditandoId = null;
+    this.formulario.reset();
+    this.fotos = [null, null, null];
+    this.mensaje = '';
+    this.vista.set('formulario');
+  }
+
+  editarPlato(plato: Plato) {
+    this.platoEditandoId = plato.id;
+    this.formulario.reset({
+      nombre: plato.nombre,
+      descripcion: plato.descripcion,
+      tiempo_elaboracion: String(plato.tiempo_elaboracion),
+      precio: String(plato.precio),
+    });
+    const fotosExistentes = plato.fotos ?? [];
+    this.fotos = [0, 1, 2].map(i => fotosExistentes[i] ?? null);
+    this.mensaje = '';
+    this.vista.set('formulario');
+  }
+
+  cancelarFormulario() {
+    this.vista.set('lista');
+    this.mensaje = '';
+  }
+
+  // ---- Borrado (BAJA LOGICA)----
+  pedirEliminar(plato: Plato) {
+    this.platoAEliminar.set(plato);
+  }
+  cancelarEliminar() {
+    this.platoAEliminar.set(null);
+  }
+  async confirmarEliminar() {
+    const plato = this.platoAEliminar();
+    if (!plato) return;
+
+    const { error } = await this.supabase.cliente
+      .from('platos')
+      .update({ activo: false })
+      .eq('id', plato.id);
+
+    this.platoAEliminar.set(null);
+
+    if (error) {
+      this.mensaje = 'No se pudo dar de baja el plato: ' + error.message;
+      this.mensajeEsError = true;
+      return;
+    }
+
+    this.mensaje = 'Plato dado de baja correctamente.';
+    this.mensajeEsError = false;
+    this.platos.update(lista => lista.filter(p => p.id !== plato.id));
+  }
+
+  // ---- Fotos (cámara / galería) ----
   async elegirFoto(indice: number) {
     const actionSheet = await this.actionSheetCtrl.create({
       header: 'Foto del plato',
@@ -85,93 +263,60 @@ export class PlatoPage{
     await actionSheet.present();
   }
 
-  //  Método para tomar una foto con la cámara del dispositivo
-
   private async tomarConCamara(indice: number) {
     try {
-      const resultado = await Camera.takePhoto({
-        quality: 80,
-        includeMetadata: true,
-      });
+      const resultado = await Camera.takePhoto({ quality: 80, includeMetadata: true });
       this.fotos[indice] = `data:image/${resultado.metadata?.format ?? 'jpeg'};base64,${resultado.thumbnail}`;
-    } catch {
-      // el usuario canceló, no hacemos nada
-    }
+    } catch { }
   }
-
-  // Método para elegir una foto de la galería del dispositivo
 
   private async elegirDeGaleria(indice: number) {
     try {
-      const { results } = await Camera.chooseFromGallery({
-        quality: 80,
-        includeMetadata: true,
-      });
+      const { results } = await Camera.chooseFromGallery({ quality: 80, includeMetadata: true });
       if (results[0]) {
         this.fotos[indice] = `data:image/${results[0].metadata?.format ?? 'jpeg'};base64,${results[0].thumbnail}`;
       }
-    } catch {
-      // el usuario canceló
-    }
+    } catch { }
   }
-
-  // Método para verificar si todas las fotos han sido cargadas
 
   fotosCompletas(): boolean {
     return this.fotos.every(f => f !== null);
   }
+  fotosFaltantes(): number {
+    return this.fotos.filter(f => f === null).length;
+  }
 
-  // Método para verificar si un campo del formulario es inválido y ha sido tocado o modificado
-
+  // ---- Validación ----
   invalido(campo: string): boolean {
     const control = this.formulario.get(campo);
     return !!control && control.invalid && (control.dirty || control.touched);
   }
 
-  // Método para permitir solo números y un punto decimal en el campo de precio
-
   soloNumerosEnteros(evento: KeyboardEvent) {
     const teclasPermitidas = ['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End'];
     if (teclasPermitidas.includes(evento.key)) return;
     if (evento.ctrlKey || evento.metaKey) return;
-    if (!/^[0-9]$/.test(evento.key)) {
-      evento.preventDefault();
-    }
+    if (!/^[0-9]$/.test(evento.key)) evento.preventDefault();
   }
-
-  // Método para permitir solo números y un punto decimal en el campo de precio
 
   soloNumerosConPunto(evento: KeyboardEvent) {
     const teclasPermitidas = ['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End'];
     if (teclasPermitidas.includes(evento.key)) return;
     if (evento.ctrlKey || evento.metaKey) return;
-
     const valorActual = (evento.target as HTMLInputElement).value;
-    // bloquea un segundo punto si ya hay uno
     if (evento.key === '.' && valorActual.includes('.')) {
       evento.preventDefault();
       return;
     }
-    if (!/^[0-9.]$/.test(evento.key)) {
-      evento.preventDefault();
-    }
+    if (!/^[0-9.]$/.test(evento.key)) evento.preventDefault();
   }
-
-  // Método para obtener el mensaje de error de un campo del formulario
 
   mensajeError(campo: string): string {
     const control = this.formulario.get(campo);
     if (!control || !control.errors) return '';
-
     if (control.errors['required']) return 'Este dato es requerido.';
-    if (control.errors['minlength']) {
-      const requerido = control.errors['minlength'].requiredLength;
-      return `Debe tener al menos ${requerido} caracteres.`;
-    }
-    if (control.errors['maxlength']) {
-      const max = control.errors['maxlength'].requiredLength;
-      return `No puede superar los ${max} caracteres.`;
-    }
+    if (control.errors['minlength']) return `Debe tener al menos ${control.errors['minlength'].requiredLength} caracteres.`;
+    if (control.errors['maxlength']) return `No puede superar los ${control.errors['maxlength'].requiredLength} caracteres.`;
     if (control.errors['pattern']) {
       switch (campo) {
         case 'nombre': return 'Solo se permiten letras, números y espacios.';
@@ -181,67 +326,66 @@ export class PlatoPage{
       }
     }
     if (control.errors['numeroPositivo']) return 'El valor debe ser mayor a 0.';
-
     return 'Dato inválido.';
   }
-
-  // Método para guardar el plato en la base de datos
-
+  // ---- Guardar (alta o edición) ----
   async guardar() {
     this.mensaje = '';
 
     if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       this.mensaje = 'Revisá los campos marcados.';
+      this.mensajeEsError = true;
       return;
     }
-
     if (this.fotos.some(f => f === null)) {
       this.mensaje = 'Faltan cargar las 3 fotos del plato.';
+      this.mensajeEsError = true;
       return;
     }
 
-    // AGREGAMOS UN TRY/CATCH GLOBAL PARA CAPTURAR CUALQUIER CAÍDA SILENCIOSA
     try {
+      this.guardando = true;
 
-    this.guardando = true;
+      // Solo sube las fotos nuevas (dataUrl); las que ya son URL de Supabase se reutilizan tal cual.
+      const urlsFotos: string[] = [];
+      for (const foto of this.fotos) {
+        if (foto!.startsWith('data:')) {
+          const url = await this.almacenamiento.subirImagen(foto as string, 'platos');
+          if (!url) {
+            this.guardando = false;
+            this.mensaje = 'No se pudo subir una de las fotos, intentá nuevamente.';
+            this.mensajeEsError = true;
+            return;
+          }
+          urlsFotos.push(url);
+        } else {
+          urlsFotos.push(foto as string);
+        }
+      }
 
-    // Subir las 3 fotos y juntar sus URLs
-    const urlsFotos: string[] = [];
-    for (const foto of this.fotos) {
+      const datosPlato = { ...this.formulario.value, fotos: urlsFotos };
 
-      const url = await this.almacenamiento.subirImagen(foto as string, 'platos');
+      const { error } = this.platoEditandoId
+        ? await this.supabase.cliente.from('platos').update(datosPlato).eq('id', this.platoEditandoId)
+        : await this.supabase.cliente.from('platos').insert(datosPlato);
 
-      if (!url) {
-        this.guardando = false;
-        this.mensaje = 'No se pudo subir una de las fotos, intentá nuevamente.';
+      this.guardando = false;
+
+      if (error) {
+        this.mensaje = 'Error al guardar: ' + error.message;
+        this.mensajeEsError = true;
         return;
       }
-      urlsFotos.push(url);
-    }
 
-    const { error } = await this.supabase.client
-      .from('platos')
-      .insert({
-        ...this.formulario.value,
-        fotos: urlsFotos,
-      });
-
-    this.guardando = false;
-
-    if (error) {
-      this.mensaje = 'Error al guardar: ' + error.message;
-    } else {
-      this.mensaje = 'Plato guardado correctamente.';
-      this.formulario.reset();
-      this.fotos = [null, null, null];
-    }
+      this.mensaje = this.platoEditandoId ? 'Plato actualizado correctamente.' : 'Plato guardado correctamente.';
+      this.mensajeEsError = false;
+      await this.cargarPlatos();
+      this.vista.set('lista');
     } catch (err: any) {
-      // SI ALGO SE ROMPE NATIVAMENTE, LO MUESTRA EN LA PANTALLA DE LA APP
       this.guardando = false;
-      this.mensaje = 'ERROR CRÍTICO CAPTURADO: ' + (err.message || JSON.stringify(err));
+      this.mensaje = 'ERROR: ' + (err.message || JSON.stringify(err));
+      this.mensajeEsError = true;
     }
   }
 }
-
-

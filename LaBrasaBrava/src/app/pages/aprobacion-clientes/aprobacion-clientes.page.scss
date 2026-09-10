@@ -1,0 +1,938 @@
+
+/* ==========================================
+   VARIABLES
+========================================== */
+
+:host {
+  --naranja-brasa: #E2622C;
+  --ambar-ceniza: #F2A63B;
+  --crema-trigo: #F0DFC6;
+  --oliva-ahumada: #5C6B46;
+  --ladrillo: #A83E1E;
+  --brasa-profunda: #6B2A13;
+  --terracota: #8E3418;
+  --carbon-parrilla: #2E2A28;
+  --exito: #3F8F5B;
+  --error: #C2352A;
+  --borde-tarjeta: #D4B89B;
+  --borde-cabecera: #A94B27;
+  --fondo-boton-exito: rgba(63, 143, 91, 0.12);
+  --fondo-boton-error: rgba(194, 53, 42, 0.10);
+  --radio: 20px;
+  --ion-font-family: 'Source Sans 3', sans-serif;
+  --ion-text-color: var(--carbon-parrilla);
+}
+
+
+/* ==========================================
+   FONDO
+========================================== */
+
+ion-content {
+  --background: var(--crema-trigo);
+}
+
+.principal {
+  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+
+  padding:
+    calc(18px + var(--ion-safe-area-top, 0px))
+    30px
+    calc(25px + var(--ion-safe-area-bottom, 0px));
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+}
+
+
+/* ==========================================
+   CABECERA
+========================================== */
+
+.cabecera {
+  width: 100%;
+  min-height: 128px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 28px;
+  gap: 15px;
+  background: var(--brasa-profunda);
+  border: 3px solid var(--borde-cabecera);
+  border-radius: 28px;
+  color: var(--crema-trigo);
+}
+
+.lema {
+  margin: 0;
+  text-align: right;
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 600;
+  color: var(--ambar-ceniza);
+  flex-shrink: 1;
+}
+
+
+/* ==========================================
+   BUSCADOR
+========================================== */
+
+.buscador {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 14px;
+}
+
+.buscador input {
+  width: 100%;
+  height: 70px;
+  box-sizing: border-box;
+  padding: 0 32px;
+  border: 3px solid var(--borde-tarjeta);
+  border-radius: 20px;
+  outline: none;
+  background: #E5D1AA;
+  color: var(--carbon-parrilla);
+  font-size: 22px;
+  font-family: 'Source Sans 3', sans-serif;
+}
+
+.buscador input::placeholder {
+  color: #716B63;
+}
+
+
+/* ==========================================
+   INACTIVOS
+========================================== */
+
+.link-inactivos {
+  align-self: flex-start;
+
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: #5E5953;
+
+  font-family: 'Source Sans 3', sans-serif;
+
+  font-size: 18px;
+
+  font-weight: 600;
+
+  text-decoration: underline;
+
+  cursor: pointer;
+}
+
+
+/* ==========================================
+   LISTA
+========================================== */
+
+.lista-clientes {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+
+/* ==========================================
+   TARJETA
+========================================== */
+
+.cliente-card {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  overflow: hidden;
+
+  margin: 0;
+  padding: 0;
+
+  background: #E7D4AF;
+
+  border: 3px solid var(--borde-tarjeta);
+
+  border-radius: 24px;
+
+  box-shadow: none;
+}
+
+
+/* ==========================================
+   FILA PRINCIPAL
+
+   FOTO | DATOS | BOTONES
+========================================== */
+
+.cliente-principal {
+
+  width: 100%;
+
+  box-sizing: border-box;
+
+  display: grid;
+
+  /*
+   * La foto tiene un ancho fijo.
+   * Los datos ocupan SOLO el espacio disponible.
+   * Los botones tienen un ancho fijo.
+   */
+  grid-template-columns:
+    170px
+    minmax(0, 1fr)
+    165px;
+
+  align-items: center;
+
+  column-gap: 20px;
+
+  padding: 22px 24px;
+}
+
+
+/* ==========================================
+   FOTO CIRCULAR
+========================================== */
+
+.foto-container {
+
+  width: 170px;
+  height: 170px;
+
+  min-width: 170px;
+  min-height: 170px;
+
+  box-sizing: border-box;
+
+  overflow: hidden;
+
+  border-radius: 50%;
+
+  background: #D4C19E;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+}
+
+.foto-container img {
+
+  width: 100% !important;
+  height: 100% !important;
+
+  max-width: none !important;
+  max-height: none !important;
+
+  object-fit: cover !important;
+
+  display: block !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.foto-fallback {
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+}
+
+.foto-fallback ion-icon {
+
+  font-size: 65px;
+
+  color: var(--oliva-ahumada);
+}
+
+
+/* ==========================================
+   DATOS
+
+   MUY IMPORTANTE:
+   min-width: 0 permite que el contenido
+   se adapte a la columna.
+========================================== */
+
+.datos-principales {
+
+  min-width: 0;
+  width: 100%;
+
+  overflow: hidden;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+}
+
+
+/* NOMBRE */
+
+.datos-principales h2 {
+
+  width: 100%;
+
+  min-width: 0;
+
+  margin: 0 0 7px 0;
+
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+
+  font-family: 'Montserrat', sans-serif;
+
+  font-size: clamp(21px, 3vw, 30px);
+
+  line-height: 1.15;
+
+  font-weight: 800;
+
+  color: var(--carbon-parrilla);
+}
+
+
+/* EMAIL */
+
+.datos-principales .email {
+
+  width: 100%;
+
+  min-width: 0;
+
+  margin: 2px 0;
+
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+
+  font-size: 16px;
+
+  line-height: 1.25;
+
+  color: #625C55;
+}
+
+
+/* DNI */
+
+.datos-principales .dni {
+
+  width: 100%;
+
+  margin: 3px 0 0 0;
+
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+
+  font-size: 16px;
+
+  line-height: 1.25;
+
+  color: #625C55;
+}
+
+
+/* ==========================================
+   ESTADO
+========================================== */
+
+.estado-pendiente {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  align-self: flex-start;
+
+  max-width: 100%;
+
+  box-sizing: border-box;
+
+  margin-top: 10px;
+
+  padding: 5px 11px;
+
+  border-radius: 999px;
+
+  background: var(--ambar-ceniza);
+
+  color: var(--carbon-parrilla);
+
+  font-size: 13px;
+
+  line-height: 1.2;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+
+/* ==========================================
+   BOTONES
+
+   SIEMPRE A LA DERECHA
+   UNO ARRIBA DEL OTRO
+========================================== */
+
+.acciones-cliente {
+
+  width: 165px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: stretch;
+
+  justify-content: center;
+
+  gap: 12px;
+
+  flex-shrink: 0;
+}
+
+
+.acciones-cliente button {
+
+  width: 100%;
+
+  height: 52px;
+
+  box-sizing: border-box;
+
+  padding: 0 15px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  border-radius: 999px;
+
+  font-family: 'Source Sans 3', sans-serif;
+
+  font-size: 16px;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.acciones-cliente button:active {
+  transform: scale(0.97);
+}
+
+.acciones-cliente button:disabled {
+  opacity: 0.5;
+}
+
+
+/* ACEPTAR */
+
+.boton-aceptar {
+
+  border: 2px solid var(--exito);
+
+  background: var(--fondo-boton-exito);
+
+  color: #276637;
+}
+
+
+/* RECHAZAR */
+
+.boton-rechazar {
+
+  border: 2px solid var(--error);
+
+  background: var(--fondo-boton-error);
+
+  color: var(--error);
+}
+
+
+/* ICONOS */
+
+.icono-boton {
+
+  font-size: 18px;
+
+  font-weight: 700;
+
+  line-height: 1;
+}
+
+
+/* ==========================================
+   INFORMACIÓN COMPLETA
+========================================== */
+
+.boton-detalle {
+
+  width: 100%;
+
+  min-height: 54px;
+
+  box-sizing: border-box;
+
+  padding: 12px 20px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+
+  border: none;
+
+  border-top: 2px solid var(--borde-tarjeta);
+
+  color: var(--carbon-parrilla);
+
+  font-family: 'Montserrat', sans-serif;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+/* ==========================================
+   SIN CLIENTES
+========================================== */
+
+.sin-clientes {
+
+  padding: 24px;
+
+  text-align: center;
+
+  background: #E7D4AF;
+
+  border: 3px solid var(--borde-tarjeta);
+
+  border-radius: 20px;
+}
+
+.sin-clientes p {
+  margin: 0;
+}
+
+
+/* ==========================================
+   MODAL
+========================================== */
+
+.toolbar-modal {
+
+  --background: var(--brasa-profunda);
+
+  --color: var(--crema-trigo);
+}
+
+.toolbar-modal ion-title {
+
+  font-family: 'Montserrat', sans-serif;
+
+  font-weight: 800;
+}
+
+.toolbar-modal .btn-cerrar {
+
+  --color: var(--crema-trigo);
+
+  font-weight: 700;
+}
+
+.modal-contenido {
+
+  --background: var(--crema-trigo);
+
+  padding: 24px;
+}
+
+
+/* FOTO MODAL */
+
+.detalle-foto {
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  margin: 24px 0;
+}
+
+.detalle-foto img {
+
+  width: 150px;
+  height: 150px;
+
+  object-fit: cover;
+
+  border-radius: 50%;
+
+  border: 4px solid var(--borde-tarjeta);
+}
+
+.detalle-foto ion-icon {
+
+  font-size: 150px;
+
+  color: var(--oliva-ahumada);
+}
+
+
+/* NOMBRE MODAL */
+
+.detalle-nombre {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  text-align: center;
+
+  margin-bottom: 28px;
+}
+
+.detalle-nombre h2 {
+
+  max-width: 100%;
+
+  margin: 0 0 12px;
+
+  font-family: 'Montserrat', sans-serif;
+
+  font-size: 28px;
+
+  font-weight: 800;
+
+  color: var(--carbon-parrilla);
+}
+
+
+/* DATOS MODAL */
+
+.datos-modal {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+.dato-cliente {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 3px;
+
+  padding: 15px 17px;
+
+  background: rgba(0, 0, 0, 0.035);
+
+  border: 1px solid var(--borde-tarjeta);
+
+  border-radius: 14px;
+}
+
+.titulo-dato {
+
+  font-size: 13px;
+
+  color: var(--oliva-ahumada);
+
+  font-weight: 600;
+}
+
+.dato-cliente strong {
+
+  overflow-wrap: anywhere;
+
+  font-family: 'Montserrat', sans-serif;
+
+  font-size: 16px;
+
+  color: var(--carbon-parrilla);
+}
+
+
+/* ACCIONES MODAL */
+
+.acciones-detalle {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+
+  margin-top: 28px;
+}
+
+.boton-modal {
+
+  width: 100%;
+
+  min-height: 52px;
+
+  border-radius: 999px;
+
+  font-family: 'Source Sans 3', sans-serif;
+
+  font-size: 17px;
+
+  font-weight: 700;
+}
+
+
+/* ==========================================
+   TABLET / CELULAR
+========================================== */
+
+@media (max-width: 650px) {
+
+  .principal {
+
+    padding-left: 16px;
+    padding-right: 16px;
+
+  }
+
+
+  .cabecera {
+
+    padding: 15px 18px;
+
+    min-height: 105px;
+
+    border-radius: 22px;
+
+  }
+
+
+  .lema {
+
+    font-size: 16px;
+
+    max-width: 145px;
+
+  }
+
+
+  /*
+   * Mantenemos:
+   *
+   * FOTO | DATOS | BOTONES
+   *
+   * pero reducimos proporcionalmente.
+   */
+
+  .cliente-principal {
+
+    grid-template-columns:
+      95px
+      minmax(0, 1fr)
+      125px;
+
+    column-gap: 12px;
+
+    padding: 16px;
+
+  }
+
+
+  .foto-container {
+
+    width: 95px;
+    height: 95px;
+
+    min-width: 95px;
+    min-height: 95px;
+
+  }
+
+
+  .datos-principales h2 {
+
+    font-size: 20px;
+
+  }
+
+
+  .datos-principales .email,
+  .datos-principales .dni {
+
+    font-size: 14px;
+
+  }
+
+
+  .estado-pendiente {
+
+    font-size: 11px;
+
+    padding: 4px 8px;
+
+  }
+
+
+  .acciones-cliente {
+
+    width: 125px;
+
+    gap: 8px;
+
+  }
+
+
+  .acciones-cliente button {
+
+    height: 44px;
+
+    padding: 0 8px;
+
+    font-size: 14px;
+
+  }
+
+}
+
+
+/* ==========================================
+   PANTALLAS MUY CHICAS
+========================================== */
+
+@media (max-width: 450px) {
+
+  .cliente-principal {
+
+    grid-template-columns:
+      75px
+      minmax(0, 1fr)
+      105px;
+
+    column-gap: 10px;
+
+    padding: 13px;
+
+  }
+
+
+  .foto-container {
+
+    width: 75px;
+    height: 75px;
+
+    min-width: 75px;
+    min-height: 75px;
+
+  }
+
+
+  .datos-principales h2 {
+
+    font-size: 17px;
+
+  }
+
+
+  .datos-principales .email,
+  .datos-principales .dni {
+
+    font-size: 12px;
+
+  }
+
+
+  .estado-pendiente {
+
+    max-width: 100%;
+
+    font-size: 10px;
+
+    padding: 4px 6px;
+
+  }
+
+
+  .acciones-cliente {
+
+    width: 105px;
+
+  }
+
+
+  .acciones-cliente button {
+
+    height: 40px;
+
+    font-size: 12px;
+
+    padding: 0 5px;
+
+  }
+
+
+  .icono-boton {
+
+    font-size: 15px;
+
+  }
+
+}

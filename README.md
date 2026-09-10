@@ -1,258 +1,204 @@
-# La Brasa Brava — Trabajo Final Integrador 2026
+# La Brasa Brava — Gestión de Restaurante
 
-Aplicación móvil de gestión integral para un restaurante: comanda para los empleados y
-experiencia completa para el cliente.
+Trabajo Final Integrador — Ionic + Angular + Capacitor + Supabase.
 
-> **Grupo:** _(completar)_ · **Materia:** Trabajo Final Integrador · **Año:** 2026
-> **Universidad Tecnológica Nacional — Facultad Regional Avellaneda**
+## Integrantes y responsabilidades
 
----
-
-## Índice
-
-1. [Integrantes y reparto de tareas](#1-integrantes-y-reparto-de-tareas)
-2. [Índice de imágenes del proyecto](#2-índice-de-imágenes-del-proyecto)
-3. [Códigos QR del sistema](#3-códigos-qr-del-sistema)
-4. [Cómo levantar el proyecto](#4-cómo-levantar-el-proyecto)
-5. [Usuarios de prueba](#5-usuarios-de-prueba)
-6. [Tecnologías](#6-tecnologías)
-7. [Estructura de carpetas](#7-estructura-de-carpetas)
-
----
-
-## 1. Integrantes y reparto de tareas
-
-> **Responsabilidad del líder del grupo.** Esta tabla debe estar actualizada al momento de
-> cada entrega, preliminar o final. Si alguien no llega con su módulo, se cambia el plazo o
-> se reasigna, y **queda informado acá**.
-
-| Apellidos y nombres | Módulos (objetivos) a desarrollar | Inicio | Finalización | Branch |
+| Apellido y Nombre | Módulos desarrollados | Fecha de inicio | Fecha de fin | Branch |
 |---|---|---|---|---|
-| Montes, Enrico | Base del proyecto, identidad visual, animación de carga, pantallas de presentación, ingreso y cierre de sesión | 28-08-2026 | _(en curso)_ | `montes-branch` |
-| Acosta, Américo Nicolás | Altas y validaciones: empleados (punto 1), platos (2), bebidas (3), mesas (4) | 03-09-2026 | _(en curso)_ | `acosta` |
-| Morán, Nadia | Clientes: registro (5), aprobación (6), rechazo (7), aceptación (8), correos automáticos | 03-09-2026 | _(en curso)_ | `Moran` |
-| Loureiro, Agustina | Salón: lista de espera (9), asignación de mesa (10), menú y consulta al mozo (11) | 03-09-2026 | _(en curso)_ | `rama-loureiro` |
+| Acosta, Americo | Altas, carta y QR - Puntos 1, 2, 3, 4 (empleado, plato, bebida, mesa) + todos los códigos QR del sistema. | DD/MM/2026 | DD/MM/2026 | `acosta` |
+| Loureiro, Agustina | Pedidos y comanda - Puntos 11, 12, 13, 14, 16, 17, 18, 19: menú, chat, armado del pedido, cocina, bar, entrega. | DD/MM/2026 | DD/MM/2026 | `rama-loureiro` |
+| Montes, Enrico | Núcleo y acceso - Diseño, presentaciones, ingreso, cierre de sesión, control por perfil. Después: puntos 9, 10 (lista de espera y mesa), los tres juegos, y 21, 22 (cuenta, propina, pago). | DD/MM/2026 | DD/MM/2026 | `montes-branch` |
+| Moran, Nadia | Pedidos y comanda - Puntos 11, 12, 13, 14, 16, 17, 18, 19: menú, chat, armado del pedido, cocina, bar, entrega. | DD/MM/2026 | DD/MM/2026 | `moran` |
 
-### Propuesta de reparto para todo el cuatrimestre
+> Si algún integrante no llega a terminar su módulo en el plazo previsto, actualizar esta tabla con la nueva fecha o el nuevo responsable, según corresponda.
 
-El detalle completo, con el cronograma semana por semana y las reglas para no pisarse entre
-ramas, está en **[REPARTO-DE-TAREAS.md](REPARTO-DE-TAREAS.md)**.
+## Desglose de tareas por integrante
 
-| Integrante | Primera fecha (17-10) | Segunda fecha (07-11) | Tercera fecha (28-11) |
-|---|---|---|---|
-| **1 — Núcleo y acceso** | Diseño, presentaciones, ingreso, cierre de sesión · Puntos 9, 10, 15, 21, 22 y los tres juegos | Punto 23 (redes sociales) | Puntos 24, 25, 26 (reservas) |
-| **2 — Altas, carta y QR** | Puntos 1, 2, 3, 4 · Todos los códigos QR | Punto 22 (factura en PDF) | Punto 31 (acelerómetro y giroscopio) |
-| **3 — Clientes y avisos** | Puntos 5, 6, 7, 8, 20 · Correos automáticos y notificaciones push | Envío de la factura por correo | Puntos 27, 28 (delivery) |
-| **4 — Pedidos y comanda** | Puntos 11, 12, 13, 14, 16, 17, 18, 19 | — | Puntos 29, 30 (repartidor) |
+Cuatro roles, mapeados contra los puntos funcionales del enunciado. Cada rol lista sus tareas en el orden en que conviene encararlas (no el orden numérico de la consigna), porque varias piezas de un rol son prerrequisito de otro.
 
-**Transversales (los cuatro):** que ninguna pantalla tenga espacios neutros, que todo error
-vibre, que toda espera muestre el spinner con el logo y que todos los campos estén validados.
+### Dependencias entre roles
 
----
 
-## 2. Índice de imágenes del proyecto
+**Orden sugerido de arranque:** Montes y Acosta empiezan primero (nadie más puede avanzar sin sesión/perfiles ni sin el servicio de QR). Moran arranca en paralelo porque correos/push los necesitan casi todos. Loureiro depende de Acosta (mesas + QR) y de Moran (push), así que su tramo más largo empieza un poco después, pero al ser el flujo más extenso, no puede ser el último en largar.
 
-> La cátedra exige que **TODAS Y CADA UNA** de las imágenes del proyecto estén enlazadas acá:
-> íconos, pantallas de presentación, formularios, listados, etc.
+<details>
+<summary><strong>1 — Núcleo y acceso (Montes)</strong></summary>
 
-### Identidad
+**Bloque A: Fundacional (bloquea a todo el equipo)**
+- [ ] Diseño de marca aplicado: splash screens (estática + animada), paleta, tipografías cargadas globalmente.
+- [ ] Pantalla de presentación / ingreso (selección de perfil, botones de ingreso rápido).
+- [ ] Sesión: guardar perfil activo, cerrar sesión con verificación de borrado de credenciales.
+- [ ] Control de navegación por perfil (qué módulos ve cada rol, guards de ruta).
 
-| Imagen | Descripción |
+**Bloque B: Lista de espera y mesa (puntos 9, 10)**
+- [ ] Alta de cliente anónimo (nombre + foto, sin aprobación).
+- [ ] Escaneo del QR de ingreso → alta en lista de espera. *Depende de: servicio de QR (Acosta).*
+- [ ] Vista de lista de espera para el metre, con push al aparecer un nuevo cliente. *Depende de: servicio de notificaciones (Moran).*
+- [ ] Asignación de mesa por parte del metre + vínculo cliente-mesa vía escaneo del QR de mesa. *Depende de: QR de mesa (Acosta).*
+- [ ] Validar que un cliente no pueda vincularse a más de una mesa, y que una mesa asignada no se le pueda dar a otro cliente.
+
+**Bloque C: Juegos (parte de punto 15, ligado a 20)**
+- [ ] Pantalla selectora de juegos.
+- [ ] 3 juegos simples, completamente funcionales, cada uno asociado a un descuento (10/15/20%).
+- [ ] Lógica de "solo se aplica descuento si se gana en el primer intento", no acumulable.
+- [ ] Persistir el resultado (ganó/perdió, descuento obtenido) asociado a la estadía del cliente.
+
+**Bloque D: Cuenta, propina y pago (puntos 21, 22)**
+- [ ] Habilitar "pedir cuenta" solo tras escanear el QR de propina. *Depende de: QR de propina (Acosta).*
+- [ ] Pantalla de cuenta: ítems con precio unitario, descuento de juegos aplicado, propina, total grande y visible.
+- [ ] Pago simulado + push de confirmación al mozo, dueño y supervisor. *Depende de: notificaciones (Moran).*
+- [ ] Mozo confirma pago → liberar mesa (vuelve a "vacía", requiere nuevo escaneo de QR).
+- [ ] (Segunda fecha) Factura en PDF + envío/descarga según tipo de cliente.
+
+> **Por qué juegos y cuenta van con la misma persona:** el porcentaje de descuento que se calcula en el Bloque C es un input directo del Bloque D. Si dos personas distintas tocan esto, cualquier cambio en la lógica de un lado rompe silenciosamente al otro sin que se note hasta la demo.
+
+</details>
+
+<details>
+<summary><strong>2 — Altas, carta y QR (Acosta)</strong></summary>
+
+**Bloque A: Servicio de QR (bloquea a Montes y Loureiro — arrancar primero)**
+- [ ] Servicio central de generación de QR (mesa, ingreso, propina).
+- [ ] Servicio central de lectura de QR (y lectura de PDF417 para el DNI, que no es QR).
+- [ ] Definir y documentar el formato de cada valor codificado (para que el resto del equipo sepa qué esperar al leer).
+- [ ] Generar y dejar disponibles los 5 QR de propina y el QR de ingreso (fijos, únicos).
+
+**Bloque B: Altas (puntos 1, 2, 3, 4)**
+- [ ] Alta de empleado: datos + foto por cámara + lectura de QR/código de DNI para autocompletar.
+- [ ] Alta de plato: datos + 3 fotos (cámara o galería) + validación de existencia en la carta.
+- [ ] Alta de bebida: igual que plato.
+- [ ] Alta de mesa: datos + foto + generación automática del QR de esa mesa al guardar.
+- [ ] Validación completa de todos los campos de las 4 altas (formato, vacíos, tipos de dato).
+- [ ] Gestión de mesas: listado con posibilidad de modificar disponibilidad manualmente.
+
+> **Por qué el QR va primero acá:** tanto Montes (ingreso, mesa, propina) como Loureiro (vincular pedido a una mesa) necesitan el servicio de QR ya armado para poder avanzar. Si el Bloque A se atrasa, atrasa a dos personas más, no solo a Acosta.
+
+</details>
+
+<details>
+<summary><strong>3 — Clientes, correos y notificaciones (Moran)</strong></summary>
+
+**Bloque A: Servicios transversales (bloquea a casi todo el resto — arrancar en paralelo con Acosta)**
+- [ ] Servicio de envío de correo automático (cuenta propia del proyecto, nunca personal) con plantilla de marca (logo, colores, tipografía propios).
+- [ ] Servicio de notificaciones push (app abierta y cerrada).
+- [ ] Documentar cómo el resto del equipo dispara un correo o un push desde su propio módulo, para no reinventar la conexión en cada pantalla.
+
+**Bloque B: Registro y aprobación de clientes (puntos 5, 6, 7, 8)**
+- [ ] Registro de cliente: datos + foto + lectura de QR de DNI. *Depende de: lectura de QR (Acosta).*
+- [ ] Estado "pendiente de aprobación" al registrarse.
+- [ ] Listado de clientes pendientes para dueño/supervisor, con foto y datos visibles.
+- [ ] Aceptar/rechazar cliente + mail automático correspondiente (plantillas distintas para aceptación y rechazo).
+- [ ] Verificar que el cliente rechazado no pueda ingresar, y que el aceptado sí.
+
+**Bloque C: Encuesta y gráficos (punto 20)**
+- [ ] Formulario de encuesta con variedad de controles (no repetir el mismo tipo de control en todas las preguntas).
+- [ ] Restricción de una encuesta por estadía.
+- [ ] Visualización de resultados en gráficos (torta, barra, lineal), un gráfico por pantalla.
+
+> **Por qué esto tiene que estar temprano:** correos y push no son solo "el módulo de Moran" — son infraestructura que Acosta (aprobación de cliente), Montes (lista de espera, cuenta) y Loureiro (estados de pedido) van a llamar desde su propio código. Si el servicio no existe todavía, esas otras personas quedan bloqueadas o tienen que simular la llamada y volver después a conectarla de verdad.
+
+</details>
+
+<details>
+<summary><strong>4 — Pedidos y comanda (Loureiro)</strong></summary>
+
+**Bloque A: Menú y consulta al mozo (punto 11)**
+- [ ] Al escanear QR de mesa, mostrar listado de productos (3 fotos, nombre, precio, descripción, tiempo). *Depende de: QR de mesa (Acosta) y catálogo de platos/bebidas (Acosta).*
+- [ ] Botón de consulta rápida al mozo, habilitado solo con mesa asignada.
+- [ ] Chat estilo WhatsApp entre mozos y clientes, con push a los mozos por cada consulta nueva. *Depende de: notificaciones (Moran).*
+
+**Bloque B: Armado y confirmación del pedido (puntos 12, 13, 14)**
+- [ ] Selección de productos y cantidades para todos los comensales de la mesa.
+- [ ] Importe acumulado siempre visible + tiempo total estimado.
+- [ ] Envío del pedido y espera de confirmación del mozo (push). *Depende de: notificaciones (Moran).*
+- [ ] Mozo rechaza pedido (parcial o total) → cliente puede modificar y reenviar.
+- [ ] Mozo confirma → el pedido se deriva a cocina y bar, no antes.
+
+**Bloque C: Sectores (puntos 16, 17, 18)**
+- [ ] Vista de pedidos pendientes para cocina: agrupados por mesa, con fecha/hora e ítems a elaborar.
+- [ ] Misma vista para bar (mismo componente, filtrado por sector).
+- [ ] Notificar al mozo cuando todas las partes del pedido (cocina + bar) estén listas, no antes.
+- [ ] El cliente ve el cambio de estado de su pedido en cada paso.
+
+**Bloque D: Entrega (punto 19)**
+- [ ] Mozo entrega el pedido completo, cliente confirma recepción.
+- [ ] Al confirmar, habilitar acceso a juegos, encuesta y "pedir cuenta" desde el lado del cliente (la lógica de esos tres módulos la implementan Montes y Moran, acá solo se habilita la navegación).
+
+> **Por qué 16-17-18 no son tres tareas triples:** cocina y bar son la misma pantalla con un filtro de sector distinto — armar el componente una vez y parametrizarlo ahorra reescribir el mismo listado dos veces. Y 13-14 reutilizan casi toda la estructura de datos de 12 (mismo pedido, distintos estados), así que conviene diseñar el modelo de "pedido con estados" pensando en los tres puntos juntos desde el principio, no ir parcheando sobre la marcha.
+
+</details>
+
+### Checklist de integración (para revisar en las reuniones semanales)
+
+- [ ] ¿El servicio de QR (Acosta) ya está disponible antes de que Montes/Loureiro lo necesiten?
+- [ ] ¿El servicio de correo/push (Moran) ya está disponible antes de que Acosta/Montes/Loureiro lo necesiten?
+- [ ] ¿El modelo de datos de "pedido" (Loureiro) está definido antes de que Montes empiece la pantalla de cuenta (que lee ese mismo pedido)?
+- [ ] ¿Cada README de branch tiene actualizada la fecha real de avance, no la fecha planeada original?
+
+## Historial de Pull Requests
+
+
+| PR | Título | Autor | Fecha de merge | Enlace |
+|---|---|---|---|---|
+| #1 | Moran | nadiamoran | 2026-09-03 | [Ver PR](https://github.com/acostaamericonicolas/LaBrasaBrava-2026/pull/1) |
+| #2 | Supabase conectada | AgustinaLoureiro | 2026-08-31 | [Ver PR](https://github.com/acostaamericonicolas/LaBrasaBrava-2026/pull/2) |
+| #3 | Login y empleado | AgustinaLoureiro | 2026-09-03 | [Ver PR](https://github.com/acostaamericonicolas/LaBrasaBrava-2026/pull/3) |
+| #4 | Animación de carga del logo, alta de los usuarios de prueba e ingreso de clientes | EnricoMontes | 2026-09-05 | [Ver PR](https://github.com/acostaamericonicolas/LaBrasaBrava-2026/pull/4) |
+| #5 | Revert "Animación de carga del logo, alta de los usuarios de prueba e ingreso de clientes" | nadiamoran | 2026-09-05 | [Ver PR](https://github.com/acostaamericonicolas/LaBrasaBrava-2026/pull/5) |
+| #6 | Acosta | acostaamericonicolas | 2026-09-05 | [Ver PR](https://github.com/acostaamericonicolas/LaBrasaBrava-2026/pull/6) |
+| #7 | Moran | nadiamoran | 2026-09-05 | [Ver PR](https://github.com/acostaamericonicolas/LaBrasaBrava-2026/pull/7) |
+| #8 | Arreglar la compilación y enchufar las pantallas que estaban sin ruta | EnricoMontes | 2026-09-05 | [Ver PR](https://github.com/acostaamericonicolas/LaBrasaBrava-2026/pull/8) |
+| #9 | Botón «Ingresar» en la presentación y limpieza del repositorio | EnricoMontes | 2026-09-05 | [Ver PR](https://github.com/acostaamericonicolas/LaBrasaBrava-2026/pull/9) |
+| #10 | Sacar de verdad la documentación y las capturas del repositorio | EnricoMontes | 2026-09-05 | [Ver PR](https://github.com/acostaamericonicolas/LaBrasaBrava-2026/pull/10) |
+| #11 | Modifica la tabla de clientes de Supabase. Pasa a Supabase Auth. | nadiamoran | 2026-09-05 | [Ver PR](https://github.com/acostaamericonicolas/LaBrasaBrava-2026/pull/11) |
+| #12 | Limpieza de archivos duplicados, importaciones corregidas | AgustinaLoureiro | 2026-09-05 | [Ver PR](https://github.com/acostaamericonicolas/LaBrasaBrava-2026/pull/12) |
+| #13 | Cambia Supabase por Supabase.services | nadiamoran | 2026-09-05 | [Ver PR](https://github.com/acostaamericonicolas/LaBrasaBrava-2026/pull/13) |
+| #14 | Módulos por perfil, estilo de las pantallas nuevas e ingreso de clientes | EnricoMontes | 2026-09-08 | [Ver PR](https://github.com/acostaamericonicolas/LaBrasaBrava-2026/pull/14) |
+| #15 | Alta de mesa + alta de bebida | acostaamericonicolas | 2026-09-08 | [Ver PR](https://github.com/acostaamericonicolas/LaBrasaBrava-2026/pull/15) |
+| #17 | Llamada a la función filtro | acostaamericonicolas | 2026-09-08 | [Ver PR](https://github.com/acostaamericonicolas/LaBrasaBrava-2026/pull/17) |
+| #18 | Agrega página de aprobación de clientes, envío de mails de aprobación y de rechazo con Resend | nadiamoran | 2026-09-08 | [Ver PR](https://github.com/acostaamericonicolas/LaBrasaBrava-2026/pull/18) |
+
+*(tabla generada con `gh pr list`, ver comando en la sección de mantenimiento más abajo)*
+
+## Índice de imágenes
+
+Todas las capturas de pantalla del proyecto viven en [`docs/screenshots/`](./docs/screenshots/).
+
+| Pantalla | Imagen |
 |---|---|
-| ![Logo a color](LaBrasaBrava/src/assets/marca/logo-bb.png) | Isotipo a color, la variación principal del manual |
-| ![Logo en crema](LaBrasaBrava/src/assets/marca/logo-bb-crema.png) | Isotipo monocromo crema, para apoyar sobre fondos de color |
-| ![Logo en carbón](LaBrasaBrava/src/assets/marca/logo-bb-carbon.png) | Isotipo monocromo carbón, para impresión y códigos QR |
-| _(pendiente)_ | Ícono de la aplicación (1024 × 1024) |
-| _(pendiente)_ | Ícono enmascarable para Android |
-| _(pendiente)_ | Pantalla de presentación estática de Capacitor |
+| Presentacion | <img src="./docs/screenshots/presentacion.jpeg" width="200" alt="Presentacion"> |
+| Spiner APP | <img src="./docs/screenshots/spiner.jpeg" width="120" alt="Spiner APP"> |
+| Login | <img src="./docs/screenshots/login.jpeg" width="200" alt="Selección de perfil"> |
+| Alta de empleado | <img src="./docs/screenshots/alta_de_empleado.jpeg" width="200" alt="Alta de empleado"> |
+| Listado de platos | <img src="./docs/screenshots/lista_de_platos.jpeg" width="200" alt="Listado de platos"> |
+| Formulario de plato | <img src="./docs/screenshots/alta_de_plato.jpeg" width="200" alt="Formulario de plato"> |
+| Listado de bebidas | <img src="./docs/screenshots/lista_bebidas.jpeg" width="200" alt="Listado de bebidas"> |
+| Carrusel de fotos del plato | <img src="./docs/screenshots/carrusel_plato.jpeg" width="200" alt="Carrusel de fotos"> |
+| Listado de mesas | <img src="./docs/screenshots/listado-mesas.png" width="200" alt="Listado de mesas"> |
+| QR de mesa | <img src="./docs/screenshots/qr-mesa.png" width="200" alt="QR de mesa"> |
 
-### Pantallas
+*(agregar una fila por cada pantalla nueva a medida que se completen los puntos funcionales — la consigna pide TODAS las imágenes asociadas al proyecto, incluyendo íconos y formularios)*
 
-Las capturas se generan solas con `node revision-visual.mjs docs/pantallas`
-(ver la sección 4), así que se mantienen al día sin sacarlas a mano.
+## Stack técnico
 
-| Imagen | Descripción |
-|---|---|
-| ![Presentación](LaBrasaBrava/docs/pantallas/01-presentacion.png) | Presentación animada: animación de carga del logo, nombre del grupo e integrantes |
-| ![Ingreso](LaBrasaBrava/docs/pantallas/02-ingreso.png) | Ingreso, con el formulario y el comienzo de los accesos rápidos |
-| ![Accesos rápidos](LaBrasaBrava/docs/pantallas/03-ingreso-clientes.png) | Accesos rápidos completos: un color por perfil y el estado de aprobación de cada cliente |
-| ![Validaciones](LaBrasaBrava/docs/pantallas/04-ingreso-validaciones.png) | Ingreso con los errores de validación de todos los campos |
-| ![Espera con el logo](LaBrasaBrava/docs/pantallas/05-espera-con-logo.png) | Indicador de espera: la animación de carga del logo sobre naranja brasa |
-| ![Principal](LaBrasaBrava/docs/pantallas/06-principal.png) | Pantalla principal, con la ficha del perfil y el cierre de sesión |
+- **Frontend:** Ionic + Angular (standalone components) + Capacitor
+- **Backend:** Supabase (Postgres, Auth, Storage, Realtime)
+- **Repositorio:** GitHub
 
----
+## Cómo correr el proyecto
 
-## 3. Códigos QR del sistema
-
-> Excluyente: **todos** los códigos QR deben estar disponibles acá y en pantalla.
-
-| Código | Cantidad | Estado |
-|---|---|---|
-| Ingreso al local | 1 | _(pendiente)_ |
-| Mesa (uno por mesa, generado automáticamente) | 5 o más | _(pendiente)_ |
-| Propina — Excelente (20 %) | 1 | _(pendiente)_ |
-| Propina — Muy bueno (15 %) | 1 | _(pendiente)_ |
-| Propina — Bueno (10 %) | 1 | _(pendiente)_ |
-| Propina — Regular (5 %) | 1 | _(pendiente)_ |
-| Propina — Malo (0 %) | 1 | _(pendiente)_ |
-
----
-
-## 4. Cómo levantar el proyecto
-
-### Requisitos
-- Node.js 20 o superior
-- Android Studio con un dispositivo o emulador configurado
-- Una cuenta en [Supabase](https://supabase.com)
-
-### Pasos
-
-```bash
-# 1. Instalar las dependencias (siempre dentro de LaBrasaBrava)
-cd LaBrasaBrava
+\`\`\`bash
 npm install
+ionic serve                          # navegador
+ionic capacitor run android -l --external   # dispositivo/emulador Android
+\`\`\`
 
-# 2. Cargar los usuarios de prueba en la base del grupo
-#    No hace falta ninguna clave secreta: usa la misma clave publicable
-#    que la aplicación. Es idempotente, se puede correr las veces que sea.
-node supabase/usuarios-de-prueba.mjs
+## Mantenimiento de este README
 
-# 3. Levantar la aplicación en el navegador
-ionic serve
-
-# 4. Compilar y abrir el proyecto de Android
-ionic build
-npx cap add android
-npx cap sync
-npx cap open android
-```
-
-> La conexión con Supabase ya está configurada, hoy en dos archivos:
-> `LaBrasaBrava/src/environments/environment.ts` y
-> `LaBrasaBrava/src/app/nucleo/configuracion.ts`. La clave que viaja ahí es la **publicable**,
-> que es pública por diseño; la secreta nunca se sube al repositorio.
-
-### Revisar las pantallas y actualizar las capturas
-
-```bash
-npm run build
-npx http-server www -p 4300     # en otra terminal
-node revision-visual.mjs docs/pantallas
-```
-
-Abre la aplicación en un teléfono simulado de 390 × 844, avisa si algo se sale del ancho de
-la pantalla y deja actualizadas las capturas del índice de imágenes.
-
----
-
-## 5. Usuarios de prueba
-
-Todos usan la contraseña **`123456`**. Se cargan con
-`node supabase/usuarios-de-prueba.mjs` y aparecen solos en la pantalla de ingreso como
-accesos rápidos: las fichas se leen de la base, no son botones fijos.
-
-Son los siete registros mínimos que exige el enunciado, más dos clientes extra para poder
-probar la aprobación y el rechazo (puntos 6, 7 y 8).
-
-| Perfil | Correo electrónico | Estado |
-|---|---|---|
-| Dueño | `aloureiro@labrasabrava.com` | — |
-| Supervisor | `supervisora@labrasabrava.com` | — |
-| Metre | `metre@labrasabrava.com` | — |
-| Mozo | `mozo@labrasabrava.com` | — |
-| Cocinero | `cocinero@labrasabrava.com` | — |
-| Cantinero | `cantinero@labrasabrava.com` | — |
-| Cliente registrado | `cliente@labrasabrava.com` | Aprobado, puede ingresar |
-| Cliente registrado | `valentina.ibarra@ejemplo.com.ar` | Pendiente de aprobación, no puede ingresar |
-| Cliente registrado | `rodrigo.juarez@ejemplo.com.ar` | Rechazado, no puede ingresar |
-
-Las fotos quedan vacías a propósito: se cargan desde la cámara cuando se usan las pantallas
-de alta de empleado (punto 1) y de cliente registrado (punto 5).
-
----
-
-## 6. Tecnologías
-
-| Área | Herramienta |
-|---|---|
-| Framework | Ionic 9 + Angular 22 (componentes standalone) |
-| Empaquetado nativo | Capacitor 8 |
-| Base de datos y autenticación | Supabase (PostgreSQL, Auth, Storage, Realtime) |
-| Vibración | `@capacitor/haptics` |
-| Sonidos | Web Audio API, generados por código |
-
----
-
-## 7. Estructura de carpetas
-
-> **Todo el proyecto vive dentro de `LaBrasaBrava/`.** No se crean carpetas de aplicación
-> paralelas: es una sola aplicación de Ionic para los cuatro integrantes.
-
-```
-LaBrasaBrava/
-  src/app/
-    nucleo/
-      marca.ts              Datos del grupo y del restaurante (ÚNICO archivo a editar)
-      diseno.ts             Paleta y tipografías del manual, para usar desde TypeScript
-      configuracion.ts      Conexión con Supabase
-      modelos/              Tipos de datos (usuario, perfiles, estados de aprobación)
-      servicios/            Sesión, mensajes, espera, sonidos y cliente de Supabase
-      guardas/              Control de acceso por sesión y por perfil
-    componentes/
-      logo-marca/           Logo de la marca en sus tres variantes de color
-      logo-cargando/        Animación de carga del logo (la del manual de marca)
-      spinner-logo/         Indicador de espera a pantalla completa, con esa animación
-    pages/
-      presentacion/         Pantalla de presentación animada
-      ingreso/              Formulario de ingreso y accesos rápidos
-      principal/            Pantalla posterior al ingreso, con cierre de sesión
-      empleado/             Alta de empleados
-      plato/                Alta de platos
-      lista-espera/         Lista de espera del salón
-      registro-cliente/     Registro de clientes
-      aprobacion-clientes/  Aprobación y rechazo de clientes
-      encuesta/             Encuesta de satisfacción
-    services/               Cámara, almacenamiento y un segundo cliente de Supabase
-    home/                   Pantalla de inicio anterior, todavía en uso
-  src/environments/         Conexión con Supabase (clave publicable)
-  src/theme/variables.scss  Paleta y tipografías del manual, en CSS
-  supabase/
-    esquema.sql             Esquema OBJETIVO, para cuando se migre a Supabase Auth
-    usuarios-de-prueba.mjs  Alta de los usuarios de prueba en la base actual
-  docs/                     Auditoría del enunciado, manual de marca, capturas y guías
-  revision-visual.mjs       Capturas de las pantallas y control de textos cortados
-```
-
-> **Duplicaciones pendientes de resolver entre todos.** Hoy conviven dos clientes de Supabase
-> (`nucleo/servicios/supabase.service.ts` y `services/supabase.ts`), dos servicios de sesión
-> (`nucleo/servicios/sesion.service.ts` y `services/sesion.ts`), dos pantallas de ingreso
-> (`pages/ingreso/` y `pages/login/`) y dos pantallas de inicio (`pages/principal/` y `home/`).
-> Todas funcionan, pero conviene quedarse con una de cada una antes de la primera entrega.
-
-### Documentación
-
-| Documento | Qué contiene |
-|---|---|
-| [Auditoría del enunciado](LaBrasaBrava/docs/AUDITORIA-DEL-ENUNCIADO.md) | Los 31 puntos funcionales del PDF, requerimientos excluyentes, perfiles y modelo de datos |
-| [Cómo probar la aplicación](LaBrasaBrava/docs/COMO-PROBAR-LA-APP.md) | Las tres formas de verla andando y hasta dónde llega cada una |
-| [Reparto de tareas](LaBrasaBrava/docs/REPARTO-DE-TAREAS.md) | Cronograma semana por semana y reglas para no pisarse entre ramas |
-| [Flujo de trabajo](LaBrasaBrava/docs/FLUJO-DE-TRABAJO.md) | Cómo se rama, se commitea y se hace cada _pull request_ |
-| [Manual de marca](LaBrasaBrava/docs/marca/MANUAL-DE-MARCA.md) | Logo, paleta, tipografías y animación de carga |
-
-### Dos reglas de código que no se negocian
-
-**Todo error pasa por `MensajesService`.** Nunca se usa `alert()`, y el servicio garantiza
-que cada error vibre:
-
-```ts
-await this.mensajes.error('No pudimos verificarte', 'El correo o la contraseña son incorrectos.');
-```
-
-**Toda espera pasa por `CargandoService.durante()`.** Así ninguna queda sin el spinner con
-el logo, incluso si la operación falla:
-
-```ts
-const resultado = await this.cargando.durante('Verificando tus datos', () =>
-  this.sesion.ingresar(correo, clave),
-);
-```
+Para regenerar la tabla de Pull Requests:
+\`\`\`powershell
+gh pr list --state merged --json number,title,author,mergedAt,url --limit 200 | ConvertFrom-Json | ForEach-Object {
+  "| #$($_.number) | $($_.title) | $($_.author.login) | $($_.mergedAt.Substring(0,10)) | [Ver PR]($($_.url)) |"
+}
+\`\`\`

@@ -1,234 +1,223 @@
-<ion-header>
-  <ion-toolbar>
+<ion-content [fullscreen]="true">
+  <div class="principal">
 
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/" text="" color="light">
-      </ion-back-button>
-    </ion-buttons>
+    <button type="button" class="volver texto-ayuda" (click)="volver()">‹ Volver</button>
+    
+    <header class="cabecera">
+      <app-logo-marca composicion="horizontal" variante="crema" [tamanio]="44" [nombre]="restaurante.nombre" />
+      <p class="lema">{{ restaurante.lema }}</p>
+    </header>
 
-    <ion-title>Agregar plato</ion-title>
+    <!-- ============ VISTA: LISTADO ============ -->
+    @if (vista() === 'lista') {
 
-  </ion-toolbar>
-</ion-header>
-
-
-<ion-content>
-
-  <form [formGroup]="formulario">
-
-    <!-- INTRODUCCIÓN -->
-
-    <div class="introduccion">
-
-      <ion-icon name="information-circle-outline" class="icono-info">
-      </ion-icon>
-
-      <span>
-        Completá los datos del nuevo plato que estará disponible en el menú.
-      </span>
-
-    </div>
-
-
-    <!-- NOMBRE -->
-
-    <ion-item>
-
-      <ion-label position="stacked">
-        Nombre del plato
-      </ion-label>
-
-      <ion-input formControlName="nombre" maxlength="40">
-      </ion-input>
-
-    </ion-item>
-
-    @if (invalido('nombre')) {
-
-    <p class="error-campo">
-      {{ mensajeError('nombre') }}
-    </p>
-
-    }
-
-
-    <!-- DESCRIPCIÓN -->
-
-    <ion-item>
-
-      <ion-label position="stacked">
-        Descripción
-      </ion-label>
-
-      <ion-input formControlName="descripcion" maxlength="150">
-      </ion-input>
-
-    </ion-item>
-
-    @if (invalido('descripcion')) {
-
-    <p class="error-campo">
-      {{ mensajeError('descripcion') }}
-    </p>
-
-    }
-
-
-    <!-- TIEMPO + PRECIO -->
-
-    <div class="campos-secundarios">
-
-      <ion-item>
-
-        <ion-label position="stacked">
-          Tiempo de elaboración (minutos)
-        </ion-label>
-
-        <ion-input formControlName="tiempo_elaboracion" type="text" inputmode="numeric"
-          (keydown)="soloNumerosEnteros($event)">
-        </ion-input>
-
-      </ion-item>
-
-
-      <ion-item>
-
-        <ion-label position="stacked">
-          Precio
-        </ion-label>
-
-        <ion-input formControlName="precio" type="text" inputmode="decimal" (keydown)="soloNumerosConPunto($event)">
-        </ion-input>
-
-      </ion-item>
-
-    </div>
-
-
-    @if (invalido('tiempo_elaboracion')) {
-
-    <p class="error-campo">
-      {{ mensajeError('tiempo_elaboracion') }}
-    </p>
-
-    }
-
-
-    @if (invalido('precio')) {
-
-    <p class="error-campo">
-      {{ mensajeError('precio') }}
-    </p>
-
-    }
-
-
-    <!-- FOTOS -->
-
-    <section class="seccion-fotos">
-
-      <div class="encabezado-fotos">
-
-        <p class="titulo-seccion">
-
-          <ion-icon name="images-outline"></ion-icon>
-
-          Fotos del plato (3 obligatorias)
-
-        </p>
-
-        <p class="subtitulo-fotos">
-          Agregá al menos 3 fotos claras del plato.
-        </p>
-
+    <div class="campo buscador">
+      <div class="entrada">
+        <input type="text" placeholder="Buscar plato..." [value]="busqueda()"
+          (input)="buscar($any($event.target).value)" />
       </div>
+    </div>
 
+    @if (cargandoLista()) {
+    <p class="texto-ayuda ion-text-center">Cargando platos...</p>
+    }
 
-      <div class="grilla-fotos">
+    <button type="button" class="volver texto-ayuda" (click)="toggleVistaInactivos()">
+      {{ mostrarInactivos() ? 'Ver platos activos' : 'Ver platos inactivos' }}
+    </button>
 
-        @for (foto of fotos; track $index) {
+    @if (!cargandoLista() && platosFiltrados().length === 0) {
+    <section class="tarjeta">
+      <p class="texto-cuerpo">No se encontraron platos.</p>
+    </section>
+    }
 
-        <div class="contenedor-foto" (click)="elegirFoto($index)">
-
-          @if (foto) {
-
-          <img [src]="foto" [alt]="'Foto ' + ($index + 1) + ' del plato'" class="imagen-foto" />
-
+    @if (!cargandoLista() && platosPagina().length > 0) {
+    <section class="lista-platos">
+      @for (plato of platosPagina(); track plato.id) {
+      <article class="tarjeta plato-item">
+        <button type="button" class="foto-boton" (click)="abrirCarrusel(plato)">
+          @if (plato.fotos?.[0]) {
+          <img [src]="plato.fotos[0]" [alt]="'Foto de ' + plato.nombre" class="foto-plato" />
           }
+        </button>
 
-          @else {
-
-          <div class="placeholder-foto">
-
-            <span>
-              Cambiar
-            </span>
-
+        <div class="datos-plato">
+          <h2 class="titulo-seccion">{{ plato.nombre }}</h2>
+          <h2 class="nombre-plato">{{ plato.nombre }}</h2>
+          <span class="precio-plato">$ {{ plato.precio }}</span>
+          <span class="minutos-plato">{{ plato.tiempo_elaboracion }} min</span>
           </div>
-
-          }
-
+          <div class="acciones-plato">
+            <button type="button" class="boton-accion boton-editar" (click)="editarPlato(plato)">
+              ✎ Editar
+            </button>
+            @if (!mostrarInactivos()) {
+            <button type="button" class="boton-accion boton-chico boton-peligro" (click)="pedirEliminar(plato)">
+              🗑 Eliminar
+            </button>
+            }
+            @if (mostrarInactivos()) {
+            <button type="button" class="boton-accion boton-editar" (click)="cambiarEstadoPlato(plato)">
+              {{ mostrarInactivos() ? 'Mostrar en el menú' : 'Desactivar' }}
+              
+            </button>
+            }
+          
         </div>
-
-        }
-
-      </div>
-
-
-      @if (!fotosCompletas()) {
-
-      <p class="error-campo">
-        Faltan cargar
-        {{ 3 - fotos.filter(f => f !== null).length }}
-        foto(s).
-      </p>
-
+      </article>
       }
-
-
-      <!-- IMPORTANTE -->
-
-      <div class="importante-fotos">
-
-        <ion-icon name="information-circle" class="importante-icono">
-        </ion-icon>
-
-        <div class="importante-contenido">
-
-          <p class="importante-titulo">
-            Importante
-          </p>
-
-          <p class="importante-texto">
-            Las fotos deben ser nítidas y representar fielmente el plato.
-          </p>
-
-        </div>
-
-      </div>
-
     </section>
 
-
-    <!-- BOTÓN GUARDAR -->
-
-    <ion-button expand="block" [disabled]="guardando" (click)="guardar()">
-
-      {{ guardando ? 'Guardando...' : 'Guardar plato' }}
-
-    </ion-button>
-
-
-    <!-- MENSAJE -->
-
-    @if (mensaje) {
-
-    <p class="ion-text-center">
-      {{ mensaje }}
-    </p>
-
+    @if (totalPaginas() > 1) {
+    <div class="paginado">
+      <button type="button" class="boton-contorno boton-chico" [disabled]="paginaActual() === 1"
+        (click)="paginaAnterior()">‹</button>
+      <span class="texto-ayuda">Página {{ paginaActual() }} de {{ totalPaginas() }}</span>
+      <button type="button" class="boton-contorno boton-chico" [disabled]="paginaActual() === totalPaginas()"
+        (click)="paginaSiguiente()">›</button>
+    </div>
+    }
     }
 
-  </form>
+    @if (mensaje) {
+    <p class="etiqueta ion-text-center" [class.etiqueta-exito]="!mensajeEsError"
+      [class.etiqueta-error]="mensajeEsError">
+      {{ mensaje }}
+    </p>
+    }
+
+    <footer class="pie">
+      <button type="button" class="boton-principal" (click)="mostrarFormularioNuevo()">
+        Crear Nuevo Plato
+      </button>
+    </footer>
+    }
+
+    <!-- ============ VISTA: FORMULARIO (alta/edición) ============ -->
+    @if (vista() === 'formulario') {
+    <form [formGroup]="formulario">
+
+      <section class="tarjeta">
+        <h2 class="titulo-seccion">{{ platoEditandoId ? 'Editar plato' : 'Agregar plato' }}</h2>
+        <p class="subtitulo-seccion">Agregá al menos 3 fotos claras del plato.</p>
+
+        <div class="grilla-fotos">
+          @for (foto of fotos; track $index) {
+          <button type="button" class="contenedor-foto" (click)="elegirFoto($index)">
+            @if (foto) {
+            <img [src]="foto" [alt]="'Foto ' + ($index + 1) + ' del plato'" class="imagen-foto" />
+            } @else {
+            <span class="subtitulo-seccion">+ Foto</span>
+            }
+          </button>
+          }
+        </div>
+
+        @if (!fotosCompletas()) {
+        <p class="mensaje-validacion">Faltan cargar {{ fotosFaltantes() }} foto(s).</p>
+        }
+
+        <div class="aviso">
+          <p class="texto-ayuda"><strong>Importante:</strong> las fotos deben ser nítidas y representar fielmente el
+            plato.</p>
+        </div>
+      </section>
+
+      <section class="tarjeta">
+        <h2 class="titulo-seccion">Detalles</h2>
+        <p class="subtitulo-seccion">El plato quedará disponible en el menú.</p>
+
+        <div class="campo" [class.campo-con-error]="invalido('nombre')">
+          <label for="nombre">Nombre del plato</label>
+          <div class="entrada">
+            <input id="nombre" formControlName="nombre" maxlength="40" type="text" />
+          </div>
+          @if (invalido('nombre')) { <p class="mensaje-validacion">{{ mensajeError('nombre') }}</p> }
+        </div>
+
+        <div class="campo" [class.campo-con-error]="invalido('descripcion')">
+          <label for="descripcion">Descripción</label>
+          <div class="entrada">
+            <input id="descripcion" formControlName="descripcion" maxlength="150" type="text" />
+          </div>
+          @if (invalido('descripcion')) { <p class="mensaje-validacion">{{ mensajeError('descripcion') }}</p> }
+        </div>
+
+        <div class="campos-secundarios">
+          <div class="campo" [class.campo-con-error]="invalido('tiempo_elaboracion')">
+            <label for="tiempo">Tiempo (min)</label>
+            <div class="entrada">
+              <input id="tiempo" formControlName="tiempo_elaboracion" type="text" inputmode="numeric"
+                (keydown)="soloNumerosEnteros($event)" />
+            </div>
+            @if (invalido('tiempo_elaboracion')) { <p class="mensaje-validacion">{{ mensajeError('tiempo_elaboracion')
+              }}</p> }
+          </div>
+
+          <div class="campo" [class.campo-con-error]="invalido('precio')">
+            <label for="precio">Precio</label>
+            <div class="entrada">
+              <input id="precio" formControlName="precio" type="text" inputmode="decimal"
+                (keydown)="soloNumerosConPunto($event)" />
+            </div>
+            @if (invalido('precio')) { <p class="mensaje-validacion">{{ mensajeError('precio') }}</p> }
+          </div>
+        </div>
+      </section>
+
+      <footer class="pie pie-formulario">
+        <button type="button" class="boton-contorno" [disabled]="guardando" (click)="cancelarFormulario()">
+          Cancelar
+        </button>
+        <button type="button" class="boton-principal" [disabled]="guardando" (click)="guardar()">
+          {{ guardando ? 'Guardando...' : (platoEditandoId ? 'Guardar cambios' : 'Guardar plato') }}
+        </button>
+
+        @if (mensaje) {
+        <p class="etiqueta ion-text-center" [class.etiqueta-exito]="!mensajeEsError"
+          [class.etiqueta-error]="mensajeEsError">
+          {{ mensaje }}
+        </p>
+        }
+      </footer>
+    </form>
+    }
+
+  </div>
+
+  <!-- ============ CARRUSEL FLOTANTE ============ -->
+  @if (carrusel(); as c) {
+  <div class="overlay" (click)="cerrarCarrusel()">
+    <div class="overlay-contenido" (click)="$event.stopPropagation()">
+      <button type="button" class="overlay-cerrar" (click)="cerrarCarrusel()">✕</button>
+
+      @if (c.fotos.length > 0) {
+      <img [src]="c.fotos[c.indice]" alt="Foto del plato ampliada" class="foto-ampliada" />
+
+      @if (c.fotos.length > 1) {
+      <button type="button" class="carrusel-flecha carrusel-anterior" (click)="fotoAnterior()">‹</button>
+      <button type="button" class="carrusel-flecha carrusel-siguiente" (click)="fotoSiguiente()">›</button>
+      <p class="texto-ayuda carrusel-contador">{{ c.indice + 1 }} / {{ c.fotos.length }}</p>
+      }
+      }
+    </div>
+  </div>
+  }
+
+  <!-- ============ CONFIRMACIÓN DE BORRADO ============ -->
+  @if (platoAEliminar(); as plato) {
+  <div class="overlay" (click)="cancelarEliminar()">
+    <div class="overlay-contenido overlay-confirmacion" (click)="$event.stopPropagation()">
+      <h2 class="titulo-seccion">¿Eliminar plato del menú?</h2>
+      <p class="texto-cuerpo">Desea eliminar "{{ plato.nombre }}" del menú del cliente.</p>
+      <div class="acciones-confirmacion">
+        <button type="button" class="boton-contorno" (click)="cancelarEliminar()">Cancelar</button>
+        <button type="button" class="boton-principal boton-peligro-solido"
+          (click)="confirmarEliminar()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+  }
 
 </ion-content>
